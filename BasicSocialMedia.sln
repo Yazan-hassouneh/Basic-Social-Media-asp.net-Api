@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSocialMedia.Web", "BasicSocialMedia\BasicSocialMedia.Web.csproj", "{B20FF098-0E11-4E99-B62C-504B8FB96A91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSocialMedia.Web", "BasicSocialMedia.Web\BasicSocialMedia.Web.csproj", "{B20FF098-0E11-4E99-B62C-504B8FB96A91}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSocialMedia.Core", "BasicSocialMedia.Core\BasicSocialMedia.Core.csproj", "{F24C6C1E-F436-49E6-9935-6F0E45F7829C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSocialMedia.Infrastructure", "BasicSocialMedia.EF\BasicSocialMedia.Infrastructure.csproj", "{6CEFC7CB-7C79-40E0-AE10-F45F2FD18A01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSocialMedia.Infrastructure", "BasicSocialMedia.Infrastructure\BasicSocialMedia.Infrastructure.csproj", "{6CEFC7CB-7C79-40E0-AE10-F45F2FD18A01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSocialMedia.Application", "BasicSocialMedia.Application\BasicSocialMedia.Application.csproj", "{1E58A024-123C-41E6-A3A2-638D34E10D4E}"
 EndProject
