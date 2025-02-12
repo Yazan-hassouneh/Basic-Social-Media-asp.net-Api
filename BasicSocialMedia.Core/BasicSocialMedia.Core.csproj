@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Consts\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Models\" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.1" />
   </ItemGroup>
 
 </Project>
