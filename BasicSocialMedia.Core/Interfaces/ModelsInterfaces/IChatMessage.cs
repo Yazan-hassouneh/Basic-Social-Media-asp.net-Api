@@ -1,5 +1,4 @@
-﻿using BasicSocialMedia.Core.Models.AuthModels;
-
+﻿
 namespace BasicSocialMedia.Core.Interfaces.ModelsInterfaces
 {
 	public interface IChatMessage : IId, ITimestamp

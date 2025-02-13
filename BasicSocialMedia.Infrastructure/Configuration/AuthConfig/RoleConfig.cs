@@ -10,6 +10,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.AuthConfig
 		public void Configure(EntityTypeBuilder<IdentityRole> builder)
 		{
 			builder.Property(model => model.Name).IsRequired().HasMaxLength(ModelsSettings.MaxRoleNameLength);
+			builder.Property(model => model.NormalizedName).IsRequired().HasMaxLength(ModelsSettings.MaxRoleNameLength);
 		}
 	}
 }

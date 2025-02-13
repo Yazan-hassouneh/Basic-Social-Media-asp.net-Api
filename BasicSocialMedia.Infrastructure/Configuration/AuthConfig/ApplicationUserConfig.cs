@@ -10,6 +10,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.AuthConfig
 		public void Configure(EntityTypeBuilder<ApplicationUser> builder)
 		{
 			builder.Property(model => model.UserName).IsRequired().HasMaxLength(ModelsSettings.MaxUserNameLength);
+			builder.Property(model => model.NormalizedUserName).IsRequired().HasMaxLength(ModelsSettings.MaxUserNameLength);
 			builder.Property(model => model.IsDeleted).IsRequired().HasDefaultValue(false);
 			builder.Property(model => model.AllowFriendships).IsRequired().HasDefaultValue(true);
 			builder.Property(model => model.JoinedAt).IsRequired().HasDefaultValue(DateTime.UtcNow);

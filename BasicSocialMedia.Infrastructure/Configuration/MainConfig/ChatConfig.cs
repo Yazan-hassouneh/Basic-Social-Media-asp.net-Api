@@ -17,7 +17,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MainConfig
 				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasOne(chat => chat.User2)
-				.WithMany(user => user.Chats)  // A user is also a receiver in multiple chats
+				.WithMany()  // A user is also a receiver in multiple chats
 				.HasForeignKey(chat => chat.User2Id)
 				.OnDelete(DeleteBehavior.Restrict);
 

@@ -28,7 +28,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.M2MConfig
 					.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasOne(friendship => friendship.User2)
-					.WithMany(user => user.Friendships)
+					.WithMany()
 					.HasForeignKey(friendship => friendship.UserId2)
 					.OnDelete(DeleteBehavior.Restrict);
 

@@ -15,6 +15,11 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MainConfig
 						.WithMany(post => post.PostReactions)
 						.HasForeignKey(reaction => reaction.PostId)
 						.OnDelete(DeleteBehavior.Cascade);
+
+			builder.HasOne(reaction => reaction.User)
+						.WithMany()
+						.HasForeignKey(reaction => reaction.UserId)
+						.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }
