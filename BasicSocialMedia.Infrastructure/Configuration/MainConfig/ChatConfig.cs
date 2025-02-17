@@ -21,7 +21,6 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MainConfig
 				.HasForeignKey(chat => chat.User2Id)
 				.OnDelete(DeleteBehavior.Restrict);
 
-			builder.HasIndex(chat => new { chat.User1Id, chat.User2Id }).IsUnique();
 		}
 	}
 }
