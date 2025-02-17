@@ -13,7 +13,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.AuthConfig
 			builder.Property(model => model.NormalizedUserName).IsRequired().HasMaxLength(ModelsSettings.MaxUserNameLength);
 			builder.Property(model => model.IsDeleted).IsRequired().HasDefaultValue(false);
 			builder.Property(model => model.AllowFriendships).IsRequired().HasDefaultValue(true);
-			builder.Property(model => model.JoinedAt).IsRequired().HasDefaultValue(DateTime.UtcNow);
+			builder.Property(model => model.JoinedAt).IsRequired().HasDefaultValueSql("GETUTCDATE()");
 			builder.Property(model => model.ProfileImage).IsRequired(false);
 			builder.Property(model => model.Bio).IsRequired(false).HasMaxLength(ModelsSettings.MaxUserBioLength);
 			builder.Property(model => model.BirthDate).IsRequired(false);

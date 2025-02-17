@@ -8,7 +8,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.BaseConfig
 	{
 		public static void ConfigureTimestamp<T>(EntityTypeBuilder<T> builder) where T : class, ITimestamp
 		{
-			builder.Property(i => i.CreatedOn).IsRequired(true).HasDefaultValue(DateTime.UtcNow);
+			builder.Property(i => i.CreatedOn).IsRequired(true).HasDefaultValueSql("GETUTCDATE()");
 		}
 	}
 }

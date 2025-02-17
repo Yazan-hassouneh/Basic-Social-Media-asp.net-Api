@@ -19,7 +19,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MainConfig
 			builder.HasOne(reaction => reaction.User)
 						.WithMany()
 						.HasForeignKey(reaction => reaction.UserId)
-						.OnDelete(DeleteBehavior.Cascade);
+						.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }
