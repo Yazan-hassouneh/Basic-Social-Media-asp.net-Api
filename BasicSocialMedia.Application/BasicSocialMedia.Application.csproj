@@ -15,7 +15,6 @@
     <Folder Include="DTOsValidation\" />
     <Folder Include="CustomPolicies\" />
     <Folder Include="BackgroundJobs\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
