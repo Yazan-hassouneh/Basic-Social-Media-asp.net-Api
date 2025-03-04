@@ -1,6 +1,6 @@
 ﻿using BasicSocialMedia.Application.Helpers;
 using BasicSocialMedia.Core.DTOs.AuthDTOs;
-using BasicSocialMedia.Core.Interfaces.ServicesInterfaces;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using BasicSocialMedia.Core.Models.AuthModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;

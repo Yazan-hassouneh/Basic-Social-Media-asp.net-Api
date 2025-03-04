@@ -2,7 +2,7 @@
 using BasicSocialMedia.Core.Models.AuthModels;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces
+namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices
 {
 	public interface IJWTService
 	{

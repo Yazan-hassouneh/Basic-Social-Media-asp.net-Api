@@ -1,5 +1,5 @@
 ﻿using BasicSocialMedia.Application.Services.AuthServices;
-using BasicSocialMedia.Core.Interfaces.ServicesInterfaces;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 
 namespace BasicSocialMedia.Web.Startup
 {
