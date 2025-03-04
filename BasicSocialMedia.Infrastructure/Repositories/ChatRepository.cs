@@ -38,29 +38,30 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 
 			return chat;
 		}
-		public override async Task<IEnumerable<Chat?>> GetAllAsync()
+		public async Task<IEnumerable<Chat?>> GetAllAsync(string userId)
 		{
 			return await _context.Chats
+				.Where(chat => chat.User1Id == userId || chat.User2Id == userId)
 				.Include(chat => chat.User1)
 				.Include(chat => chat.User2)
 				.Select(chat => new Chat // Or ChatViewModel
+				{
+					Id = chat.Id,
+					CreatedOn = chat.CreatedOn,
+					// ... other properties of Chat ...
+					User1 = chat.User1 == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
-						Id = chat.Id,
-						CreatedOn = chat.CreatedOn,
-						// ... other properties of Chat ...
-						User1 = chat.User1 == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-						{
-							Id = chat.User1.Id, 
-							UserName = chat.User1.UserName,
-							ProfileImage = chat.User1.ProfileImage
-						},
-						User2 = chat.User2 == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-						{
-							Id = chat.User2.Id, 
-							UserName = chat.User2.UserName,
-							ProfileImage = chat.User2.ProfileImage
-						}
-					})
+						Id = chat.User1.Id, 
+						UserName = chat.User1.UserName,
+						ProfileImage = chat.User1.ProfileImage
+					},
+					User2 = chat.User2 == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
+					{
+						Id = chat.User2.Id, 
+						UserName = chat.User2.UserName,
+						ProfileImage = chat.User2.ProfileImage
+					}
+				})
 				.AsNoTracking()
 				.ToListAsync(); 
 		}

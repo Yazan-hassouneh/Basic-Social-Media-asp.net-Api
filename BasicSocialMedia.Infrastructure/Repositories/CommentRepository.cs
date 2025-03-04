@@ -46,9 +46,10 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 
 			return comment;
 		}
-		public override async Task<IEnumerable<Comment?>> GetAllAsync()
+		public async Task<IEnumerable<Comment?>> GetAllAsync(int postId)
 		{
 			return await _context.Comments
+				.Where(c => c.PostId == postId)
 				.Include(comment => comment.User)
 				.Include(comment => comment.CommentReactions)
 					.ThenInclude(reaction => reaction.User)
