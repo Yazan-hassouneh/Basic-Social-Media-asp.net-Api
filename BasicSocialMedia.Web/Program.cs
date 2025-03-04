@@ -1,4 +1,6 @@
+using BasicSocialMedia.Application.Helpers;
 using BasicSocialMedia.Infrastructure.Data;
+using BasicSocialMedia.Web.Startup;
 using Microsoft.EntityFrameworkCore;
 
 namespace BasicSocialMedia
@@ -14,10 +16,14 @@ namespace BasicSocialMedia
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+			builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
 		             builder.Configuration.GetConnectionString("AppConnectionString")
 	             ));
 
+			builder.Services.AddIdentityServices();
+			builder.Services.AddJWTServices(builder);
+            builder.Services.AddServicesInjection();
 
 
 			var app = builder.Build();

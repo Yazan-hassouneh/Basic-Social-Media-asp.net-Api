@@ -1,12 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BasicSocialMedia.Application.Helpers;
+using BasicSocialMedia.Core.DTOs.AuthDTOs;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces;
+using BasicSocialMedia.Core.Models.AuthModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace BasicSocialMedia.Application.Services.AuthServices
 {
-	internal class AccountService
+	public class AccountService(UserManager<ApplicationUser> userManager, IJWTService jWTService) : IAccountService
 	{
+		private readonly UserManager<ApplicationUser> _userManager = userManager;
+		private readonly IJWTService _jWTService = jWTService;
+
+		public async Task<AuthDto> RegisterAsync(CreateAccountDto model)
+		{
+			if (await _userManager.FindByEmailAsync(model.Email) is not null) return new AuthDto { Message = "Email Already Exist" };
+			if (await _userManager.FindByNameAsync(model.UserName) is not null) return new AuthDto { Message = "UserName Already Exist" };
+
+			var newUser = new ApplicationUser
+			{
+				UserName = model.UserName,
+				Email = model.Email,
+			};
+
+			var result = await _userManager.CreateAsync(newUser, model.Password);
+
+			if (!result.Succeeded)
+			{
+				string errors = string.Empty;
+				foreach (var error in result.Errors) errors += $"{error.Description},";
+				return new AuthDto { Message = errors };
+			}
+			await _userManager.AddToRoleAsync(newUser, "User");
+
+			var jwtSecurityToken = await _jWTService.CreateJwtToken(newUser);
+
+			return new AuthDto
+			{
+				UserEmail = newUser.Email,
+				UserName = newUser.UserName,
+				//ExpiresOn = jwtSecurityToken.ValidTo,
+				Message = string.Empty,
+				IsAuthenticated = true,
+				UserRoles = ["User"],
+				Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+			};
+		}
 	}
 }
