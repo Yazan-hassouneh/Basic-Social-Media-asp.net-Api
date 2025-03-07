@@ -10,5 +10,6 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices
 		Task<AuthDto> RefreshTokenAsync(string token);
 		Task<bool> RevokeTokenAsync(string token);
 		Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user);
+		RefreshToken GenerateRefreshToken();
 	}
 }

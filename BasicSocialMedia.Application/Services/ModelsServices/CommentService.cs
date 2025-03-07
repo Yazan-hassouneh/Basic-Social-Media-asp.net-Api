@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
-	internal class CommentService
+	internal class CommentService : ICommentService
 	{
 	}
 }

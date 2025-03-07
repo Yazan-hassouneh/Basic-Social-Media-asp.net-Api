@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BasicSocialMedia.Application.Services.AuthServices
 {
-	internal class RoleService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager) : IRoleService
+	public class RoleService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager) : IRoleService
 	{
 		private readonly UserManager<ApplicationUser> _userManager = userManager;
 		private readonly RoleManager<IdentityRole> _roleManager = roleManager;

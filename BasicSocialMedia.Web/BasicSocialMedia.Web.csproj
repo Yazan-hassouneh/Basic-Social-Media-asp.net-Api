@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BasicSocialMedia.Application\BasicSocialMedia.Application.csproj" />
     <ProjectReference Include="..\BasicSocialMedia.Infrastructure\BasicSocialMedia.Infrastructure.csproj" />
   </ItemGroup>

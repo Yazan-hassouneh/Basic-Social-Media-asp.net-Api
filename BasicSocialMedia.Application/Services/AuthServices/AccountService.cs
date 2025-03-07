@@ -1,9 +1,7 @@
-﻿using BasicSocialMedia.Application.Helpers;
-using BasicSocialMedia.Core.DTOs.AuthDTOs;
+﻿using BasicSocialMedia.Core.DTOs.AuthDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using BasicSocialMedia.Core.Models.AuthModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace BasicSocialMedia.Application.Services.AuthServices
@@ -35,12 +33,14 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 			await _userManager.AddToRoleAsync(newUser, "User");
 
 			var jwtSecurityToken = await _jWTService.CreateJwtToken(newUser);
+			var refreshToken = _jWTService.GenerateRefreshToken();
 
 			return new AuthDto
 			{
 				UserEmail = newUser.Email,
 				UserName = newUser.UserName,
 				//ExpiresOn = jwtSecurityToken.ValidTo,
+				RefreshToken = refreshToken.Token,
 				Message = string.Empty,
 				IsAuthenticated = true,
 				UserRoles = ["User"],

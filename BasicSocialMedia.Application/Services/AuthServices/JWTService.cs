@@ -13,7 +13,7 @@ using System.Text;
 
 namespace BasicSocialMedia.Application.Services.AuthServices
 {
-	public class JWTService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt) : IJWTService
+	public class JWTService(UserManager<ApplicationUser> userManager, IOptions<JWT> jwt) : IJWTService
 	{
 		private readonly UserManager<ApplicationUser> _userManager = userManager;
 		private readonly JWT _jwt = jwt.Value;
@@ -68,7 +68,7 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 
 			var refreshToken = user.RefreshTokens?.Single(t => t.Token == token);
 
-			if (!refreshToken.IsActive)
+			if (refreshToken == null || !refreshToken.IsActive)
 			{
 				authModel.IsAuthenticated = false;
 				authModel.Message = "Inactive Token";
@@ -95,10 +95,10 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 		}
 		public async Task<bool> RevokeTokenAsync(string token)
 		{
-			var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
+			var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token)); 
 			if (user == null) return false;
-			var refreshToken = user.RefreshTokens?.Single(t => t.Token == token);
-			if (!refreshToken.IsActive) return false;
+			var refreshToken = user.RefreshTokens?.SingleOrDefault(t => t.Token == token);
+			if (refreshToken == null || !refreshToken.IsActive) return false;
 			refreshToken.RevokedOn = DateTime.UtcNow;
 			await _userManager.UpdateAsync(user);
 			return true;
@@ -140,7 +140,9 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 
 			return new RefreshToken
 			{
-				Token = Convert.ToBase64String(randomNumber),
+				//Base64 strings can include characters like + and /, which might cause issues in certain storage formats, 
+				// This makes it URL-safe and avoids padding characters (=).
+				Token = Convert.ToBase64String(randomNumber).Replace("+", "-").Replace("/", "_").TrimEnd('='),
 				ExpiresOn = DateTime.UtcNow.AddMinutes(_jwt.DurationInMinutes),
 				CreatedOn = DateTime.UtcNow
 			};

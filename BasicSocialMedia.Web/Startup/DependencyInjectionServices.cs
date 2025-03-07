@@ -9,6 +9,7 @@ namespace BasicSocialMedia.Web.Startup
 		{
 			services.AddScoped<IJWTService, JWTService>();
 			services.AddScoped<IAccountService, AccountService>();
+			services.AddScoped<IRoleService, RoleService>();
 			return services;
 		}
 	}
