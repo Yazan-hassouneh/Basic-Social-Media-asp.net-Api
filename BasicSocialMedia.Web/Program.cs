@@ -24,6 +24,7 @@ namespace BasicSocialMedia
 			builder.Services.AddIdentityServices();
 			builder.Services.AddJWTServices(builder);
             builder.Services.AddServicesInjection();
+            builder.Services.AddAutoMapperConfiguration();
 
 
 			var app = builder.Build();

@@ -21,7 +21,6 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					Id = comment.Id,
 					CreatedOn = comment.CreatedOn,
 					Content = comment.Content,
-					LikesCount = comment.LikesCount,
 					CommentReactions = comment.CommentReactions.Select(cr => new CommentReaction
 					{
 						Id = cr.Id,
@@ -58,7 +57,6 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					Id = comment.Id,
 					CreatedOn = comment.CreatedOn,
 					Content = comment.Content,
-					LikesCount = comment.LikesCount,
 					CommentReactions = comment.CommentReactions.Select(cr => new CommentReaction
 					{
 						Id = cr.Id,

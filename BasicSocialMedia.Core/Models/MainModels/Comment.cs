@@ -7,7 +7,6 @@ namespace BasicSocialMedia.Core.Models.MainModels
 	{
 		public int Id { get; set; }
 		public string Content { get; set; } = null!;
-		public uint LikesCount { get; set; }
 		public bool IsDeleted { get; set; }
 		public DateTime CreatedOn { get; set; }
 		public string UserId { get; set; } = null!;

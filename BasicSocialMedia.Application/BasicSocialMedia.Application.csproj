@@ -12,7 +12,6 @@
     <Folder Include="DTOsValidation\" />
     <Folder Include="CustomPolicies\" />
     <Folder Include="BackgroundJobs\" />
-    <Folder Include="Mappers\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -22,7 +22,6 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					Content = post.Content,
 					CommentsCount = post.CommentsCount,
 					IsDeleted = post.IsDeleted,
-					LikesCount = post.LikesCount,
 					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
 						Id = post.User.Id,
@@ -48,7 +47,6 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					Content = post.Content,
 					CommentsCount = post.CommentsCount,
 					IsDeleted = post.IsDeleted,
-					LikesCount = post.LikesCount,
 					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
 						Id = post.User.Id,

@@ -11,6 +11,7 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<IRoleService, RoleService>();
 			return services;
-		}
+		}		
+
 	}
 }

@@ -13,7 +13,6 @@ namespace BasicSocialMedia.Infrastructure.Configuration.BaseConfig
 			BaseTimestampConfig.ConfigureTimestamp(builder);
 			BaseContentConfig.ConfigureContent(builder);
 			builder.Property(i => i.UserId).IsRequired();
-			builder.Property(i => i.LikesCount).IsRequired().HasDefaultValue(ModelsSettings.LikesCountMin);
 			builder.Property(i => i.IsDeleted).IsRequired().HasDefaultValue(false);
 
 		}
