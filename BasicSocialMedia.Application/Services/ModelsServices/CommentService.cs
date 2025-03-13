@@ -54,12 +54,8 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		}
 		private IEnumerable<GetCommentDto> getCommentDTOs(IEnumerable<Comment?> comments)
 		{
-			if (comments == null || !comments.Any()) return new List<GetCommentDto>();
-			List<GetCommentDto> commentsDto = [];
-			foreach (var comment in comments)
-			{
-				commentsDto.Add(_mapper.Map<GetCommentDto>(comment));
-			}
+			if (comments == null || !comments.Any()) return [];
+			List<GetCommentDto> commentsDto = comments.Select(_mapper.Map<GetCommentDto>).ToList();
 			return commentsDto;
 		}
 	}

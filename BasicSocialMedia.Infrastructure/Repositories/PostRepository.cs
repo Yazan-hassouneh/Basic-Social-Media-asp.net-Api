@@ -20,7 +20,6 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					CreatedOn = post.CreatedOn,
 					Audience = post.Audience,
 					Content = post.Content,
-					CommentsCount = post.CommentsCount,
 					IsDeleted = post.IsDeleted,
 					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
@@ -45,7 +44,6 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					CreatedOn = post.CreatedOn,
 					Audience = post.Audience,
 					Content = post.Content,
-					CommentsCount = post.CommentsCount,
 					IsDeleted = post.IsDeleted,
 					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{

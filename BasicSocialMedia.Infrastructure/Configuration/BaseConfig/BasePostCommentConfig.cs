@@ -1,5 +1,4 @@
-﻿using BasicSocialMedia.Core.Consts;
-using BasicSocialMedia.Core.Interfaces.ModelsInterfaces;
+﻿using BasicSocialMedia.Core.Interfaces.ModelsInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
