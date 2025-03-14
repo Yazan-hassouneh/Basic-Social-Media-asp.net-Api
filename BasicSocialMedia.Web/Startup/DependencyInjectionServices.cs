@@ -1,5 +1,7 @@
 ﻿using BasicSocialMedia.Application.Services.AuthServices;
+using BasicSocialMedia.Application.Services.ModelsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 
 namespace BasicSocialMedia.Web.Startup
 {
@@ -10,6 +12,8 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IJWTService, JWTService>();
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<IRoleService, RoleService>();
+			services.AddScoped<IPostService, PostService>();
+			services.AddScoped<ICommentService, CommentService>();
 			return services;
 		}		
 

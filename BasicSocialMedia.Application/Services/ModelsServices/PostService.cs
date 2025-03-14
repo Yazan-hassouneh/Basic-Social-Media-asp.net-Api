@@ -9,14 +9,14 @@ using static BasicSocialMedia.Core.Enums.ProjectEnums;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
-	internal class PostService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager) : IPostService
+	public class PostService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager) : IPostService
 	{
 		private readonly UserManager<ApplicationUser> _userManager = userManager;
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
 		public async Task<IEnumerable<GetPostDto>> GetPostsByUserIdAsync(string userId)
 		{
-			IEnumerable<Post?> posts = await _unitOfWork.Posts.GetAllAsync(userId);
+			IEnumerable<Post?> posts = await _unitOfWork.Posts.GetAllAsync(userId); // By default , GetAllAsync returns all posts that related to the user
 			IEnumerable<Post> nonNullPosts = posts.Where(post => post != null)!;
 			if (nonNullPosts == null || !nonNullPosts.Any()) return [];
 
