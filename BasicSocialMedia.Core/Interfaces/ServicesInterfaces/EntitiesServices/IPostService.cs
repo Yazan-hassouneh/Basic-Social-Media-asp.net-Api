@@ -7,8 +7,8 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 		Task<IEnumerable<GetPostDto>> GetPostsByUserIdAsync(string userId);
 		Task<IEnumerable<GetPostDto>> GetPostsByUserFollowingsAsync(string userId);
 		Task<IEnumerable<GetPostDto>> GetPostsByUserFriendsAsync(string userId);
-		Task CreatePostAsync(AddPostDto postDto);
-		Task UpdatePostAsync(UpdatePostDto postDto);
+		Task<AddPostDto> CreatePostAsync(AddPostDto postDto);
+		Task<UpdatePostDto?> UpdatePostAsync(UpdatePostDto postDto);
 		Task<bool> DeletePostAsync(int commentId);
 	}
 }

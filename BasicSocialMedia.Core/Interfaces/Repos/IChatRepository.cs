@@ -5,5 +5,6 @@ namespace BasicSocialMedia.Core.Interfaces.Repos
 {
 	public interface IChatRepository : IBaseRepository<Chat>
 	{
+		Task<IEnumerable<Chat?>> GetAllAsync(string userId);
 	}
 }

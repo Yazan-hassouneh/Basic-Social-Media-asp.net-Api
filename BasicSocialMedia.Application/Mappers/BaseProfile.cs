@@ -5,7 +5,7 @@ using BasicSocialMedia.Core.Models.AuthModels;
 
 namespace BasicSocialMedia.Application.Mappers
 {
-	public class BasePostCommentProfile : Profile
+	public class BaseProfile : Profile
 
 	{
 		protected static GetBasicUserInfo MapUser(ApplicationUser? user) =>

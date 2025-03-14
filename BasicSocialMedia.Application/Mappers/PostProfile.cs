@@ -3,7 +3,7 @@ using BasicSocialMedia.Core.Models.MainModels;
 
 namespace BasicSocialMedia.Application.Mappers
 {
-	public class PostProfile : BasePostCommentProfile
+	public class PostProfile : BaseProfile
 	{
 		public PostProfile() 
 		{

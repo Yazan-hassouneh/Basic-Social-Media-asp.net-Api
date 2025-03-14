@@ -47,7 +47,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			return await MapPosts(friendIds);
 		}
-		public async Task CreatePostAsync(AddPostDto postDto)
+		public async Task<AddPostDto> CreatePostAsync(AddPostDto postDto)
 		{
 			Post post = new()
 			{
@@ -60,19 +60,20 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			await _unitOfWork.Posts.AddAsync(post);
 			await _unitOfWork.Posts.Save();
-			await Task.CompletedTask;
+			return postDto;
 		}
-		public async Task UpdatePostAsync(UpdatePostDto postDto)
+		public async Task<UpdatePostDto?> UpdatePostAsync(UpdatePostDto postDto)
 		{
-			Post post = new()
-			{
-				Audience = (PostAudience)postDto.Audience,
-				Content = postDto.Content,
-			};
+			Post? post = await _unitOfWork.Posts.GetByIdAsync(postDto.Id);
+
+			if (post is null) return null;
+
+			post.Content = postDto.Content;
+			post.Audience = (PostAudience)postDto.Audience;
 
 			_unitOfWork.Posts.Update(post);
 			await _unitOfWork.Posts.Save();
-			await Task.CompletedTask;
+			return postDto;
 		}
 		public async Task<bool> DeletePostAsync(int postId)
 		{

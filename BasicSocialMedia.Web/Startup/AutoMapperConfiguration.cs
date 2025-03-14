@@ -9,6 +9,8 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddAutoMapper(typeof(CommentProfile));
 			services.AddAutoMapper(typeof(PostProfile));
 			services.AddAutoMapper(typeof(ReactionProfile));
+			services.AddAutoMapper(typeof(ChatProfile));
+			services.AddAutoMapper(typeof(MessageProfile));
 			return services;
 		}
 	}

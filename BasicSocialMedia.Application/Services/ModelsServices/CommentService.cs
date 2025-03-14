@@ -20,7 +20,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			IEnumerable<Comment?> comments = await _unitOfWork.Comments.FindAllAsync(comment => comment.UserId == userId);
 			return getCommentDTOs(comments);
 		}
-		public async Task CreateCommentAsync(AddCommentDto commentDto)
+		public async Task<AddCommentDto> CreateCommentAsync(AddCommentDto commentDto)
 		{
 			Comment comment = new()
 			{
@@ -31,18 +31,17 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			await _unitOfWork.Comments.AddAsync(comment);
 			await _unitOfWork.Comments.Save();
-			await Task.CompletedTask;
+			return commentDto;
 		}
-		public async Task UpdateCommentAsync(UpdateCommentDto commentDto)
+		public async Task<UpdateCommentDto?> UpdateCommentAsync(UpdateCommentDto commentDto)
 		{
-			Comment comment = new()
-			{
-				Content = commentDto.Content,
-			};
+			Comment? comment = await _unitOfWork.Comments.GetByIdAsync(commentDto.Id);
+			if (comment == null) return null;
+			comment.Content = commentDto.Content;
 
 			_unitOfWork.Comments.Update(comment);
 			await _unitOfWork.Comments.Save();
-			await Task.CompletedTask;
+			return commentDto;
 		}
 		public async Task<bool> DeleteComment(int commentId)
 		{

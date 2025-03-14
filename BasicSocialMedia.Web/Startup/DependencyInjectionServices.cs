@@ -14,6 +14,8 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IRoleService, RoleService>();
 			services.AddScoped<IPostService, PostService>();
 			services.AddScoped<ICommentService, CommentService>();
+			services.AddScoped<IMessagesServices, MessageService>();
+			services.AddScoped<IChatServices, ChatService>();
 			return services;
 		}		
 
