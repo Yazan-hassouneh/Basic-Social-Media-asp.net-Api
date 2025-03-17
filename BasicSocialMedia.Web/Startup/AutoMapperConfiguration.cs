@@ -6,11 +6,11 @@ namespace BasicSocialMedia.Web.Startup
 	{
 		internal static IServiceCollection AddAutoMapperConfiguration(this IServiceCollection services)
 		{
-			services.AddAutoMapper(typeof(CommentProfile));
 			services.AddAutoMapper(typeof(PostProfile));
-			services.AddAutoMapper(typeof(ReactionProfile));
 			services.AddAutoMapper(typeof(ChatProfile));
 			services.AddAutoMapper(typeof(MessageProfile));
+			services.AddAutoMapper(typeof(CommentProfile));
+			services.AddAutoMapper(typeof(ReactionProfile));
 			return services;
 		}
 	}

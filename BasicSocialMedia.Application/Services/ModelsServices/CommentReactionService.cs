@@ -6,7 +6,7 @@ using BasicSocialMedia.Core.Models.MainModels;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
-	internal class CommentReactionService(IUnitOfWork unitOfWork, IMapper mapper) : ICommentReactionService
+	public class CommentReactionService(IUnitOfWork unitOfWork, IMapper mapper) : ICommentReactionService
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
