@@ -6,7 +6,7 @@ namespace BasicSocialMedia.Application.Services.EnumsServices
 {
 	public class AudienceService : IAudienceService
 	{
-		public IEnumerable<AudienceDto> GetAudiencesAsync()
+		public IEnumerable<AudienceDto> GetAudiences()
 		{
 			// Example data, replace with actual data retrieval logic
 			IEnumerable<AudienceDto> audiences = Enum.GetValues<PostAudience>()

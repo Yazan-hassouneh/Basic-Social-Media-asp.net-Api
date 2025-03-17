@@ -1,9 +1,11 @@
 ﻿using BasicSocialMedia.Application.Services.AuthServices;
 using BasicSocialMedia.Application.Services.EnumsServices;
+using BasicSocialMedia.Application.Services.FileServices;
 using BasicSocialMedia.Application.Services.ModelsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EnumsServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
 
 namespace BasicSocialMedia.Web.Startup
 {
@@ -14,6 +16,7 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IJWTService, JWTService>();
 			services.AddScoped<IRoleService, RoleService>();
 			services.AddScoped<IPostService, PostService>();
+			services.AddScoped<IFileService, FileService>();
 			services.AddScoped<IChatServices, ChatService>();
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<ICommentService, CommentService>();

@@ -35,12 +35,17 @@ namespace BasicSocialMedia
                 app.MapOpenApi();
             }
 
-            app.UseHttpsRedirection();
+			// Enable serving static files from wwwroot
+			app.UseStaticFiles();
 
-            app.UseAuthorization();
+			app.UseHttpsRedirection();
+
+			// Important to add 
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 
-            app.MapControllers();
+			app.MapControllers();
 
             app.Run();
         }

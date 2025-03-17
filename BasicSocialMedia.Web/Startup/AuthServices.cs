@@ -11,6 +11,10 @@ namespace BasicSocialMedia.Web.Startup
 	{
 		internal static IServiceCollection AddIdentityServices(this IServiceCollection services)
 		{
+			// Important to add in Program.cs
+			// app.UseAuthentication();
+			// app.UseAuthorization();
+
 			services.AddIdentity<ApplicationUser, IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationDbContext>()
 				.AddSignInManager()
