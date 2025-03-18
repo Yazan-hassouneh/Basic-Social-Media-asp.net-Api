@@ -5,8 +5,8 @@ namespace BasicSocialMedia.Core.Enums
 	{
 		public enum PostAudience
 		{
-			Public,
-			Friends
+			Public = 0,
+			Friends = 1
 		} 		
 		public enum FriendshipStatus
 		{

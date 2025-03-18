@@ -15,6 +15,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSocialMedia.Infrastructure", "BasicSocialMedia.Infrastructure\BasicSocialMedia.Infrastructure.csproj", "{6CEFC7CB-7C79-40E0-AE10-F45F2FD18A01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSocialMedia.Application", "BasicSocialMedia.Application\BasicSocialMedia.Application.csproj", "{1E58A024-123C-41E6-A3A2-638D34E10D4E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6CEFC7CB-7C79-40E0-AE10-F45F2FD18A01} = {6CEFC7CB-7C79-40E0-AE10-F45F2FD18A01}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

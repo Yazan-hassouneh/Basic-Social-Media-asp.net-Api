@@ -33,7 +33,7 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 
 			authModel.IsAuthenticated = true;
 			authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-			authModel.UserEmail = user.Email;
+			authModel.Email = user.Email;
 			authModel.UserName = user.UserName;
 			//authModel.ExpiresOn = jwtSecurityToken.ValidTo;
 			authModel.UserRoles = [.. rolesList];
@@ -83,7 +83,7 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 			var jwtToken = await CreateJwtToken(user);
 			authModel.IsAuthenticated = true;
 			authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-			authModel.UserEmail = user.Email;
+			authModel.Email = user.Email;
 			authModel.UserName = user.UserName;
 
 			var roles = await _userManager.GetRolesAsync(user);

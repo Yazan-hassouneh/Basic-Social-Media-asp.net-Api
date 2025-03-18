@@ -37,7 +37,7 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 
 			return new AuthDto
 			{
-				UserEmail = newUser.Email,
+				Email = newUser.Email,
 				UserName = newUser.UserName,
 				//ExpiresOn = jwtSecurityToken.ValidTo,
 				RefreshToken = refreshToken.Token,

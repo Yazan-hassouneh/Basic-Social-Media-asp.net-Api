@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="DTOsValidation\" />
     <Folder Include="CustomPolicies\" />
     <Folder Include="BackgroundJobs\" />
   </ItemGroup>
@@ -22,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BasicSocialMedia.Core\BasicSocialMedia.Core.csproj" />
+    <ProjectReference Include="..\BasicSocialMedia.Infrastructure\BasicSocialMedia.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

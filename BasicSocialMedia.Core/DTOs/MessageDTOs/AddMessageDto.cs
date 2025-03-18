@@ -2,7 +2,7 @@
 
 namespace BasicSocialMedia.Core.DTOs.MessageDTOs
 {
-	public class AddMessageDto : IContentDto
+	public class AddMessageDto : IContentDto, ISenderIdReceiverIdDto
 	{
 		public string Content { get; set; } = null!;
 		public string User1Id { get; set; } = null!;

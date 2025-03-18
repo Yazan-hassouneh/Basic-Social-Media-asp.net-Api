@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BasicSocialMedia.Core.Interfaces.DTOInterfaces.Base;
 
 namespace BasicSocialMedia.Core.DTOs.ReactionsDTOs
 {
-	public class AddPostReactionDto
+	public class AddPostReactionDto : IUserIdDto, IPostIdDto
 	{
 		public int PostId { get; set; }
 		public string UserId { get; set; } = null!;

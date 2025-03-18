@@ -2,7 +2,7 @@
 
 namespace BasicSocialMedia.Core.DTOs.PostDTOs
 {
-	public class AddPostDto : IContentDto, IAudienceDto
+	public class AddPostDto : IContentDto, IAudienceDto, IUserIdDto
 	{
 		public string Content { get; set; } = null!;
 		public string UserId { get; set; } = null!;

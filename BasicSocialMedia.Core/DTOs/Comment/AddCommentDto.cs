@@ -2,7 +2,7 @@
 
 namespace BasicSocialMedia.Core.DTOs.Comment
 {
-	public class AddCommentDto : IContentDto
+	public class AddCommentDto : IContentDto, IUserIdDto, IPostIdDto
 	{
 		public string Content { get; set; } = null!;
 		public string UserId { get; set; } = null!;
