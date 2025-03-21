@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BasicSocialMedia.Application.DTOsValidation.PostDtosValidation
 {
-	internal class UpdatePostDtoValidator : AbstractValidator<UpdatePostDto>
+	public class UpdatePostDtoValidator : AbstractValidator<UpdatePostDto>
 	{
 		private readonly ApplicationDbContext _context;
 		public UpdatePostDtoValidator(ApplicationDbContext context)

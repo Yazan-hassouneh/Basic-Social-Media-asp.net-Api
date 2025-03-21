@@ -21,6 +21,8 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					Audience = post.Audience,
 					Content = post.Content,
 					IsDeleted = post.IsDeleted,
+					UserId = post.UserId,
+					RowVersion = post.RowVersion,
 					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
 						Id = post.User.Id,
@@ -45,6 +47,8 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					Audience = post.Audience,
 					Content = post.Content,
 					IsDeleted = post.IsDeleted,
+					RowVersion = post.RowVersion,
+					UserId= post.UserId,
 					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
 						Id = post.User.Id,

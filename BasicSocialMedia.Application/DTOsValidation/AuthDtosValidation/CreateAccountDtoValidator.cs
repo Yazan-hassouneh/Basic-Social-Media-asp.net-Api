@@ -11,6 +11,7 @@ namespace BasicSocialMedia.Application.DTOsValidation.AuthDtosValidation
 		{
 			Include(new BaseEmailDtoValidation());
 			Include(new BasePasswordDtoValidation());
+			Include(new BaseUserNameDtoValidation());
 
 			RuleFor(x => x.UserName)
 				.NotEmpty().WithMessage("UserName is required!")

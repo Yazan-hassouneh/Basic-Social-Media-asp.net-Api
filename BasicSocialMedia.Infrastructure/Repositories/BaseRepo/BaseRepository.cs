@@ -8,13 +8,17 @@ namespace BasicSocialMedia.Infrastructure.Repositories.BaseRepo
 	internal class BaseRepository<T>(ApplicationDbContext context) : IBaseRepository<T> where T : class
 	{
 		private readonly ApplicationDbContext _context = context;
-		public virtual async Task<T?> GetByIdAsync(int id)
+		public async Task<bool> DoesExist(int id, CancellationToken cancellationToken)
+		{
+			return await _context.Set<T>().AsNoTracking().AnyAsync(p => EF.Property<int>(p, "Id") == id, cancellationToken);
+		}
+		public async Task<T?> GetByIdWithTrackingAsync(int id)
 		{
 			return await _context.Set<T>().FindAsync(id);
 		}
-		public virtual async Task<IEnumerable<T?>> GetAllAsync()
+		public virtual async Task<T?> GetByIdAsync(int id)
 		{
-			return await _context.Set<T>().ToListAsync();
+			return await _context.Set<T>().FindAsync(id);
 		}
 		public async Task<T?> FindAsync(Expression<Func<T, bool>> matcher)
 		{

@@ -1,5 +1,6 @@
 ﻿using BasicSocialMedia.Core.Interfaces.ModelsInterfaces;
 using BasicSocialMedia.Core.Models.AuthModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace BasicSocialMedia.Core.Models.MainModels
 {
@@ -14,5 +15,7 @@ namespace BasicSocialMedia.Core.Models.MainModels
 		public int PostId { get; set; }
 		public virtual Post? Post { get; set; }
 		public virtual ICollection<CommentReaction> CommentReactions { get; set; } = [];
+		[Timestamp]
+		public byte[] RowVersion { get ; set; }
 	}
 }

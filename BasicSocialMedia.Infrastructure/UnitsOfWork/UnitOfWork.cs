@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 {
-	internal class UnitOfWork : IUnitOfWork
+	public class UnitOfWork : IUnitOfWork
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;

@@ -21,10 +21,13 @@ namespace BasicSocialMedia
 		             builder.Configuration.GetConnectionString("AppConnectionString")
 	             ));
 
+            builder.Services.AddUnitOfWorkInjection();
 			builder.Services.AddIdentityServices();
 			builder.Services.AddJWTServices(builder);
             builder.Services.AddServicesInjection();
+            builder.Services.AddHtmlSanitizerInjection();
             builder.Services.AddAutoMapperConfiguration();
+            builder.Services.AddDTOsValidatorsInjection();
 
 
 			var app = builder.Build();

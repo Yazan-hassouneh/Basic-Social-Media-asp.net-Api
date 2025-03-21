@@ -13,6 +13,8 @@ namespace BasicSocialMedia.Infrastructure.Configuration.BaseConfig
 			BaseContentConfig.ConfigureContent(builder);
 			builder.Property(i => i.UserId).IsRequired();
 			builder.Property(i => i.IsDeleted).IsRequired().HasDefaultValue(false);
+			builder.Property(p => p.RowVersion)
+					.IsRowVersion();
 
 		}
 	}

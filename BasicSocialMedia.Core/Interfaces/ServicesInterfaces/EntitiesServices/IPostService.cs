@@ -4,6 +4,7 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 {
 	public interface IPostService
 	{
+		Task<GetPostDto> GetPostByIdAsync(int postId);
 		Task<IEnumerable<GetPostDto>> GetPostsByUserIdAsync(string userId);
 		Task<IEnumerable<GetPostDto>> GetPostsByUserFollowingsAsync(string userId);
 		Task<IEnumerable<GetPostDto>> GetPostsByUserFriendsAsync(string userId);

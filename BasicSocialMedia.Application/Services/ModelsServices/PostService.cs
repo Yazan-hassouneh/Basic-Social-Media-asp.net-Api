@@ -6,17 +6,36 @@ using BasicSocialMedia.Core.Models.MainModels;
 using Microsoft.AspNetCore.Identity;
 using BasicSocialMedia.Core.Models.AuthModels;
 using static BasicSocialMedia.Core.Enums.ProjectEnums;
+using Microsoft.EntityFrameworkCore;
+using Ganss.Xss;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
-	public class PostService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager) : IPostService
+	public class PostService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, HtmlSanitizer sanitizer) : IPostService
 	{
 		private readonly UserManager<ApplicationUser> _userManager = userManager;
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
+		private readonly HtmlSanitizer _sanitizer = sanitizer;
+
+		/*
+			✅ Prevents XSS attacks by removing harmful scripts
+			✅ More customizable than WebUtility.HtmlEncode
+			✅ Maintained & updated (unlike Microsoft.Security.Application.Sanitizer)
+			✅ Retains safe HTML formatting (e.g., <b>, <i>, <p>, etc.)
+		 */
+
+		public async Task<GetPostDto> GetPostByIdAsync(int postId)
+		{
+			Post? post = await _unitOfWork.Posts.GetByIdAsync(postId); 
+			if (post == null) return new GetPostDto();
+			GetPostDto postDto = _mapper.Map<GetPostDto>(post);
+			return postDto;
+		}
 		public async Task<IEnumerable<GetPostDto>> GetPostsByUserIdAsync(string userId)
 		{
-			IEnumerable<Post?> posts = await _unitOfWork.Posts.GetAllAsync(userId); // By default , GetAllAsync returns all posts that related to the user
+			IEnumerable<Post?> posts = await _unitOfWork.Posts.GetAllAsync(userId);// By default , GetAllAsync returns all posts that related to the user
+			if (posts == null) return [];
 			IEnumerable<Post> nonNullPosts = posts.Where(post => post != null)!;
 			if (nonNullPosts == null || !nonNullPosts.Any()) return [];
 
@@ -54,7 +73,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 				Comments = [],
 				PostReactions = [],
 				Audience = (PostAudience)postDto.Audience,
-				Content = postDto.Content,
+				Content = _sanitizer.Sanitize(postDto.Content),
 				UserId = postDto.UserId
 			};
 
@@ -64,11 +83,22 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		}
 		public async Task<UpdatePostDto?> UpdatePostAsync(UpdatePostDto postDto)
 		{
-			Post? post = await _unitOfWork.Posts.GetByIdAsync(postDto.Id);
+			CancellationToken cancellationToken = new();
+			bool isPostExist = await _unitOfWork.Posts.DoesExist(postDto.Id, cancellationToken);
+			if (!isPostExist) return null;
 
-			if (post is null) return null;
+			Post? post = await _unitOfWork.Posts.GetByIdWithTrackingAsync(postDto.Id);
+			if (post == null) return null;
 
-			post.Content = postDto.Content;
+			byte[] providedRowVersionBytes = Convert.FromBase64String(postDto.RowVersion);
+			if (!ByteArrayCompare(post.RowVersion, providedRowVersionBytes))
+			{
+				// Row versions don't match, indicating a concurrency conflict
+				// You should handle this appropriately, e.g., throw an exception or return a specific error code
+				throw new Exception("Concurrency conflict: The post has been modified by another user.");
+			}
+
+			post.Content = _sanitizer.Sanitize(postDto.Content);
 			post.Audience = (PostAudience)postDto.Audience;
 
 			_unitOfWork.Posts.Update(post);
@@ -92,6 +122,22 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			if (Ids.Length == 0) return Enumerable.Empty<GetPostDto>();
 			var posts = await _unitOfWork.Posts.FindAllAsync(post => Ids.Contains(post.UserId));
 			return _mapper.Map<IEnumerable<GetPostDto>>(posts);
+		}
+		private static bool ByteArrayCompare(byte[] a1, byte[] a2)
+		{
+			if (a1 == null || a2 == null)
+				return a1 == a2;
+
+			if (a1.Length != a2.Length)
+				return false;
+
+			for (int i = 0; i < a1.Length; i++)
+			{
+				if (a1[i] != a2[i])
+					return false;
+			}
+
+			return true;
 		}
 	}
 }

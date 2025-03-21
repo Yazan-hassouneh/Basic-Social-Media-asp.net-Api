@@ -2,7 +2,7 @@
 
 namespace BasicSocialMedia.Core.DTOs.AuthDTOs
 {
-	public class CreateAccountDto : IPasswordDto, IEmailDto
+	public class CreateAccountDto : IPasswordDto, IEmailDto, IUserNameDto
 	{
 		public string UserName { get; set; } = null!;
 		public string Email { get; set; } = null!;

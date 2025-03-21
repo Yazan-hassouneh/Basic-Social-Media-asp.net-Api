@@ -1,6 +1,4 @@
-﻿using BasicSocialMedia.Core.DTOs.EnumsDTOs;
-using BasicSocialMedia.Core.Enums;
-using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EnumsServices;
+﻿using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EnumsServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
