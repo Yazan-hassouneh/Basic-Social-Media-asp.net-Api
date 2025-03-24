@@ -16,6 +16,6 @@ namespace BasicSocialMedia.Core.Models.MainModels
 		public virtual Post? Post { get; set; }
 		public virtual ICollection<CommentReaction> CommentReactions { get; set; } = [];
 		[Timestamp]
-		public byte[] RowVersion { get ; set; }
+		public byte[] RowVersion { get ; set; } = null!;
 	}
 }

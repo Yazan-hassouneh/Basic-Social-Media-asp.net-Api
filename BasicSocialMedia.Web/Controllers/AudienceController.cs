@@ -11,7 +11,7 @@ namespace BasicSocialMedia.Web.Controllers
 	{
 		private readonly IAudienceService _audienceService = audienceService;
 
-		[HttpGet("audiences")]
+		[HttpGet("getAll")]
 		public IActionResult GetAudiences()
 		{
 			var audiences = _audienceService.GetAudiences();

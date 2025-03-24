@@ -8,6 +8,7 @@ using BasicSocialMedia.Core.Models.AuthModels;
 using static BasicSocialMedia.Core.Enums.ProjectEnums;
 using Microsoft.EntityFrameworkCore;
 using Ganss.Xss;
+using BasicSocialMedia.Application.Utils;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
@@ -91,7 +92,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			if (post == null) return null;
 
 			byte[] providedRowVersionBytes = Convert.FromBase64String(postDto.RowVersion);
-			if (!ByteArrayCompare(post.RowVersion, providedRowVersionBytes))
+			if (!Compare.ByteArrayCompare(post.RowVersion, providedRowVersionBytes))
 			{
 				// Row versions don't match, indicating a concurrency conflict
 				// You should handle this appropriately, e.g., throw an exception or return a specific error code
@@ -113,6 +114,9 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			await _unitOfWork.Posts.Save();
 			return true;
 		}
+
+		// Helper Functions
+		// 
 		private async Task<ApplicationUser?> GetUser(string userId)
 		{
 			return await _userManager.FindByIdAsync(userId);
@@ -122,22 +126,6 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			if (Ids.Length == 0) return Enumerable.Empty<GetPostDto>();
 			var posts = await _unitOfWork.Posts.FindAllAsync(post => Ids.Contains(post.UserId));
 			return _mapper.Map<IEnumerable<GetPostDto>>(posts);
-		}
-		private static bool ByteArrayCompare(byte[] a1, byte[] a2)
-		{
-			if (a1 == null || a2 == null)
-				return a1 == a2;
-
-			if (a1.Length != a2.Length)
-				return false;
-
-			for (int i = 0; i < a1.Length; i++)
-			{
-				if (a1[i] != a2[i])
-					return false;
-			}
-
-			return true;
 		}
 	}
 }

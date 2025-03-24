@@ -1,18 +1,17 @@
 ﻿using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation;
 using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.PostDTOs;
-using BasicSocialMedia.Infrastructure.Data;
+using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
 namespace BasicSocialMedia.Application.DTOsValidation.PostDtosValidation
 {
 	public class UpdatePostDtoValidator : AbstractValidator<UpdatePostDto>
 	{
-		private readonly ApplicationDbContext _context;
-		public UpdatePostDtoValidator(ApplicationDbContext context)
+		private readonly IUnitOfWork _unitOfWork;
+		public UpdatePostDtoValidator(IUnitOfWork unitOfWork)
 		{
-			_context = context;
+			_unitOfWork = unitOfWork;
 
 			Include(new BaseContentDtoValidation());
 			Include(new BaseAudienceDtoValidation());
@@ -23,7 +22,7 @@ namespace BasicSocialMedia.Application.DTOsValidation.PostDtosValidation
 		}
 		private async Task<bool> PostExists(int Id, CancellationToken cancellationToken)
 		{
-			return await _context.Posts.AnyAsync(post => post.Id == Id, cancellationToken);
+			return await _unitOfWork.Posts.DoesExist(Id, cancellationToken);
 		}
 	}
 }
