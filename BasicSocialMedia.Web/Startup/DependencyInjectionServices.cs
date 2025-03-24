@@ -47,6 +47,7 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IValidator<AddRoleDto>, AddRoleDtoValidator>();
 			services.AddScoped<IValidator<AddChatDto>, AddChatDtoValidator>();
 			services.AddScoped<IValidator<AddPostDto>, AddPostDtoValidator>();
+			services.AddScoped<IValidator<AddToRoleDto>, AddToRoleDtoValidator>();
 			services.AddScoped<IValidator<AddCommentDto>, AddCommentDtoValidator>();
 			services.AddScoped<IValidator<AddMessageDto>, AddMessageDtoValidator>();
 			services.AddScoped<IValidator<UpdatePostDto>, UpdatePostDtoValidator>();

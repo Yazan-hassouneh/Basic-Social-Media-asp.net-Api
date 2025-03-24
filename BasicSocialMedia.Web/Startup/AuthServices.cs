@@ -1,4 +1,5 @@
-﻿using BasicSocialMedia.Core.Models.AuthModels;
+﻿using BasicSocialMedia.Core.Consts;
+using BasicSocialMedia.Core.Models.AuthModels;
 using BasicSocialMedia.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -47,6 +48,39 @@ namespace BasicSocialMedia.Web.Startup
 			});
 
 			return services;
+		}
+		internal static void AddCorsPolicies(this IServiceCollection services)
+		{
+			// For Development Only
+			services.AddCors(options =>
+			{
+				// for Development
+				options.AddPolicy(CorsSettings.allowAllOrigins, policy =>
+					{
+						policy.AllowAnyOrigin()
+							  .AllowAnyMethod()
+							  .AllowAnyHeader();
+					}
+				);
+
+				
+				//for production 
+				//options.AddPolicy(CorsSettings.allowSpecificOrigins, policy =>
+				//	{
+				//		policy.WithOrigins("https://example.com") // Replace with your frontend URL
+				//			  .AllowAnyMethod()
+				//			  .AllowAnyHeader();
+				//	}
+				//);
+				
+			});
+
+			/*
+				-- Important :-
+
+				Enable CORS in Program.cs
+				app.UseCors(CorsSettings.allowAllOrigins);
+			 */
 		}
 	}
 }

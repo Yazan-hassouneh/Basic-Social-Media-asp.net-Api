@@ -2,8 +2,9 @@
 
 namespace BasicSocialMedia.Core.DTOs.AuthDTOs
 {
-	public class AddRoleDto : IRoleNameDto
+	public class AddToRoleDto : IUserIdDto, IRoleNameDto
 	{
+		public string UserId { get; set; } = null!;
 		public string RoleName { get; set; } = null!;
 	}
 }

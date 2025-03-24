@@ -13,6 +13,19 @@ namespace BasicSocialMedia.Core.Enums
 			Pending = 0,
 			Blocked = 1,
 			Accepted = 2
-		} 
+		}
+		public enum AllowedRoles
+		{
+			SuperAdmin,
+			Admin,
+			User,
+			Moderator
+		}		
+		public enum NotAllowedRolesToDelete
+		{
+			SuperAdmin,
+			Admin,
+			User,
+		}
 	}
 }

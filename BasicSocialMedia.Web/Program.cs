@@ -1,4 +1,5 @@
 using BasicSocialMedia.Application.Helpers;
+using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Web.Startup;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,8 @@ namespace BasicSocialMedia
             builder.Services.AddUnitOfWorkInjection();
 			builder.Services.AddIdentityServices();
 			builder.Services.AddJWTServices(builder);
+            builder.Services.AddPoliciesServices();
+			builder.Services.AddCorsPolicies();
             builder.Services.AddServicesInjection();
             builder.Services.AddHtmlSanitizerInjection();
             builder.Services.AddAutoMapperConfiguration();
@@ -42,6 +45,9 @@ namespace BasicSocialMedia
 			app.UseStaticFiles();
 
 			app.UseHttpsRedirection();
+
+			app.UseCors(CorsSettings.allowAllOrigins);
+			//app.UseCors(CorsSettings.allowSpecificOrigins);
 
 			// Important to add 
 			app.UseAuthentication();
