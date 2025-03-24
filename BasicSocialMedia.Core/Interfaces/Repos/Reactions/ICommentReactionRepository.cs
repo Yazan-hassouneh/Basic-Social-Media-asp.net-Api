@@ -5,5 +5,6 @@ namespace BasicSocialMedia.Core.Interfaces.Repos.Reactions
 {
 	public interface ICommentReactionRepository : IBaseRepository<CommentReaction>
 	{
+		Task<IEnumerable<CommentReaction?>> GetAllAsync(int commentId);
 	}
 }

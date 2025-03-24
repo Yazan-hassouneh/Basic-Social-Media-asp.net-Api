@@ -10,6 +10,10 @@ namespace BasicSocialMedia.Application.Mappers
 			CreateMap<PostReaction, GetReactionDto>()
 				.ForMember(destination => destination.Id, opt => opt.MapFrom(src => src.Id))
 				.ForMember(destination => destination.User, opt => opt.MapFrom(src => MapUser(src.User)));
+
+			CreateMap<CommentReaction, GetReactionDto>()
+				.ForMember(destination => destination.Id, opt => opt.MapFrom(src => src.Id))
+				.ForMember(destination => destination.User, opt => opt.MapFrom(src => MapUser(src.User)));
 		}
 	}
 }

@@ -13,14 +13,14 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 		public async Task<IEnumerable<GetReactionDto>> GetCommentReactionsByCommentIdAsync(int commentId)
 		{
-			IEnumerable<CommentReaction?> commentReactions = await _unitOfWork.CommentReactions.FindAllAsync(commentReaction => commentReaction.CommentId == commentId);
+			IEnumerable<CommentReaction?> commentReactions = await _unitOfWork.CommentReactions.GetAllAsync(commentId);
 			IEnumerable<CommentReaction?> NonNullCommentReactions = commentReactions.Where(commentReaction => commentReaction != null);
 
 			if (NonNullCommentReactions == null || !NonNullCommentReactions.Any()) return Enumerable.Empty<GetReactionDto>();
 
 			return _mapper.Map<IEnumerable<GetReactionDto>>(NonNullCommentReactions);
 		}
-		public async Task CreateCommentReactionAsync(AddCommentReactionDto commentReactionDto)
+		public async Task<AddCommentReactionDto> CreateCommentReactionAsync(AddCommentReactionDto commentReactionDto)
 		{
 			CommentReaction commentReaction = new()
 			{
@@ -31,6 +31,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			await _unitOfWork.CommentReactions.AddAsync(commentReaction);
 			await _unitOfWork.CommentReactions.Save();
 			await Task.CompletedTask;
+			return commentReactionDto;
 		}
 		public async Task<bool> DeleteCommentReaction(int reactionId)
 		{

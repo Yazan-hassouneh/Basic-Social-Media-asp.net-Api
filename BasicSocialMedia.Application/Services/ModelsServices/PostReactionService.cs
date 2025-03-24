@@ -12,14 +12,14 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		private readonly IMapper _mapper = mapper;
 		public async Task<IEnumerable<GetReactionDto>> GetPostReactionsByPostIdAsync(int postId)
 		{
-			IEnumerable<PostReaction?> postReactions = await _unitOfWork.PostReactions.FindAllAsync(postReaction => postReaction.PostId == postId);
+			IEnumerable<PostReaction?> postReactions = await _unitOfWork.PostReactions.GetAllAsync(postId);
 			IEnumerable<PostReaction?> NonNullPostReactions = postReactions.Where(postReaction => postReaction != null);
 
 			if (NonNullPostReactions == null || !NonNullPostReactions.Any()) return Enumerable.Empty<GetReactionDto>();
 
 			return _mapper.Map<IEnumerable<GetReactionDto>>(NonNullPostReactions);
 		}
-		public async Task CreatePostReactionAsync(AddPostReactionDto postReactionDto)
+		public async Task<AddPostReactionDto> CreatePostReactionAsync(AddPostReactionDto postReactionDto)
 		{
 			PostReaction postReaction = new()
 			{
@@ -30,8 +30,9 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			await _unitOfWork.PostReactions.AddAsync(postReaction);
 			await _unitOfWork.PostReactions.Save();
 			await Task.CompletedTask;
+			return postReactionDto;
 		}
-		public async Task<bool> DeletePostAsync(int reactionId)
+		public async Task<bool> DeletePostReactionAsync(int reactionId)
 		{
 			PostReaction? postReaction = await _unitOfWork.PostReactions.GetByIdAsync(reactionId);
 			if (postReaction == null) return false;
