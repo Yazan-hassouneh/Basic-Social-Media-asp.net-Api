@@ -1,8 +1,4 @@
-﻿using BasicSocialMedia.Application.DTOsValidation.ChatDtosValidation;
-using BasicSocialMedia.Application.DTOsValidation.PostDtosValidation;
-using BasicSocialMedia.Application.Services.ModelsServices;
-using BasicSocialMedia.Core.DTOs.ChatDTOs;
-using BasicSocialMedia.Core.DTOs.PostDTOs;
+﻿using BasicSocialMedia.Core.DTOs.ChatDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;

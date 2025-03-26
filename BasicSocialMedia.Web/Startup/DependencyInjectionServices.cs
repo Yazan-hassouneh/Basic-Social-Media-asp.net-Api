@@ -1,16 +1,19 @@
 ﻿using BasicSocialMedia.Application.DTOsValidation.AuthDtosValidation;
 using BasicSocialMedia.Application.DTOsValidation.ChatDtosValidation;
 using BasicSocialMedia.Application.DTOsValidation.CommentDtosValidation;
+using BasicSocialMedia.Application.DTOsValidation.M2MDtosValidation;
 using BasicSocialMedia.Application.DTOsValidation.MessageDtosValidation;
 using BasicSocialMedia.Application.DTOsValidation.PostDtosValidation;
 using BasicSocialMedia.Application.DTOsValidation.ReactionsDtosValidation;
 using BasicSocialMedia.Application.Services.AuthServices;
 using BasicSocialMedia.Application.Services.EnumsServices;
 using BasicSocialMedia.Application.Services.FileServices;
+using BasicSocialMedia.Application.Services.M2MServices;
 using BasicSocialMedia.Application.Services.ModelsServices;
 using BasicSocialMedia.Core.DTOs.AuthDTOs;
 using BasicSocialMedia.Core.DTOs.ChatDTOs;
 using BasicSocialMedia.Core.DTOs.Comment;
+using BasicSocialMedia.Core.DTOs.M2MDTOs;
 using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.DTOs.PostDTOs;
 using BasicSocialMedia.Core.DTOs.ReactionsDTOs;
@@ -18,6 +21,7 @@ using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EnumsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Infrastructure.UnitsOfWork;
 using FluentValidation;
@@ -34,10 +38,12 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IPostService, PostService>();
 			services.AddScoped<IFileService, FileService>();
 			services.AddScoped<IChatServices, ChatService>();
+			services.AddScoped<IFollowService, FollowService>();
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<ICommentService, CommentService>();
 			services.AddScoped<IAudienceService, AudienceService>();
 			services.AddScoped<IMessagesServices, MessageService>();
+			services.AddScoped<IFriendshipService, FriendshipService>();
 			services.AddScoped<IPostReactionService, PostReactionService>();
 			services.AddScoped<ICommentReactionService, CommentReactionService>();
 			return services;
@@ -56,7 +62,11 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IValidator<UpdateCommentDto>, UpdateCommentDtoValidator>();
 			services.AddScoped<IValidator<UpdateMessageDto>, UpdateMessageDtoValidator>();
 			services.AddScoped<IValidator<AddPostReactionDto>, AddPostReactionDtoValidator>();
+			services.AddScoped<IValidator<SendFollowRequestDto>, SendFollowRequestDtoValidator>();
+			services.AddScoped<IValidator<SendFriendRequestDto>, SendFriendRequestDtoValidator>();
 			services.AddScoped<IValidator<AddCommentReactionDto>, AddCommentReactionDtoValidator>();
+			services.AddScoped<IValidator<ChangeFriendshipStatusDto>, ChangeFriendshipStatusDtoValidator>();
+
 			return services;
 		}		
 		internal static IServiceCollection AddUnitOfWorkInjection(this IServiceCollection services)

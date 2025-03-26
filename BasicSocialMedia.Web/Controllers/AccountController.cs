@@ -21,6 +21,7 @@ namespace BasicSocialMedia.Web.Controllers
 			SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
 			return Ok(result);
 		}
+
 		[HttpPost]
 		[Route("login")]
 		public async Task<IActionResult> Login([FromBody] LoginAccountDto loginInfo)
@@ -32,6 +33,7 @@ namespace BasicSocialMedia.Web.Controllers
 			SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
 			return Ok(result);
 		}
+
 		[HttpGet("refreshToken")]
 		public async Task<IActionResult> GetRefreshToken()
 		{
@@ -43,6 +45,7 @@ namespace BasicSocialMedia.Web.Controllers
 			SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
 			return Ok(result);
 		}
+
 		[HttpPost("revoke")]
 		public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDto model)
 		{
@@ -52,6 +55,7 @@ namespace BasicSocialMedia.Web.Controllers
 			if (!result) return BadRequest("Token is invalid");
 			return Ok();
 		}
+
 		private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
 		{
 			var cookiesOptions = new CookieOptions

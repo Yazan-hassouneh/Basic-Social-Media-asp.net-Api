@@ -1,5 +1,4 @@
-﻿using AngleSharp.Css;
-using BasicSocialMedia.Core.DTOs.AuthDTOs;
+﻿using BasicSocialMedia.Core.DTOs.AuthDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +17,6 @@ namespace BasicSocialMedia.Web.Controllers
 		[HttpPost("assignRole")]
 		public async Task<IActionResult> AssignRole([FromBody] AddToRoleDto model)
 		{
-			if (!Enum.TryParse(typeof(AllowedRoles), model.RoleName, true, out _))
-			{
-				return BadRequest("Role Not Allowed.");
-			}
-
 			var validationResult = await _addToRoleDtoValidator.ValidateAsync(model);
 			if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
@@ -34,11 +28,6 @@ namespace BasicSocialMedia.Web.Controllers
 		[HttpPost("add")]
 		public async Task<IActionResult> AddRole([FromBody] AddRoleDto model)
 		{
-			if (!Enum.TryParse(typeof(AllowedRoles), model.RoleName, true, out _))
-			{
-				return BadRequest("Role Not Allowed.");
-			}
-
 			var validationResult = await _addRoleDtoValidator.ValidateAsync(model);
 			if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 

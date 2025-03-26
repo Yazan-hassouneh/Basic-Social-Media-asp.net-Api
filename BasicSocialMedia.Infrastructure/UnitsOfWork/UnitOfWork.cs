@@ -1,9 +1,12 @@
 ﻿using BasicSocialMedia.Core.Interfaces.Repos;
+using BasicSocialMedia.Core.Interfaces.Repos.M2M;
 using BasicSocialMedia.Core.Interfaces.Repos.Reactions;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.AuthModels;
+using BasicSocialMedia.Core.Models.M2MRelations;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Infrastructure.Repositories;
+using BasicSocialMedia.Infrastructure.Repositories.M2M;
 using BasicSocialMedia.Infrastructure.Repositories.ReactionRepos;
 using Microsoft.AspNetCore.Identity;
 
@@ -20,6 +23,8 @@ namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 		public ICommentReactionRepository CommentReactions { get; private set; }
 		public IMessageRepository Messages { get; private set; }
 		public IChatRepository Chats { get; private set; }
+		public IFollowRepository Following { get; private set; }
+		public IFriendshipRepository Friendship { get; private set; }
 
 		public UnitOfWork(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
 		{
@@ -28,8 +33,10 @@ namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 			_roleManager = roleManager;
 			Chats = new ChatRepository(_context);
 			Posts = new PostRepository(_context);
-			Messages = new MessagesRepository(_context);
+			Following = new FollowRepository(_context);
 			Comments = new CommentRepository(_context);
+			Messages = new MessagesRepository(_context);
+			Friendship = new FriendshipRepository(_context);
 			PostReactions = new PostReactionsRepository(_context);
 			CommentReactions = new CommentReactionsRepository(_context);
 		}
