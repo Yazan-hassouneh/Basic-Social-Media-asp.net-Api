@@ -38,6 +38,7 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IPostService, PostService>();
 			services.AddScoped<IFileService, FileService>();
 			services.AddScoped<IChatServices, ChatService>();
+			services.AddScoped<IBlockService, BlockService>();
 			services.AddScoped<IFollowService, FollowService>();
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<ICommentService, CommentService>();
@@ -53,6 +54,7 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IValidator<AddRoleDto>, AddRoleDtoValidator>();
 			services.AddScoped<IValidator<AddChatDto>, AddChatDtoValidator>();
 			services.AddScoped<IValidator<AddPostDto>, AddPostDtoValidator>();
+			services.AddScoped<IValidator<BlockUserDto>, BlockUserDtoValidator>();
 			services.AddScoped<IValidator<AddToRoleDto>, AddToRoleDtoValidator>();
 			services.AddScoped<IValidator<AddCommentDto>, AddCommentDtoValidator>();
 			services.AddScoped<IValidator<AddMessageDto>, AddMessageDtoValidator>();

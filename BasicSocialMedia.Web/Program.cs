@@ -25,6 +25,7 @@ namespace BasicSocialMedia
             builder.Services.AddUnitOfWorkInjection();
 			builder.Services.AddIdentityServices();
 			builder.Services.AddJWTServices(builder);
+			builder.Services.AddHttpContextAccessor(); 
             builder.Services.AddPoliciesServices();
 			builder.Services.AddCorsPolicies();
             builder.Services.AddServicesInjection();

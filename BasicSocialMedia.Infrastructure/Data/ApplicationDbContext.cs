@@ -18,6 +18,7 @@ namespace BasicSocialMedia.Infrastructure.Data
 		public DbSet<Message> Messages { get; set; }
 		public DbSet<Follow> Follows { get; set; }
 		public DbSet<Friendship> Friendships { get; set; }
+		public DbSet<Block> Blocking { get; set; }
 		public DbSet<CommentReaction> CommentReactions { get; set; }
 		public DbSet<PostReaction> PostReactions { get; set; }
 		protected override void OnModelCreating(ModelBuilder builder)
@@ -34,6 +35,7 @@ namespace BasicSocialMedia.Infrastructure.Data
 			builder.ApplyConfiguration(new ChatConfig());
 			builder.ApplyConfiguration(new CommentConfig());
 			builder.ApplyConfiguration(new MessageConfig());
+			builder.ApplyConfiguration(new BlockingConfig());
 			builder.ApplyConfiguration(new FollowingConfig());
 			builder.ApplyConfiguration(new FriendshipConfig());
 			builder.ApplyConfiguration(new PostReactionConfig());

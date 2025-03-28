@@ -62,7 +62,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			var friendIds = user.Friendships
 				.Where(f => f.Status == FriendshipStatus.Accepted)
-				.Select(f => f.UserId1 == userId ? f.UserId2 : f.UserId1) // Get the friend's ID
+				.Select(f => f.SenderId == userId ? f.ReceiverId : f.SenderId) // Get the friend's ID
 				.ToArray();
 
 			return await MapPosts(friendIds);

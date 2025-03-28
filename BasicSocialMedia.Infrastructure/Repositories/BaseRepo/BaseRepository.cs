@@ -23,6 +23,10 @@ namespace BasicSocialMedia.Infrastructure.Repositories.BaseRepo
 		public async Task<T?> FindAsync(Expression<Func<T, bool>> matcher)
 		{
 			return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(matcher);
+		}		
+		public async Task<T?> FindWithTrackingAsync(Expression<Func<T, bool>> matcher)
+		{
+			return await _context.Set<T>().FirstOrDefaultAsync(matcher);
 		}
 		public async Task<IEnumerable<T?>> FindAllAsync(Expression<Func<T, bool>> matcher)
 		{

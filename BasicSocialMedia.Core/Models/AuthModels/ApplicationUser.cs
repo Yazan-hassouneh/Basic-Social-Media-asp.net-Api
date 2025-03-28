@@ -17,6 +17,7 @@ namespace BasicSocialMedia.Core.Models.AuthModels
 		public virtual ICollection<Follow> Followers { get; set; } = [];
 		public virtual ICollection<Follow> Following { get; set; } = [];
 		public virtual ICollection<Friendship> Friendships { get; set; } = [];
+		public virtual ICollection<Block> BlockedUsers { get; set; } = [];
 		public virtual ICollection<Chat> Chats { get; set; } = [];
 	}
 }

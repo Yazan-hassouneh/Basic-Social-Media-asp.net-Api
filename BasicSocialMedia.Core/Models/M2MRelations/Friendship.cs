@@ -8,10 +8,10 @@ namespace BasicSocialMedia.Core.Models.M2MRelations
 	{
 		public int Id { get; set; }
 		public DateTime CreatedOn { get; set; }
-		public string UserId1 { get; set; } = null!;
-		public ApplicationUser? User1 { get; set; }
-		public string UserId2 { get; set; } = null!;
-		public ApplicationUser? User2 { get; set; }
+		public string SenderId { get; set; } = null!;
+		public ApplicationUser? Sender { get; set; }
+		public string ReceiverId { get; set; } = null!;
+		public ApplicationUser? Receiver { get; set; }
 		public FriendshipStatus Status { get; set; } = FriendshipStatus.Pending;
 	}
 }

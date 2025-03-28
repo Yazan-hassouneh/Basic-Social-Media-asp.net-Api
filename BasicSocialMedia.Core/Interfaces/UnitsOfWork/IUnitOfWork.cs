@@ -14,5 +14,6 @@ namespace BasicSocialMedia.Core.Interfaces.UnitOfWork
 		public IChatRepository Chats { get; }
 		public IFollowRepository Following { get; }
 		public IFriendshipRepository Friendship { get; }
+		public IBlockRepository Blocking { get; }
 	}
 }

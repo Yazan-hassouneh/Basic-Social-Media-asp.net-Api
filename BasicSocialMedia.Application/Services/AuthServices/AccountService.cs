@@ -1,8 +1,10 @@
 ﻿using BasicSocialMedia.Core.DTOs.AuthDTOs;
+using BasicSocialMedia.Core.Enums;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using BasicSocialMedia.Core.Models.AuthModels;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BasicSocialMedia.Application.Services.AuthServices
 {
@@ -31,6 +33,16 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 				return new AuthDto { Message = errors };
 			}
 			await _userManager.AddToRoleAsync(newUser, "User");
+
+			// Add Claims
+			var claims = new List<Claim>
+			{
+				new (ClaimTypes.NameIdentifier, newUser.Id),
+				//new (ClaimTypes.Name, newUser.UserName),
+				//new (ClaimTypes.Email, newUser.Email),
+				//new (ClaimTypes.Role, ProjectEnums.AllowedRoles.User.ToString()) 
+			};
+			await _userManager.AddClaimsAsync(newUser, claims);
 
 			var jwtSecurityToken = await _jWTService.CreateJwtToken(newUser);
 			var refreshToken = _jWTService.GenerateRefreshToken();

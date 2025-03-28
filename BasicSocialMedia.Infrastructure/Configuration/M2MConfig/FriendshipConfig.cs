@@ -17,19 +17,19 @@ namespace BasicSocialMedia.Infrastructure.Configuration.M2MConfig
 				.IsRequired()
 				.HasDefaultValue(FriendshipStatus.Pending); // Default as integer
 
-			builder.Property(model => model.UserId1).IsRequired();
-			builder.Property(model => model.UserId2).IsRequired();
-			builder.HasIndex(friendship => new { friendship.UserId1, friendship.UserId2 }).IsUnique();
+			builder.Property(model => model.SenderId).IsRequired();
+			builder.Property(model => model.ReceiverId).IsRequired();
+			builder.HasIndex(friendship => new { friendship.SenderId, friendship.ReceiverId }).IsUnique();
 
 
-			builder.HasOne(friendship => friendship.User1)
+			builder.HasOne(friendship => friendship.Sender)
 					.WithMany(user => user.Friendships)
-					.HasForeignKey(friendship => friendship.UserId1)
+					.HasForeignKey(friendship => friendship.SenderId)
 					.OnDelete(DeleteBehavior.Restrict);
 
-			builder.HasOne(friendship => friendship.User2)
+			builder.HasOne(friendship => friendship.Receiver)
 					.WithMany()
-					.HasForeignKey(friendship => friendship.UserId2)
+					.HasForeignKey(friendship => friendship.ReceiverId)
 					.OnDelete(DeleteBehavior.Restrict);
 
 

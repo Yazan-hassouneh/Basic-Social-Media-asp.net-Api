@@ -11,8 +11,7 @@ namespace BasicSocialMedia.Core.Enums
 		public enum FriendshipStatus
 		{
 			Pending = 0,
-			Blocked = 1,
-			Accepted = 2
+			Accepted = 1
 		}
 		public enum AllowedRoles
 		{
