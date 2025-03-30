@@ -1,23 +1,31 @@
-﻿using BasicSocialMedia.Application.Services.M2MServices;
+﻿using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.M2MDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices;
+using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BasicSocialMedia.Web.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class BlockControllerController(IBlockService blockService, IFollowService followService, IFriendshipService friendshipService) : ControllerBase
+	[Authorize(Policy = PoliciesSettings.allowAllUsersPolicy)]
+	public class BlockControllerController(IBlockService blockService, IFollowService followService, IFriendshipService friendshipService, IValidator<BlockUserDto> blockUserValidator, IAuthorizationService authorizationService) : ControllerBase
 	{
 		private readonly IBlockService _blockService = blockService;
 		private readonly IFollowService _followService = followService;
 		private readonly IFriendshipService _friendshipService = friendshipService;
+		private readonly IValidator<BlockUserDto> _blockUserValidator = blockUserValidator;
+		private readonly IAuthorizationService _authorizationService = authorizationService;
+
 
 		[HttpPost("block")]
 		public async Task<IActionResult> BlockUser([FromBody] BlockUserDto request)
 		{
-			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			var result = await _blockUserValidator.ValidateAsync(request);
+			if (!result.IsValid) return BadRequest(result.Errors);
+
+			var userId = User.FindFirst("userId")?.Value;
 			if (string.IsNullOrEmpty(userId) || userId != request.BlockerId) return Unauthorized();
 
 			var block = new BlockUserDto
@@ -26,9 +34,9 @@ namespace BasicSocialMedia.Web.Controllers
 				BlockedId = request.BlockedId
 			};
 
-			await _followService.CancelFollowingAsync(request.BlockedId);
-			await _friendshipService.RemoveFriendAsync(request.BlockedId);
-			await _blockService.BlockUserAsync(block);
+			bool isFollowCancel = await _followService.CancelFollowingAsync(request.BlockedId);
+			bool isFriendshipCancel =  await _friendshipService.RemoveFriendAsync(request.BlockedId);
+			if (isFollowCancel && isFriendshipCancel) await _blockService.BlockUserAsync(block);
 			return Ok(new { message = "User blocked successfully" });
 		}
 
@@ -43,9 +51,10 @@ namespace BasicSocialMedia.Web.Controllers
 		[HttpGet("blocklist/{userId}")]
 		public async Task<IActionResult> GetBlockListAsync(string userId)
 		{
-			var ClaimUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			if (string.IsNullOrEmpty(userId) || ClaimUserId != userId) return Unauthorized();
-			var blockList = await _blockService.GetBlockListAsync(ClaimUserId);
+			var authorizationOwnership = await _authorizationService.AuthorizeAsync(User, userId, PoliciesSettings.Ownership);
+			if (!authorizationOwnership.Succeeded) return Forbid();
+
+			var blockList = await _blockService.GetBlockListAsync(userId);
 			if (blockList is null) return BadRequest();
 			return Ok(blockList);
 		}

@@ -1,4 +1,8 @@
-﻿using BasicSocialMedia.Core.Consts;
+﻿using BasicSocialMedia.Application.CustomPolicies.Block;
+using BasicSocialMedia.Application.CustomPolicies.Moderation;
+using BasicSocialMedia.Application.CustomPolicies.Ownership;
+using BasicSocialMedia.Application.CustomPolicies.PostVisibility;
+using BasicSocialMedia.Core.Consts;
 
 namespace BasicSocialMedia.Web.Startup
 {
@@ -10,9 +14,9 @@ namespace BasicSocialMedia.Web.Startup
 				.AddPolicy(PoliciesSettings.allowAllUsersPolicy, options =>
 				{
 					options.RequireAuthenticatedUser();
-					options.RequireRole(RolesSettings.superAdminRoleName, RolesSettings.adminRoleName, RolesSettings.userRoleName);
-				})	
-				
+					options.RequireRole(RolesSettings.superAdminRoleName, RolesSettings.adminRoleName, RolesSettings.userRoleName, RolesSettings.ModeratorRoleName);
+				})
+
 				.AddPolicy(PoliciesSettings.allowSuperAdminAdminPolicy, options =>
 				{
 					options.RequireAuthenticatedUser();
@@ -23,14 +27,42 @@ namespace BasicSocialMedia.Web.Startup
 				{
 					options.RequireAuthenticatedUser();
 					options.RequireRole(RolesSettings.superAdminRoleName);
-				});
+				})
 
-			//.AddPolicy("AdminUserPolicy", options =>
-			//{
-			//	options.RequireAuthenticatedUser();
-			//	options.RequireRole("admin", "user");
-			//	//options.Requirements.Add(new MinimumAgeRequirement(18));
-			//});
+				.AddPolicy(PoliciesSettings.CanDeletePost, options =>
+				 {
+					 options.RequireAuthenticatedUser();
+					 options.RequireRole(RolesSettings.superAdminRoleName, RolesSettings.ModeratorRoleName, RolesSettings.userRoleName);
+					 options.Requirements.Add(new PostModerationRequirement("Delete"));
+				 })
+
+				.AddPolicy(PoliciesSettings.CanEditPost, options =>
+				{
+					options.RequireAuthenticatedUser();
+					options.RequireRole(RolesSettings.superAdminRoleName, RolesSettings.ModeratorRoleName, RolesSettings.userRoleName);
+					options.Requirements.Add(new PostModerationRequirement("Edit"));
+				})
+
+				.AddPolicy(PoliciesSettings.Ownership, options =>
+				{
+					options.RequireAuthenticatedUser();
+					options.RequireRole(RolesSettings.userRoleName);
+					options.Requirements.Add(new OwnershipRequirement());
+				})
+
+				.AddPolicy(PoliciesSettings.PostVisibilityPolicy, options =>
+				{
+					options.RequireAuthenticatedUser();
+					options.RequireRole(RolesSettings.userRoleName);
+					options.Requirements.Add(new PostVisibilityRequirement());
+				})
+				
+				.AddPolicy(PoliciesSettings.IsUserBlocked, options =>
+				{
+					options.RequireAuthenticatedUser();
+					options.RequireRole(RolesSettings.userRoleName);
+					options.Requirements.Add(new BlockedRequirement());
+				});
 
 			return services;
 		}

@@ -5,6 +5,7 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 	public interface ICommentService
 	{
 		Task<GetCommentDto> GetCommentByIdAsync(int commentId);
+		Task<string?> GetUserId(int commentId);
 		Task<IEnumerable<GetCommentDto>> GetCommentsByPostIdAsync(int postId);
 		Task<IEnumerable<GetCommentDto>> GetCommentsByUserIdAsync(string userId);
 		Task<AddCommentDto> CreateCommentAsync(AddCommentDto commentDto);

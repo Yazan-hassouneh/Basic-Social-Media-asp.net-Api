@@ -12,6 +12,18 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
 
+		public async Task<SendFriendRequestDto?> GetByIdAsync(int id)
+		{
+			Friendship? result = await _unitOfWork.Friendship.GetByIdAsync(id);
+			if (result == null) return null;
+
+			SendFriendRequestDto sendFriendRequestDto = new()
+			{
+				SenderId = result.SenderId,
+				ReceiverId = result.ReceiverId,
+			};
+			return sendFriendRequestDto;
+		}
 		public async Task<IEnumerable<GetFriendsDto>> GetSentFriendRequestsAsync(string userId)
 		{
 			IEnumerable<Friendship?> friends = await _unitOfWork.Friendship.GetAllSentFriendRequestsAsync(userId);
@@ -36,7 +48,7 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 		}
 		public async Task<bool> SendFriendRequestAsync(SendFriendRequestDto requestDto)
 		{
-			var existingRequest = await DoesFriendshipExist(requestDto);
+			var existingRequest = await DoesFriendshipExist(requestDto.SenderId, requestDto.ReceiverId);
 			if (existingRequest != null) return false;
 
 			// Create a new friend request
@@ -89,16 +101,16 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 		public async Task<bool> RemoveFriendAsync(string friendId)
 		{
 			Friendship? friendship = await _unitOfWork.Friendship.FindWithTrackingAsync(friendship => friendship.SenderId == friendId || friendship.ReceiverId == friendId);
-			if (friendship == null) return false;
+			if (friendship == null) return true;
 			_unitOfWork.Friendship.Delete(friendship);
 			await _unitOfWork.Friendship.Save();
 			return true;
 		}
-		private async Task<Friendship?> DoesFriendshipExist(SendFriendRequestDto requestDto)
+		public async Task<Friendship?> DoesFriendshipExist(string userId1, string userId2)
 		{
 			return await _unitOfWork.Friendship.FindAsync(request =>
-					request.SenderId == requestDto.SenderId && request.ReceiverId == requestDto.ReceiverId ||
-					request.ReceiverId == requestDto.SenderId && request.SenderId == requestDto.ReceiverId);
+					request.SenderId == userId1 && request.ReceiverId == userId2 ||
+					request.ReceiverId == userId2 && request.SenderId == userId1);
 		}
 		private static bool IsFriendListNullOrEmpty(IEnumerable<Friendship?> friends)
 		{
@@ -111,5 +123,6 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 				.Select(friend => _mapper.Map<GetFriendsDto>(friend!))
 				.ToList();
 		}
+
 	}
 }

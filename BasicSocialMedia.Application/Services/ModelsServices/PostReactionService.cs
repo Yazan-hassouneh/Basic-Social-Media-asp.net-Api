@@ -10,6 +10,11 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
+
+		public Task<string?> GetUserId(int postReactionId)
+		{
+			return _unitOfWork.PostReactions.GetUserId(postReactionId);
+		}
 		public async Task<IEnumerable<GetReactionDto>> GetPostReactionsByPostIdAsync(int postId)
 		{
 			IEnumerable<PostReaction?> postReactions = await _unitOfWork.PostReactions.GetAllAsync(postId);

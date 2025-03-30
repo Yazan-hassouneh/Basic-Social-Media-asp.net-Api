@@ -1,6 +1,7 @@
 using BasicSocialMedia.Application.Helpers;
 using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Infrastructure.Data;
+using BasicSocialMedia.Web.Middlewares;
 using BasicSocialMedia.Web.Startup;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,13 @@ namespace BasicSocialMedia
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+            builder.Services.AddLogging();
+			builder.Logging.ClearProviders();
+			builder.Logging.AddConsole();
+
+            builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection("SecuritySettings"));
 			builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+
 			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
 		             builder.Configuration.GetConnectionString("AppConnectionString")
 	             ));
@@ -32,7 +39,7 @@ namespace BasicSocialMedia
             builder.Services.AddHtmlSanitizerInjection();
             builder.Services.AddAutoMapperConfiguration();
             builder.Services.AddDTOsValidatorsInjection();
-
+            builder.Services.AddCustomPoliciesInjection();
 
 			var app = builder.Build();
 
@@ -44,9 +51,7 @@ namespace BasicSocialMedia
 
 			// Enable serving static files from wwwroot
 			app.UseStaticFiles();
-
 			app.UseHttpsRedirection();
-
 			app.UseCors(CorsSettings.allowAllOrigins);
 			//app.UseCors(CorsSettings.allowSpecificOrigins);
 
@@ -54,8 +59,9 @@ namespace BasicSocialMedia
 			app.UseAuthentication();
 			app.UseAuthorization();
 
+			app.UseMiddleware<SecretKeyMiddleware>();
 
-			app.MapControllers();
+            app.MapControllers();
 
             app.Run();
         }

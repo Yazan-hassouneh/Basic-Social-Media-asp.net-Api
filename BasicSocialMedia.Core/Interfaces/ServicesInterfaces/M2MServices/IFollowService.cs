@@ -4,6 +4,7 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices
 {
 	public interface IFollowService
 	{
+		Task<SendFollowRequestDto?> GetByIdAsync(int Follow);
 		Task<IEnumerable<GetFollowerDto>> GetAllFollowersAsync(string userId);
 		Task<IEnumerable<GetFollowingDto>> GetAllFollowingsAsync(string userId);
 		Task<bool> FollowAsync(SendFollowRequestDto requestDto);

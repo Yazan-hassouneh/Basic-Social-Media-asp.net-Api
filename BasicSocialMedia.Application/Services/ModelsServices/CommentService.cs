@@ -5,8 +5,6 @@ using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.MainModels;
 using Ganss.Xss;
-using Microsoft.Security.Application;
-using static BasicSocialMedia.Core.Enums.ProjectEnums;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
@@ -22,6 +20,10 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			if (comment == null) return new GetCommentDto();
 			GetCommentDto commentDto = _mapper.Map<GetCommentDto>(comment);
 			return commentDto;
+		}
+		public Task<string?> GetUserId(int commentId)
+		{
+			return _unitOfWork.Comments.GetUserId(commentId);
 		}
 		public async Task<IEnumerable<GetCommentDto>> GetCommentsByPostIdAsync(int postId)
 		{

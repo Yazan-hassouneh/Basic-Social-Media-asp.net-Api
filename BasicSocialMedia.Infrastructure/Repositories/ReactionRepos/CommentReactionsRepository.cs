@@ -10,6 +10,12 @@ namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 	internal class CommentReactionsRepository(ApplicationDbContext context) : BaseRepository<CommentReaction>(context), ICommentReactionRepository
 	{
 		private readonly ApplicationDbContext _context = context;
+
+		public async Task<string?> GetUserId(int commentReactionId)
+		{
+			CommentReaction? commentReaction = await _context.CommentReactions.AsNoTracking().FirstOrDefaultAsync(commentReaction => commentReaction.Id == commentReactionId);
+			return commentReaction?.UserId;
+		}
 		public override async Task<CommentReaction?> GetByIdAsync(int id)
 		{
 			CommentReaction? commentReaction = await _context.CommentReactions

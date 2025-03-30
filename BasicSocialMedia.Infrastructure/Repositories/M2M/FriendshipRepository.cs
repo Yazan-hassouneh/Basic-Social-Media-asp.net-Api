@@ -71,6 +71,17 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 				.AsNoTracking()
 				.ToListAsync();
 		}
+		public async Task<IEnumerable<string>> GetAllFriendsIdsAsync(string userId)
+		{
+			IEnumerable<string> Ids = await _context.Friendships
+				.Where(friendship => friendship.Status == ProjectEnums.FriendshipStatus.Accepted)
+				.Where(friendship => friendship.SenderId == userId || friendship.ReceiverId == userId)
+				.Select(friendship => friendship.SenderId == userId ? friendship.ReceiverId : friendship.SenderId)
+				.AsNoTracking()
+				.ToListAsync();
+
+			return Ids ?? Enumerable.Empty<string>();
+		}
 		public async Task<IEnumerable<Friendship?>> GetAllSentFriendRequestsAsync(string userId)
 		{
 			return await _context.Friendships
@@ -115,5 +126,6 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 				.AsNoTracking()
 				.ToListAsync();
 		}
+
 	}
 }

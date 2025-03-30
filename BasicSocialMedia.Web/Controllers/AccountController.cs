@@ -1,5 +1,7 @@
-﻿using BasicSocialMedia.Core.DTOs.AuthDTOs;
+﻿using BasicSocialMedia.Core.Consts;
+using BasicSocialMedia.Core.DTOs.AuthDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BasicSocialMedia.Web.Controllers
@@ -35,6 +37,7 @@ namespace BasicSocialMedia.Web.Controllers
 		}
 
 		[HttpGet("refreshToken")]
+		[Authorize(Policy = PoliciesSettings.allowAllUsersPolicy)]
 		public async Task<IActionResult> GetRefreshToken()
 		{
 			var refreshToken = Request.Cookies["refreshToken"];
@@ -47,6 +50,7 @@ namespace BasicSocialMedia.Web.Controllers
 		}
 
 		[HttpPost("revoke")]
+		[Authorize(Policy = PoliciesSettings.allowSuperAdminAdminPolicy)]
 		public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDto model)
 		{
 			var token = model.Token ?? Request.Cookies["refreshToken"];

@@ -1,6 +1,8 @@
-﻿using BasicSocialMedia.Core.DTOs.AuthDTOs;
+﻿using BasicSocialMedia.Core.Consts;
+using BasicSocialMedia.Core.DTOs.AuthDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static BasicSocialMedia.Core.Enums.ProjectEnums;
 
@@ -8,11 +10,13 @@ namespace BasicSocialMedia.Web.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize(Policy = PoliciesSettings.allowOnlySuperAdminPolicy)]
 	public class RoleController(IRoleService roleService, IValidator<AddRoleDto> addRoleDtoValidator, IValidator<AddToRoleDto> addToRoleDtoValidator) : ControllerBase
 	{
 		private readonly IRoleService _roleService = roleService;
 		private readonly IValidator<AddRoleDto> _addRoleDtoValidator = addRoleDtoValidator;
 		private readonly IValidator<AddToRoleDto> _addToRoleDtoValidator = addToRoleDtoValidator;
+
 
 		[HttpPost("assignRole")]
 		public async Task<IActionResult> AssignRole([FromBody] AddToRoleDto model)

@@ -1,16 +1,22 @@
-﻿using BasicSocialMedia.Core.DTOs.ChatDTOs;
+﻿using BasicSocialMedia.Core.Consts;
+using BasicSocialMedia.Core.DTOs.ChatDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
+using BasicSocialMedia.Core.Models.MainModels;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BasicSocialMedia.Web.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class ChatController(IChatServices chatServices, IValidator<AddChatDto> addChatDtoValidator) : ControllerBase
+	[Authorize(Policy = PoliciesSettings.allowAllUsersPolicy)]
+	public class ChatController(IChatServices chatServices, IValidator<AddChatDto> addChatDtoValidator, IAuthorizationService authorizationService) : ControllerBase
 	{
 		private readonly IChatServices _chatServices = chatServices;
 		private readonly IValidator<AddChatDto> _addChatDtoValidator = addChatDtoValidator;
+		private readonly IAuthorizationService _authorizationService = authorizationService;
+
 
 		[HttpGet]
 		[Route("getById/{chatId}")]
@@ -18,6 +24,11 @@ namespace BasicSocialMedia.Web.Controllers
 		{
 			GetChatDto? chat = await _chatServices.GetChatByIdAsync(chatId);
 			if (chat == null) return NotFound();
+
+			var user1Ownership = await _authorizationService.AuthorizeAsync(User, chat.User1Id, PoliciesSettings.Ownership);
+			var user2Ownership = await _authorizationService.AuthorizeAsync(User, chat.User2Id, PoliciesSettings.Ownership);
+			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2
+
 			return Ok(chat);
 		}
 
@@ -25,6 +36,9 @@ namespace BasicSocialMedia.Web.Controllers
 		[Route("getAllByUserId/{userId}")]
 		public async Task<IActionResult> GetAllChatsByUserId(string userId)
 		{
+			var userOwnership = await _authorizationService.AuthorizeAsync(User, userId, PoliciesSettings.Ownership);
+			if (!userOwnership.Succeeded) return Forbid(); 
+
 			IEnumerable<GetChatDto>? chats = await _chatServices.GetChatsByUserIdAsync(userId);
 			if (chats == null) return BadRequest();
 			return Ok(chats);
@@ -37,6 +51,10 @@ namespace BasicSocialMedia.Web.Controllers
 			var result = await _addChatDtoValidator.ValidateAsync(chatDto);
 			if (!result.IsValid) return BadRequest(result.Errors);
 
+			var user1Ownership = await _authorizationService.AuthorizeAsync(User, chatDto.User1Id, PoliciesSettings.Ownership);
+			var user2Ownership = await _authorizationService.AuthorizeAsync(User, chatDto.User2Id, PoliciesSettings.Ownership);
+			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2
+
 			AddChatDto chat = await _chatServices.CreateChatAsync(chatDto);
 			return Ok(chat);
 		}
@@ -45,6 +63,18 @@ namespace BasicSocialMedia.Web.Controllers
 		[Route("delete/{chatId}")]
 		public async Task<IActionResult> DeleteChat(int chatId)
 		{
+			GetChatDto? chat = await _chatServices.GetChatByIdAsync(chatId);
+			if (chat == null) return BadRequest();
+
+			/*
+				Every User Must To Have New Chat Entity, The current Implementation make two users share the 
+					same chat.
+			 */
+
+			var user1Ownership = await _authorizationService.AuthorizeAsync(User, chat.User1Id, PoliciesSettings.Ownership);
+			var user2Ownership = await _authorizationService.AuthorizeAsync(User, chat.User2Id, PoliciesSettings.Ownership);
+			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2
+
 			bool isDeleted = await _chatServices.DeleteChatAsync(chatId);
 			if (!isDeleted) return BadRequest("something went wrong!");
 			return Ok();

@@ -25,6 +25,7 @@ namespace BasicSocialMedia.Infrastructure.Tables_Schema
 		{
 			builder.Entity<Follow>().ToTable("Follows", schema : "Relations");
 			builder.Entity<Friendship>().ToTable("Friendships", schema : "Relations");
+			builder.Entity<Block>().ToTable("Blocking", schema : "Relations");
 		}
 	}
 }

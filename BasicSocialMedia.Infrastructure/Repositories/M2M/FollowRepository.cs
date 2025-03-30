@@ -82,5 +82,14 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 				.AsNoTracking()
 				.ToListAsync();
 		}
+		public async Task<IEnumerable<string>> GetAllFollowingsIdsAsync(string userId)
+		{
+			return await _context.Follows
+				.Where(follow => follow.FollowerId == userId)
+				.Select(follow => follow.FollowingId)
+				.AsNoTracking()
+				.ToListAsync();
+		}
+
 	}
 }

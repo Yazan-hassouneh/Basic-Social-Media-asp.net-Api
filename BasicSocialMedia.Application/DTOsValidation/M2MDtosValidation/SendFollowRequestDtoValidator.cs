@@ -22,7 +22,7 @@ namespace BasicSocialMedia.Application.DTOsValidation.M2MDtosValidation
 				.NotEmpty().WithMessage(ValidationSettings.GeneralErrorMessage)
 				.MustAsync(UserExists).WithMessage(ValidationSettings.GeneralErrorMessage)
 				.Must((request, followerId) => IsValidFollower(request.FollowerId, request.FollowingId))
-				.WithMessage("Follower cannot be the same as the current user."); 
+				.WithMessage("Follower must be the same as the current user.");
 
 			RuleFor(x => x.FollowingId)
 				.NotEmpty().WithMessage(ValidationSettings.GeneralErrorMessage)

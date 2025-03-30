@@ -11,6 +11,19 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
 
+		public async Task<SendFollowRequestDto?> GetByIdAsync(int FollowId)
+		{
+			Follow? follow = await _unitOfWork.Following.GetByIdAsync(FollowId);
+			if (follow is null) return null;
+
+			SendFollowRequestDto result = new()
+			{
+				FollowerId = follow.FollowerId,
+				FollowingId = follow.FollowerId,
+			};
+
+			return result;
+		}		
 		public async Task<IEnumerable<GetFollowerDto>> GetAllFollowersAsync(string userId)
 		{
 			IEnumerable<Follow?> followers = await _unitOfWork.Following.GetAllFollowersAsync(userId);
@@ -51,7 +64,7 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 		public async Task<bool> CancelFollowingAsync(int followId)
 		{ 
 			Follow? follow = await _unitOfWork.Following.GetByIdAsync(followId);
-			if (follow == null) return false;
+			if (follow == null) return true;
 			_unitOfWork.Following.Delete(follow);
 			await _unitOfWork.Following.Save();
 			return true;
@@ -59,7 +72,7 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 		public async Task<bool> CancelFollowingAsync(string followingId)
 		{ 
 			Follow? follow = await _unitOfWork.Following.FindAsync(follow => follow.FollowingId == followingId);
-			if (follow == null) return false;
+			if (follow == null) return true;
 			_unitOfWork.Following.Delete(follow);
 			await _unitOfWork.Following.Save();
 			return true;

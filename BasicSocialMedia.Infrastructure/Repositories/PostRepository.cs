@@ -4,12 +4,19 @@ using BasicSocialMedia.Core.Models.MainModels;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Infrastructure.Repositories.BaseRepo;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace BasicSocialMedia.Infrastructure.Repositories
 {
 	internal class PostRepository(ApplicationDbContext context) : BaseRepository<Post>(context), IPostRepository
 	{
 		private readonly ApplicationDbContext _context = context;
+
+		public async Task<string?> GetUserId(int postId)
+		{
+			Post? post = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(post => post.Id == postId);
+			return post?.UserId;
+		}
 		public override async Task<Post?> GetByIdAsync(int id)
 		{
 			Post? post = await _context.Posts
@@ -47,7 +54,29 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					Audience = post.Audience,
 					Content = post.Content,
 					IsDeleted = post.IsDeleted,
-					RowVersion = post.RowVersion,
+					UserId= post.UserId,
+					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
+					{
+						Id = post.User.Id,
+						UserName = post.User.UserName,
+						ProfileImage = post.User.ProfileImage
+					},
+				})
+				.AsNoTracking()
+				.ToListAsync();
+		}		
+		public async Task<IEnumerable<Post?>> GetAllAsync(Expression<Func<Post, bool>> matcher)
+		{
+			return await _context.Posts
+				.Where(matcher)
+				.Include(post => post.User)
+				.Select(post => new Post
+				{
+					Id = post.Id,
+					CreatedOn = post.CreatedOn,
+					Audience = post.Audience,
+					Content = post.Content,
+					IsDeleted = post.IsDeleted,
 					UserId= post.UserId,
 					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{

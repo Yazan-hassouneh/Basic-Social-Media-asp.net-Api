@@ -26,12 +26,16 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			✅ Retains safe HTML formatting (e.g., <b>, <i>, <p>, etc.)
 		 */
 
-		public async Task<GetPostDto> GetPostByIdAsync(int postId)
+		public async Task<GetPostDto?> GetPostByIdAsync(int postId)
 		{
 			Post? post = await _unitOfWork.Posts.GetByIdAsync(postId); 
-			if (post == null) return new GetPostDto();
+			if (post == null) return null;
 			GetPostDto postDto = _mapper.Map<GetPostDto>(post);
 			return postDto;
+		}
+		public Task<string?> GetUserId(int postId)
+		{
+			return _unitOfWork.Posts.GetUserId(postId);
 		}
 		public async Task<IEnumerable<GetPostDto>> GetPostsByUserIdAsync(string userId)
 		{
@@ -48,24 +52,20 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			var user = await GetUser(userId);
 			if (user == null) return Enumerable.Empty<GetPostDto>();
 
-			var followingIds = user.Following
-				.Where(f => !f.IsBlocked)
-				.Select(f => f.FollowingId)
-				.ToArray();
+			IEnumerable<string> followingIds = await _unitOfWork.Following.GetAllFollowingsIdsAsync(userId);
+			if (!followingIds.Any()) return Enumerable.Empty<GetPostDto>();
 
-			return await MapPosts(followingIds);
+			return await MapPosts(followingIds.ToArray(), PostAudience.Public);
 		}
 		public async Task<IEnumerable<GetPostDto>> GetPostsByUserFriendsAsync(string userId)
 		{
 			var user = await GetUser(userId);
 			if (user == null) return Enumerable.Empty<GetPostDto>();
 
-			var friendIds = user.Friendships
-				.Where(f => f.Status == FriendshipStatus.Accepted)
-				.Select(f => f.SenderId == userId ? f.ReceiverId : f.SenderId) // Get the friend's ID
-				.ToArray();
+			IEnumerable<string> friendsIds = await _unitOfWork.Friendship.GetAllFriendsIdsAsync(userId);
+			if (!friendsIds.Any()) return Enumerable.Empty<GetPostDto>();
 
-			return await MapPosts(friendIds);
+			return await MapPosts(friendsIds.ToArray(), PostAudience.Friends);
 		}
 		public async Task<AddPostDto> CreatePostAsync(AddPostDto postDto)
 		{
@@ -121,10 +121,10 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		{
 			return await _userManager.FindByIdAsync(userId);
 		}		
-		private async Task<IEnumerable<GetPostDto>> MapPosts(string[] Ids)
+		private async Task<IEnumerable<GetPostDto>> MapPosts(string[] Ids, PostAudience audience)
 		{
 			if (Ids.Length == 0) return Enumerable.Empty<GetPostDto>();
-			var posts = await _unitOfWork.Posts.FindAllAsync(post => Ids.Contains(post.UserId));
+			var posts = await _unitOfWork.Posts.GetAllAsync(post => Ids.Contains(post.UserId) && (post.Audience == PostAudience.Public || post.Audience == audience));
 			return _mapper.Map<IEnumerable<GetPostDto>>(posts);
 		}
 	}

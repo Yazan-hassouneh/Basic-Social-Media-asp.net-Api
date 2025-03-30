@@ -4,6 +4,7 @@ using BasicSocialMedia.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BasicSocialMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250328034446_AddBlockTable")]
+    partial class AddBlockTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,7 +144,7 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.HasIndex("BlockerId", "BlockedId")
                         .IsUnique();
 
-                    b.ToTable("Blocking", "Relations");
+                    b.ToTable("Blocking");
                 });
 
             modelBuilder.Entity("BasicSocialMedia.Core.Models.M2MRelations.Follow", b =>

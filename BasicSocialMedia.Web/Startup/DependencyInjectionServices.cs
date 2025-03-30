@@ -1,4 +1,8 @@
-﻿using BasicSocialMedia.Application.DTOsValidation.AuthDtosValidation;
+﻿using BasicSocialMedia.Application.CustomPolicies.Block;
+using BasicSocialMedia.Application.CustomPolicies.Moderation;
+using BasicSocialMedia.Application.CustomPolicies.Ownership;
+using BasicSocialMedia.Application.CustomPolicies.PostVisibility;
+using BasicSocialMedia.Application.DTOsValidation.AuthDtosValidation;
 using BasicSocialMedia.Application.DTOsValidation.ChatDtosValidation;
 using BasicSocialMedia.Application.DTOsValidation.CommentDtosValidation;
 using BasicSocialMedia.Application.DTOsValidation.M2MDtosValidation;
@@ -26,6 +30,7 @@ using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Infrastructure.UnitsOfWork;
 using FluentValidation;
 using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BasicSocialMedia.Web.Startup
 {
@@ -74,6 +79,14 @@ namespace BasicSocialMedia.Web.Startup
 		internal static IServiceCollection AddUnitOfWorkInjection(this IServiceCollection services)
 		{
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
+			return services;
+		}			
+		internal static IServiceCollection AddCustomPoliciesInjection(this IServiceCollection services)
+		{
+			services.AddScoped<IAuthorizationHandler, PostVisibilityHandler>();
+			services.AddScoped<IAuthorizationHandler, BlockedHandler>();
+			services.AddSingleton<IAuthorizationHandler, PostModerationHandler>();
+			services.AddSingleton<IAuthorizationHandler, OwnershipHandler>();
 			return services;
 		}		
 		internal static IServiceCollection AddHtmlSanitizerInjection(this IServiceCollection services)
