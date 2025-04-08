@@ -1,5 +1,6 @@
 ﻿using BasicSocialMedia.Core.Interfaces.Repos;
 using BasicSocialMedia.Core.Models.AuthModels;
+using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.MainModels;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Infrastructure.Repositories.BaseRepo;
@@ -15,9 +16,16 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 			Chat? chat = await _context.Chats
 				.Include(chat => chat.User1)
 				.Include(chat => chat.User2)
+				.Include(chat => chat.Files)
 				.Select(chat => new Chat 
 					{
 						Id = chat.Id,
+						Files = chat.Files.Select(file => new MessageFileModel
+						{
+							Id = file.Id,
+							UserId = file.UserId,
+							Path = file.Path,
+						}).ToList(),
 						CreatedOn = chat.CreatedOn,
 						// ... other properties of Chat ...
 						User1 = chat.User1 == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls

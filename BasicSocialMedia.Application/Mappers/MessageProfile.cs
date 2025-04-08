@@ -13,6 +13,7 @@ namespace BasicSocialMedia.Application.Mappers
 				.ForMember(destination => destination.User1Id, opt => opt.MapFrom(src => src.User1Id))
 				.ForMember(destination => destination.User2Id, opt => opt.MapFrom(src => src.User2Id))
 				.ForMember(destination => destination.Content, opt => opt.MapFrom(src => src.Content))
+				.ForMember(destination => destination.Files, opt => opt.MapFrom(src => src.Files))
 				.ForMember(destination => destination.IsRead, opt => opt.MapFrom(src => src.IsRead))
 				.ForMember(destination => destination.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn))
 				.ReverseMap();

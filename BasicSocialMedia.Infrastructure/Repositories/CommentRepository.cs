@@ -1,5 +1,6 @@
 ﻿using BasicSocialMedia.Core.Interfaces.Repos;
 using BasicSocialMedia.Core.Models.AuthModels;
+using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.MainModels;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Infrastructure.Repositories.BaseRepo;
@@ -22,6 +23,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 				.Include(comment => comment.User)
 				.Include(comment => comment.CommentReactions)
 					.ThenInclude(reaction => reaction.User)
+				.Include(comment => comment.Files)
 				.Select(comment => new Comment
 				{
 					Id = comment.Id,
@@ -39,6 +41,12 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 							ProfileImage = cr.User.ProfileImage,
 						},
 					}).ToList(),
+					Files = comment.Files.Select(file => new CommentFileModel
+					{
+						Id = file.Id,
+						UserId = file.UserId,
+						Path = file.Path,
+					}).ToList(),
 					// ... other properties of comment ...
 					User = comment.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
@@ -48,6 +56,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					}
 				})
 				.AsNoTracking()
+				.AsSplitQuery() // Use split query for better performance with large data sets
 				.FirstOrDefaultAsync(c => c.Id == id);
 
 			return comment;
@@ -59,6 +68,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 				.Include(comment => comment.User)
 				.Include(comment => comment.CommentReactions)
 					.ThenInclude(reaction => reaction.User)
+				.Include(comment => comment.Files)
 				.Select(comment => new Comment
 				{
 					Id = comment.Id,
@@ -75,6 +85,12 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 							UserName = cr.User.UserName,
 							ProfileImage = cr.User.ProfileImage,
 						},
+					}).ToList(),
+					Files = comment.Files.Select(file => new CommentFileModel
+					{
+						Id = file.Id,
+						UserId = file.UserId,
+						Path = file.Path,
 					}).ToList(),
 					// ... other properties of comment ...
 					User = comment.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls

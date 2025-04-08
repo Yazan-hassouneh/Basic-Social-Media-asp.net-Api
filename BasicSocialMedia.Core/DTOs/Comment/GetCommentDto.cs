@@ -9,7 +9,8 @@ namespace BasicSocialMedia.Core.DTOs.Comment
 		public DateTime CreatedOn { get; set; }
 		public int ReactionsCount { get; set; }
 		public string RowVersion { get; set; } = null!;
-		public string Content { get; set; } = null!;
+		public string? Content { get; set; }
+		public List<string>? Files { get; set; }
 		public GetBasicUserInfo User { get; set; } = null!;
 		public List<GetBasicUserInfo>? ReactionsList { get; set; }
 	}

@@ -1,4 +1,4 @@
-﻿using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation;
+﻿using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation.File;
 using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Infrastructure.Data;
@@ -14,7 +14,7 @@ namespace BasicSocialMedia.Application.DTOsValidation.MessageDtosValidation
 		{
 			_context = context;
 
-			Include(new BaseContentDtoValidation());
+			Include(new BaseUpdateFileValidator());
 
 			RuleFor(x => x.Id)
 				.GreaterThan(0).WithMessage(ValidationSettings.GeneralErrorMessage)

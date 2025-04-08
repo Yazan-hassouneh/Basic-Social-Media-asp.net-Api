@@ -80,7 +80,7 @@ namespace BasicSocialMedia.Web.Controllers
 
 		[HttpPost]
 		[Route("create")]
-		public async Task<IActionResult> CreateNewPost([FromBody] AddPostDto postDto)
+		public async Task<IActionResult> CreateNewPost([FromForm]AddPostDto postDto)
 		{
 			var result = await _addPostDtoValidator.ValidateAsync(postDto);
 			if (!result.IsValid) return BadRequest(result.Errors);

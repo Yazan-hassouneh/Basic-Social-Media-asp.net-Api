@@ -1,4 +1,5 @@
 ﻿using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation;
+using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation.File;
 using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.PostDTOs;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
@@ -13,7 +14,7 @@ namespace BasicSocialMedia.Application.DTOsValidation.PostDtosValidation
 		{
 			_unitOfWork = unitOfWork;
 
-			Include(new BaseContentDtoValidation());
+			Include(new BaseUpdateFileValidator());
 			Include(new BaseAudienceDtoValidation());
 
 			RuleFor(x => x.Id)

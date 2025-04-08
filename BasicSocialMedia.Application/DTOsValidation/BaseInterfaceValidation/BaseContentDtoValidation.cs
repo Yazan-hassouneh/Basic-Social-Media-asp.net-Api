@@ -9,7 +9,9 @@ namespace BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation
 		public BaseContentDtoValidation()
 		{
 			RuleFor(x => x.Content)
-				.NotNull().NotEmpty().WithMessage(ValidationSettings.ContentErrorMessage);
+				.NotEmpty()
+				.When(x => x.Content != null)
+					.WithMessage(ValidationSettings.ContentErrorMessage);
 		}
 	}
 }

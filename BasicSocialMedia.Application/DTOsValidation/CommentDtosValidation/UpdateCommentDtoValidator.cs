@@ -1,4 +1,5 @@
 ﻿using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation;
+using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation.File;
 using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.Comment;
 using BasicSocialMedia.Core.Models.AuthModels;
@@ -16,7 +17,7 @@ namespace BasicSocialMedia.Application.DTOsValidation.CommentDtosValidation
 		{
 			_context = context;
 
-			Include(new BaseContentDtoValidation());
+			Include(new BaseUpdateFileValidator());
 			Include(new BaseUserIdDtoValidation(userManager));
 
 			RuleFor(x => x.Id)

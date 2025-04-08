@@ -7,7 +7,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.BaseConfig
 	{
 		public static void ConfigureContent<T>(EntityTypeBuilder<T> builder) where T : class, IContent
 		{
-			builder.Property(i => i.Content).IsRequired(true);
+			builder.Property(i => i.Content);
 		}
 	}
 }

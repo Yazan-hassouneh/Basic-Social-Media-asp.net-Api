@@ -30,6 +30,8 @@
   <ItemGroup>
     <Folder Include="wwwroot\Uploads\Comments\Images\" />
     <Folder Include="wwwroot\Uploads\Comments\Video\" />
+    <Folder Include="wwwroot\Uploads\Meessages\Images\" />
+    <Folder Include="wwwroot\Uploads\Meessages\Video\" />
     <Folder Include="wwwroot\Uploads\Posts\Images\" />
     <Folder Include="wwwroot\Uploads\Posts\Video\" />
     <Folder Include="wwwroot\Uploads\ProfileImgs\" />

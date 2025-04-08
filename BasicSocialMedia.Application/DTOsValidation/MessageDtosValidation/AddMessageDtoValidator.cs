@@ -1,4 +1,5 @@
 ﻿using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation;
+using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation.File;
 using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.Models.AuthModels;
 using FluentValidation;
@@ -10,7 +11,7 @@ namespace BasicSocialMedia.Application.DTOsValidation.MessageDtosValidation
 	{
 		public AddMessageDtoValidator(UserManager<ApplicationUser> userManager)
 		{
-			Include(new BaseContentDtoValidation());
+			Include(new BaseCreateFileValidator());
 			Include(new BaseSenderIdReceiverIdDtoValidation(userManager));
 		}
 	}

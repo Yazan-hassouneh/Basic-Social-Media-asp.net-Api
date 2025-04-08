@@ -1,7 +1,9 @@
 ﻿using BasicSocialMedia.Core.Models.AuthModels;
+using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.M2MRelations;
 using BasicSocialMedia.Core.Models.MainModels;
 using BasicSocialMedia.Infrastructure.Configuration.AuthConfig;
+using BasicSocialMedia.Infrastructure.Configuration.FilConfig;
 using BasicSocialMedia.Infrastructure.Configuration.M2MConfig;
 using BasicSocialMedia.Infrastructure.Configuration.MainConfig;
 using BasicSocialMedia.Infrastructure.Tables_Schema;
@@ -13,6 +15,10 @@ namespace BasicSocialMedia.Infrastructure.Data
 	public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 	{
 		public DbSet<Post> Posts { get; set; }
+		public DbSet<PostFileModel> PostFiles { get; set; }
+		public DbSet<CommentFileModel> CommentFiles { get; set; }
+		public DbSet<MessageFileModel> MessageFiles { get; set; }
+		public DbSet<ProfileImageModel> ProfileImages { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 		public DbSet<Chat> Chats { get; set; }
 		public DbSet<Message> Messages { get; set; }
@@ -39,8 +45,11 @@ namespace BasicSocialMedia.Infrastructure.Data
 			builder.ApplyConfiguration(new FollowingConfig());
 			builder.ApplyConfiguration(new FriendshipConfig());
 			builder.ApplyConfiguration(new PostReactionConfig());
+			builder.ApplyConfiguration(new PostFileModelConfig());
 			builder.ApplyConfiguration(new ApplicationUserConfig());
-			builder.ApplyConfiguration(new CommentReactionConfig());
+			builder.ApplyConfiguration(new CommentFileModelConfig());
+			builder.ApplyConfiguration(new MessageFileModelConfig());
+			builder.ApplyConfiguration(new ProfileImagesModelConfig());
 		}
 	}
 }

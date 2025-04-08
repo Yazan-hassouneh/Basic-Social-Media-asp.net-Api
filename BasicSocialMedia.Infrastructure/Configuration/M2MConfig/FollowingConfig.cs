@@ -11,7 +11,6 @@ namespace BasicSocialMedia.Infrastructure.Configuration.M2MConfig
 		{
 			BaseIdConfig.ConfigureId(builder);
 			BaseTimestampConfig.ConfigureTimestamp(builder);
-			builder.Property(model => model.IsBlocked).IsRequired().HasDefaultValue(false);
 			builder.Property(model => model.FollowerId).IsRequired();
 			builder.Property(model => model.FollowingId).IsRequired();
 

@@ -6,7 +6,8 @@ namespace BasicSocialMedia.Core.DTOs.PostDTOs
 	public class GetPostDto
 	{
 		public int Id { get; set; }
-		public string Content { get; set; } = null!;
+		public string? Content { get; set; }
+		public List<string>? Files { get; set; }
 		public int CommentsCount { get; set; }
 		public int ReactionsCount { get; set; }
 		public DateTime CreatedOn { get; set; }

@@ -26,6 +26,13 @@ namespace BasicSocialMedia.Infrastructure.Tables_Schema
 			builder.Entity<Follow>().ToTable("Follows", schema : "Relations");
 			builder.Entity<Friendship>().ToTable("Friendships", schema : "Relations");
 			builder.Entity<Block>().ToTable("Blocking", schema : "Relations");
+		}		
+		public static void AddFileSchema(this ModelBuilder builder)
+		{
+			builder.Entity<Follow>().ToTable("PostFiles", schema : "File");
+			builder.Entity<Friendship>().ToTable("CommentFiles", schema : "File");
+			builder.Entity<Block>().ToTable("MessageFiles", schema : "File");
+			builder.Entity<Block>().ToTable("ProfileImages", schema : "File");
 		}
 	}
 }

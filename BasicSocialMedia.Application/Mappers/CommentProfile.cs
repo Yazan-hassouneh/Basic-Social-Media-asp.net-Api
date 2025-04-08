@@ -13,6 +13,7 @@ namespace BasicSocialMedia.Application.Mappers
 				.ForMember(destination => destination.User, opt => opt.MapFrom(src => MapUser(src.User)))
 				.ForMember(destination => destination.PostId, opt => opt.MapFrom(src => src.PostId))
 				.ForMember(destination => destination.Content, opt => opt.MapFrom(src => WebUtility.HtmlEncode(src.Content)))
+				.ForMember(destination => destination.Files, opt => opt.MapFrom(src => src.Files))
 				.ForMember(destination => destination.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn))
 				.ForMember(destination => destination.RowVersion, opt => opt.MapFrom(src => Convert.ToBase64String(src.RowVersion)))
 				.ForMember(destination => destination.ReactionsCount, opt => opt.MapFrom(src => src.CommentReactions != null ? src.CommentReactions.Count : 0))

@@ -1,5 +1,6 @@
 ﻿using BasicSocialMedia.Core.Interfaces.Repos;
 using BasicSocialMedia.Core.Models.AuthModels;
+using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.MainModels;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Infrastructure.Repositories.BaseRepo;
@@ -21,12 +22,19 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 		{
 			Post? post = await _context.Posts
 				.Include(post => post.User)
+				.Include(post => post.Files)
 				.Select(post => new Post // Or ChatViewModel
 				{
 					Id = post.Id,
 					CreatedOn = post.CreatedOn,
 					Audience = post.Audience,
 					Content = post.Content,
+					Files = post.Files.Select(file => new PostFileModel
+					{
+						Id = file.Id,
+						UserId = file.UserId,
+						Path = file.Path,
+					}).ToList(),
 					IsDeleted = post.IsDeleted,
 					UserId = post.UserId,
 					RowVersion = post.RowVersion,
@@ -47,12 +55,19 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 			return await _context.Posts
 				.Where(post => post.UserId == userId)
 				.Include(post => post.User)
+				.Include(post => post.Files)
 				.Select(post => new Post
 				{
 					Id = post.Id,
 					CreatedOn = post.CreatedOn,
 					Audience = post.Audience,
 					Content = post.Content,
+					Files = post.Files.Select(file => new PostFileModel
+					{
+						Id = file.Id,
+						UserId = file.UserId,
+						Path = file.Path,
+					}).ToList(),
 					IsDeleted = post.IsDeleted,
 					UserId= post.UserId,
 					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
@@ -63,6 +78,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					},
 				})
 				.AsNoTracking()
+				.AsSplitQuery() // Use split query for better performance with large data sets
 				.ToListAsync();
 		}		
 		public async Task<IEnumerable<Post?>> GetAllAsync(Expression<Func<Post, bool>> matcher)
@@ -70,14 +86,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 			return await _context.Posts
 				.Where(matcher)
 				.Include(post => post.User)
+				.Include(post => post.Files)
 				.Select(post => new Post
 				{
 					Id = post.Id,
 					CreatedOn = post.CreatedOn,
 					Audience = post.Audience,
 					Content = post.Content,
+					Files = post.Files.Select(file => new PostFileModel
+					{
+						Id = file.Id,
+						UserId = file.UserId,
+						Path = file.Path,
+					}).ToList(),
 					IsDeleted = post.IsDeleted,
-					UserId= post.UserId,
+					UserId = post.UserId,
 					User = post.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
 						Id = post.User.Id,
@@ -86,6 +109,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					},
 				})
 				.AsNoTracking()
+				.AsSplitQuery() // Use split query for better performance with large data sets
 				.ToListAsync();
 		}
 	}

@@ -1,5 +1,4 @@
-﻿
-using BasicSocialMedia.Core.Models.AuthModels;
+﻿using BasicSocialMedia.Core.Models.AuthModels;
 using System.ComponentModel.DataAnnotations;
 
 namespace BasicSocialMedia.Core.Interfaces.ModelsInterfaces

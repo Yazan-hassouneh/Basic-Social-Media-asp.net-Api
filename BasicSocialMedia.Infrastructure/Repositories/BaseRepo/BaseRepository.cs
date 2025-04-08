@@ -36,6 +36,11 @@ namespace BasicSocialMedia.Infrastructure.Repositories.BaseRepo
 		{
 			await _context.Set<T>().AddAsync(entity);
 			return entity;
+		}		
+		public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
+		{
+			await _context.Set<T>().AddRangeAsync(entities);
+			return entities;
 		}
 		public T Update(T entity)
 		{
@@ -45,6 +50,10 @@ namespace BasicSocialMedia.Infrastructure.Repositories.BaseRepo
 		public void Delete(T entity)
 		{
 			_context.Set<T>().Remove(entity);
+		}		
+		public void DeleteRange(IEnumerable<T> entities)
+		{
+			_context.Set<T>().RemoveRange(entities);
 		}
 		public async Task<int> Save()
 		{
