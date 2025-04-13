@@ -13,6 +13,6 @@ namespace BasicSocialMedia.Core.Models.MainModels
 		public string User2Id { get; set; } = null!;
 		public virtual ApplicationUser? User2 { get; set; }
 		public virtual ICollection<Message> Messages { get; set; } = [];
-		public virtual IEnumerable<MessageFileModel> Files { get; set; } = [];
+		public virtual IEnumerable<MessageFileModel> Files { get; set; } = new HashSet<MessageFileModel>();
 	}
 }

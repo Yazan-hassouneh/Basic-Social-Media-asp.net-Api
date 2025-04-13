@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using BasicSocialMedia.Core.Models.AuthModels;
 using BasicSocialMedia.Core.Consts;
+using BasicSocialMedia.Core.Models.FileModels;
 
 namespace BasicSocialMedia.Infrastructure.Configuration.AuthConfig
 {
@@ -14,9 +15,13 @@ namespace BasicSocialMedia.Infrastructure.Configuration.AuthConfig
 			builder.Property(model => model.IsDeleted).IsRequired().HasDefaultValue(false);
 			builder.Property(model => model.AllowFriendships).IsRequired().HasDefaultValue(true);
 			builder.Property(model => model.JoinedAt).IsRequired().HasDefaultValueSql("GETUTCDATE()");
-			builder.Property(model => model.ProfileImage).IsRequired(false);
 			builder.Property(model => model.Bio).IsRequired(false).HasMaxLength(ModelsSettings.MaxUserBioLength);
 			builder.Property(model => model.BirthDate).IsRequired(false);
+
+			builder.HasOne(a => a.ProfileImageModel)
+				.WithOne(p => p.User)
+				.HasForeignKey<ProfileImageModel>(p => p.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

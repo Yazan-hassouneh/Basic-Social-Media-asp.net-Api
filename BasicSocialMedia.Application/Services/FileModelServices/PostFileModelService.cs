@@ -4,13 +4,16 @@ using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.FileModels;
+using FluentValidation;
 
 namespace BasicSocialMedia.Application.Services.FileModelServices
 {
-	public class PostFileModelService(IUnitOfWork unitOfWork, IImageService imageService) : IPostFileModelService
+	public class PostFileModelService(IUnitOfWork unitOfWork, IImageService imageService, IValidator<AddPostFileDto> addPostFileValidator, IValidator<UpdatePostFileDto> updatePostFileValidator) : IPostFileModelService
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IImageService _imageService = imageService;
+		private readonly IValidator<AddPostFileDto> _addPostFileValidator = addPostFileValidator;
+		private readonly IValidator<UpdatePostFileDto> _updatePostFileValidator = updatePostFileValidator;
 
 		public async Task<IEnumerable<string>> GetAllFilesByPostIdAsync(int postId)
 		{
@@ -26,12 +29,13 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 		}
 		public async Task<bool> AddPostFileAsync(AddPostFileDto addPostFilesDto)
 		{
-			if (addPostFilesDto == null || addPostFilesDto.Files.Count == 0) return false;
+			var validationResult = await _addPostFileValidator.ValidateAsync(addPostFilesDto);
+			if (!validationResult.IsValid) return false;
 			List<string> paths = await _imageService.GetPaths(addPostFilesDto.Files, FileSettings.PostsImagesPath, FileSettings.PostsVideosPath);
 			try
 			{
 				// Save Paths in Database
-				IEnumerable<PostFileModel> postFileModels = paths.Select(path => new PostFileModel
+				IEnumerable<PostFileModel> postFileModels = paths.Where(path => !string.IsNullOrEmpty(path)).Select(path => new PostFileModel
 				{
 					UserId = addPostFilesDto.UserId,
 					PostId = addPostFilesDto.PostId,
@@ -39,7 +43,8 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 				}).ToList();
 
 				await _unitOfWork.PostFiles.AddRangeAsync(postFileModels);
-				await _unitOfWork.PostFiles.Save();
+				int effectedRows =  await _unitOfWork.PostFiles.Save();
+				if (effectedRows == 0) return false;
 				return true;
 			}
 			catch (Exception)
@@ -54,20 +59,22 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 		}
 		public async Task<bool> UpdatePostFileAsync(UpdatePostFileDto updatePostFileDto)
 		{
-			if (updatePostFileDto.MediaPaths is null && updatePostFileDto.Files is null) return false;
-			IEnumerable<PostFileModel?> files = await _unitOfWork.PostFiles.GetAllAsync(postFile => postFile.PostId == updatePostFileDto.PostId);
-			if (files != null && files.Any() && updatePostFileDto.MediaPaths != null)
+			var validationResult = await _updatePostFileValidator.ValidateAsync(updatePostFileDto);
+			if (!validationResult.IsValid || (updatePostFileDto.MediaPaths is null && updatePostFileDto.Files is null)) return false;
+
+			if (updatePostFileDto.MediaPaths?.Count > 0)
 			{
-				foreach (var file in files)
+				var files = await _unitOfWork.PostFiles.GetAllAsync(pf => pf.PostId == updatePostFileDto.PostId);
+				var filesToDelete = files?.Where(f => f != null && !updatePostFileDto.MediaPaths.Contains(f.Path)).ToList();
+
+				if (filesToDelete?.Count > 0)
 				{
-					if(file != null && !updatePostFileDto.MediaPaths.Contains(file!.Path))
-					{
-						// delete from projectFile
-						_imageService.DeleteImage(file!.Path, FileSettings.PostsImagesPath);
-						// delete from database
-						_unitOfWork.PostFiles.Delete(file);
-						await _unitOfWork.PostFiles.Save();
-					}
+					// delete from projectFile
+					foreach (var file in filesToDelete) _imageService.DeleteImage(file!.Path, FileSettings.PostsImagesPath);
+					// delete from database
+					foreach (var file in filesToDelete) _unitOfWork.PostFiles.Delete(file!);
+
+					await _unitOfWork.PostFiles.Save();
 				}
 			}
 
@@ -103,7 +110,7 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 		{
 			try
 			{
-				IEnumerable<PostFileModel?> postFiles = await _unitOfWork.PostFiles.GetAllAsync(postFile => postFile.PostId == postId);
+				IEnumerable<PostFileModel?> postFiles = await _unitOfWork.PostFiles.FindAllWithTrackingAsync(postFile => postFile.PostId == postId);
 				IEnumerable<PostFileModel> NonNullPostFiles = postFiles.Where(file => file != null).Select(file => file!).ToList();
 
 				foreach (var file in NonNullPostFiles)
@@ -122,6 +129,21 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 				return false;
 			}
 		}
-
+		public bool DeletePostFiles(List<string> files)
+		{
+			try
+			{
+				foreach (var file in files)
+				{
+					// delete from projectFile
+					_imageService.DeleteImage(file, FileSettings.PostsImagesPath);
+				}
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
 	}
 }

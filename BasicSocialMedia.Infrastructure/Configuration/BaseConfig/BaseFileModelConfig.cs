@@ -5,7 +5,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.BaseConfig
 {
 	internal class BaseFileModelConfig
 	{
-		public static void ConfigurePostComment<T>(EntityTypeBuilder<T> builder) where T : class, IFileModel
+		public static void ConfigureFile<T>(EntityTypeBuilder<T> builder) where T : class, IFileModel
 		{
 			BaseIdConfig.ConfigureId(builder);
 			BaseTimestampConfig.ConfigureTimestamp(builder);

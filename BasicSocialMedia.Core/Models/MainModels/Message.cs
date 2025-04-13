@@ -8,7 +8,7 @@ namespace BasicSocialMedia.Core.Models.MainModels
 		public int Id { get ; set ; }
 		public DateTime CreatedOn { get ; set ; }
 		public string? Content { get; set; }
-		public virtual IEnumerable<MessageFileModel> Files { get; set; } = [];
+		public virtual IEnumerable<MessageFileModel> Files { get; set; } = new HashSet<MessageFileModel>();
 		public bool IsRead { get; set; } = false;
 		public int ChatId { get; set; }
 		public Chat? Chat { get; set; }

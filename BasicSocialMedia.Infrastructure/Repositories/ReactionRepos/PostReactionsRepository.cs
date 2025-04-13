@@ -20,6 +20,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 		{
 			PostReaction? postReaction = await _context.PostReactions
 				.Include(postReaction => postReaction.User)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(postReaction => new PostReaction 
 				{
 					Id = postReaction.Id,
@@ -28,7 +29,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 					{
 						Id = postReaction.User.Id,
 						UserName = postReaction.User.UserName,
-						ProfileImage = postReaction.User.ProfileImage
+						ProfileImageModel = postReaction.User.ProfileImageModel
 					}
 				})
 				.AsNoTracking()
@@ -41,6 +42,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 			return await _context.PostReactions
 				.Where(postReaction => postReaction.PostId == postId)
 				.Include(postReaction => postReaction.User)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(postReaction => new PostReaction
 				{
 					Id = postReaction.Id,
@@ -49,7 +51,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 					{
 						Id = postReaction.User.Id,
 						UserName = postReaction.User.UserName,
-						ProfileImage = postReaction.User.ProfileImage
+						ProfileImageModel = postReaction.User.ProfileImageModel
 					}
 				})
 				.AsNoTracking()

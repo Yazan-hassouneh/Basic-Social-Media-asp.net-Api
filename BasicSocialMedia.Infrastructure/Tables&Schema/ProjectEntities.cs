@@ -1,4 +1,5 @@
-﻿using BasicSocialMedia.Core.Models.M2MRelations;
+﻿using BasicSocialMedia.Core.Models.FileModels;
+using BasicSocialMedia.Core.Models.M2MRelations;
 using BasicSocialMedia.Core.Models.MainModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,10 +30,10 @@ namespace BasicSocialMedia.Infrastructure.Tables_Schema
 		}		
 		public static void AddFileSchema(this ModelBuilder builder)
 		{
-			builder.Entity<Follow>().ToTable("PostFiles", schema : "File");
-			builder.Entity<Friendship>().ToTable("CommentFiles", schema : "File");
-			builder.Entity<Block>().ToTable("MessageFiles", schema : "File");
-			builder.Entity<Block>().ToTable("ProfileImages", schema : "File");
+			builder.Entity<PostFileModel>().ToTable("PostFiles", schema : "File");
+			builder.Entity<CommentFileModel>().ToTable("CommentFiles", schema : "File");
+			builder.Entity<MessageFileModel>().ToTable("MessageFiles", schema : "File");
+			builder.Entity<ProfileImageModel>().ToTable("ProfileImages", schema : "File");
 		}
 	}
 }

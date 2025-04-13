@@ -25,6 +25,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 			return await _context.Blocking
 				.Where(blocking => blocking.BlockerId == userId)
 				.Include(blocking => blocking.Blocked)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(blocking => new Block 
 				{
 					Id = blocking.Id,
@@ -35,7 +36,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 					{
 						Id = blocking.Blocked.Id,
 						UserName = blocking.Blocked.UserName,
-						ProfileImage = blocking.Blocked.ProfileImage
+						ProfileImageModel = blocking.Blocked.ProfileImageModel
 					},
 				})
 				.AsNoTracking()

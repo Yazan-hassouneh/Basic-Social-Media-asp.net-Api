@@ -9,6 +9,7 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices
 		Task<bool> AddPostFileAsync(AddPostFileDto addPostFilesDto);
 		Task<bool> UpdatePostFileAsync(UpdatePostFileDto updatePostFileDto);
 		Task<bool> DeletePostFileByPostIdAsync(int postId);
+		bool DeletePostFiles(List<string> files);
 		Task<bool> DeletePostFileByFileIdAsync(int fileId);
 	}
 }

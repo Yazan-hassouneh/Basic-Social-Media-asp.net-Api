@@ -9,7 +9,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.FilConfig
 	{
 		public void Configure(EntityTypeBuilder<CommentFileModel> builder)
 		{
-			BaseFileModelConfig.ConfigurePostComment(builder);
+			BaseFileModelConfig.ConfigureFile(builder);
 
 			builder.Property(model => model.CommentId).IsRequired();
 
@@ -21,7 +21,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.FilConfig
 			builder.HasOne(commentFile => commentFile.Post)
 						.WithMany(post => post.CommentFiles)
 						.HasForeignKey(commentFile => commentFile.PostId)
-						.OnDelete(DeleteBehavior.Cascade);
+						.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

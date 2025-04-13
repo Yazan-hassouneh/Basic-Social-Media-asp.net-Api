@@ -1,6 +1,7 @@
 ﻿using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.PostDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.ValidationServices;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +11,13 @@ namespace BasicSocialMedia.Web.Controllers
 	[Route("api/[controller]")]
 	[ApiController]
 	[Authorize(Policy = PoliciesSettings.allowAllUsersPolicy)]
-	public class PostController(IPostService postService, IValidator<AddPostDto> addPostDtoValidator, IValidator<UpdatePostDto> updatePostDtoValidator, IAuthorizationService authorizationService) : ControllerBase
+	public class PostController(IPostService postService, IValidator<AddPostDto> addPostDtoValidator, IValidator<UpdatePostDto> updatePostDtoValidator, IAuthorizationService authorizationService, IFileValidationResult fileValidationResult) : ControllerBase
 	{
 		private readonly IPostService _postService = postService;
 		private readonly IValidator<AddPostDto> _addPostDtoValidator = addPostDtoValidator;
 		private readonly IValidator<UpdatePostDto> _updatePostDtoValidator = updatePostDtoValidator;
 		private readonly IAuthorizationService _authorizationService = authorizationService;
+		private readonly IFileValidationResult _fileValidationResult = fileValidationResult;
 
 
 		[HttpGet]
@@ -82,8 +84,11 @@ namespace BasicSocialMedia.Web.Controllers
 		[Route("create")]
 		public async Task<IActionResult> CreateNewPost([FromForm]AddPostDto postDto)
 		{
-			var result = await _addPostDtoValidator.ValidateAsync(postDto);
-			if (!result.IsValid) return BadRequest(result.Errors);
+			var dtoResult = await _addPostDtoValidator.ValidateAsync(postDto);
+			var fileResult = await _fileValidationResult.ValidateFiles(postDto.Files);
+
+			if (!dtoResult.IsValid) return BadRequest(dtoResult.Errors);
+			if (string.IsNullOrEmpty(postDto.Content) && !fileResult.Any()) return BadRequest(dtoResult.Errors);
 
 			var authorizationOwnership = await _authorizationService.AuthorizeAsync(User, postDto.UserId, PoliciesSettings.Ownership);
 			if (!authorizationOwnership.Succeeded) return Forbid();
@@ -94,12 +99,15 @@ namespace BasicSocialMedia.Web.Controllers
 
 		[HttpPut]
 		[Route("update")]
-		public async Task<IActionResult> UpdatePost([FromBody] UpdatePostDto postDto)
+		public async Task<IActionResult> UpdatePost([FromForm] UpdatePostDto postDto)
 		{
-			var result = await _updatePostDtoValidator.ValidateAsync(postDto);
-			if (!result.IsValid) return BadRequest(result.Errors);
+			var dtoResult = await _updatePostDtoValidator.ValidateAsync(postDto);
+			var fileResult = await _fileValidationResult.ValidateFiles(postDto.Files);
 
-			string? userId = await _postService.GetUserId(postDto.Id);
+			if (!dtoResult.IsValid) return BadRequest(dtoResult.Errors);
+			if (string.IsNullOrEmpty(postDto.Content) && !fileResult.Any() && postDto?.MediaPaths!.Count == 0) return BadRequest(dtoResult.Errors);
+
+			string? userId = await _postService.GetUserId(postDto!.Id);
 			if (userId is null) return NotFound("Post not found or update failed.");
 
 			// Explicitly authorize with resource

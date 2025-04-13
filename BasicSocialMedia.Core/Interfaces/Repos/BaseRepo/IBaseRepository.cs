@@ -10,6 +10,7 @@ namespace BasicSocialMedia.Core.Interfaces.Repos.BaseRepo
 		Task<T?> FindAsync(Expression<Func<T, bool>> matcher);
 		Task<T?> FindWithTrackingAsync(Expression<Func<T, bool>> matcher);
 		Task<IEnumerable<T?>> FindAllAsync(Expression<Func<T, bool>> matcher);
+		Task<IEnumerable<T?>> FindAllWithTrackingAsync(Expression<Func<T, bool>> matcher);
 		Task<T> AddAsync(T entity);
 		Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
 		T Update(T entity);

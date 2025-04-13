@@ -9,7 +9,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.FilConfig
 	{
 		public void Configure(EntityTypeBuilder<ProfileImageModel> builder)
 		{
-			BaseFileModelConfig.ConfigurePostComment(builder);
+			BaseFileModelConfig.ConfigureFile(builder);
 		}
 	}
 }

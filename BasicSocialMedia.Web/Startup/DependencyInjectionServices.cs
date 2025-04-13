@@ -18,6 +18,7 @@ using BasicSocialMedia.Application.Services.FileModelServices;
 using BasicSocialMedia.Application.Services.FileServices;
 using BasicSocialMedia.Application.Services.M2MServices;
 using BasicSocialMedia.Application.Services.ModelsServices;
+using BasicSocialMedia.Application.Services.ValidationServices;
 using BasicSocialMedia.Core.DTOs.AuthDTOs;
 using BasicSocialMedia.Core.DTOs.ChatDTOs;
 using BasicSocialMedia.Core.DTOs.Comment;
@@ -33,6 +34,7 @@ using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EnumsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.ValidationServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Infrastructure.UnitsOfWork;
 using FluentValidation;
@@ -59,6 +61,7 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IFriendshipService, FriendshipService>();
 			services.AddScoped<IPostReactionService, PostReactionService>();
 			services.AddScoped<IPostFileModelService, PostFileModelService>();
+			services.AddScoped<IFileValidationResult, FileValidationResult>();
 			services.AddScoped<ICommentReactionService, CommentReactionService>();
 			services.AddScoped<ICommentFileModeService, CommentFileModelService>();
 			services.AddScoped<IMessageFileModelService, MessageFileModelService>();
@@ -67,7 +70,7 @@ namespace BasicSocialMedia.Web.Startup
 		}		
 		internal static IServiceCollection AddDTOsValidatorsInjection(this IServiceCollection services)
 		{
-			services.AddScoped<BaseSingleFileValidator>();
+			services.AddScoped<IValidator<IFormFile>, BaseSingleFileValidator>();
 			services.AddScoped<IValidator<AddRoleDto>, AddRoleDtoValidator>();
 			services.AddScoped<IValidator<AddChatDto>, AddChatDtoValidator>();
 			services.AddScoped<IValidator<AddPostDto>, AddPostDtoValidator>();

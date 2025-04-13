@@ -16,7 +16,7 @@ namespace BasicSocialMedia.Core.Models.MainModels
 		public int PostId { get; set; }
 		public virtual Post? Post { get; set; }
 		public virtual ICollection<CommentReaction> CommentReactions { get; set; } = [];
-		public virtual IEnumerable<CommentFileModel> Files { get; set; } = [];
+		public virtual IEnumerable<CommentFileModel> Files { get; set; } = new HashSet<CommentFileModel>();
 		[Timestamp]
 		public byte[] RowVersion { get ; set; } = null!;
 	}

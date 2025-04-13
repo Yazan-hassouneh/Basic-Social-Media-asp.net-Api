@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BasicSocialMedia.Core.DTOs.AuthDTOs;
+using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 using BasicSocialMedia.Core.Interfaces.ModelsInterfaces;
 using BasicSocialMedia.Core.Models.AuthModels;
+using BasicSocialMedia.Core.Models.FileModels;
 
 namespace BasicSocialMedia.Application.Mappers
 {
@@ -13,7 +15,7 @@ namespace BasicSocialMedia.Application.Mappers
 		{
 			Id = user.Id,
 			UserName = user.UserName ?? string.Empty,
-			ProfileImage = user.ProfileImage ?? string.Empty
+			ProfileImage = user?.ProfileImageModel?.Path ?? string.Empty
 		}
 		: new GetBasicUserInfo();
 
@@ -22,7 +24,16 @@ namespace BasicSocialMedia.Application.Mappers
 			{
 				Id = cr.UserId,
 				UserName = cr.User?.UserName ?? string.Empty,
-				ProfileImage = cr.User?.ProfileImage ?? string.Empty
+				ProfileImage = cr.User?.ProfileImageModel!.Path ?? string.Empty
+			}).ToList() ?? [];		
+		
+		protected static List<GetPostFilesDto> MapPostFiles(IEnumerable<PostFileModel>? files) =>
+			files?.Select(postFile => new GetPostFilesDto
+			{
+				Id = postFile.Id,
+				UserId = postFile.UserId,
+				Path = postFile.Path,
+				PostId = postFile.PostId
 			}).ToList() ?? [];
 	}
 }

@@ -1,4 +1,5 @@
-﻿using BasicSocialMedia.Core.Models.M2MRelations;
+﻿using BasicSocialMedia.Core.Models.FileModels;
+using BasicSocialMedia.Core.Models.M2MRelations;
 using BasicSocialMedia.Core.Models.MainModels;
 using Microsoft.AspNetCore.Identity;
 
@@ -7,7 +8,7 @@ namespace BasicSocialMedia.Core.Models.AuthModels
 	public class ApplicationUser : IdentityUser
 	{
 		public string? Bio { get; set; }
-		public string? ProfileImage { get; set; }
+		public virtual ProfileImageModel? ProfileImageModel { get; set; }
 		public bool IsDeleted { get; set; } = false;
 		public bool AllowFriendships { get; set; } = true;
 		public DateTime? BirthDate { get; set; }

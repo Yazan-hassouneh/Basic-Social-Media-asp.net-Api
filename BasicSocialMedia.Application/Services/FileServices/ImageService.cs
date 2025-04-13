@@ -1,4 +1,5 @@
-﻿using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
+﻿using BasicSocialMedia.Core.Consts;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -38,14 +39,16 @@ namespace BasicSocialMedia.Application.Services.FileServices
 		}
 		public async Task<string> GetMediaName(IFormFile file, string relativeImagesPath, string relativeVideosPath)
 		{
+			var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
 			string? mediaName = string.Empty;
 			if (file != null)
 			{
-				if (!file.ContentType.StartsWith("image/")) // Check if the file is an image
+				if (FileSettings.AllowedImagesMimeTypes.Contains(file.ContentType.ToLower()) && FileSettings.ImagesAllowedExtension.Split(",").Contains(fileExtension)) // Check if the file is an image
 				{
 					mediaName = await SaveImage(file, relativeImagesPath);
 				}
-				if (file.ContentType.StartsWith("video")) // Check if the file is an video
+				if (FileSettings.AllowedVideosMimeTypes.Contains(file.ContentType.ToLower()) && FileSettings.VideoAllowedExtension.Split(",").Contains(fileExtension)) // Check if the file is an video
 				{
 					mediaName = await SaveImage(file, relativeVideosPath);
 				}

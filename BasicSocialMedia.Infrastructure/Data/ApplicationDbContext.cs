@@ -35,6 +35,7 @@ namespace BasicSocialMedia.Infrastructure.Data
 			builder.AddMessagesSchema();
 			builder.AddReactionsSchema();
 			builder.AddRelationsSchema();
+			builder.AddFileSchema();
 
 			builder.ApplyConfiguration(new PostConfig());
 			builder.ApplyConfiguration(new RoleConfig());
@@ -46,6 +47,7 @@ namespace BasicSocialMedia.Infrastructure.Data
 			builder.ApplyConfiguration(new FriendshipConfig());
 			builder.ApplyConfiguration(new PostReactionConfig());
 			builder.ApplyConfiguration(new PostFileModelConfig());
+			builder.ApplyConfiguration(new CommentReactionConfig());
 			builder.ApplyConfiguration(new ApplicationUserConfig());
 			builder.ApplyConfiguration(new CommentFileModelConfig());
 			builder.ApplyConfiguration(new MessageFileModelConfig());

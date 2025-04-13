@@ -14,8 +14,10 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 		public override async Task<Friendship?> GetByIdAsync(int id)
 		{
 			Friendship? friendship = await _context.Friendships
-				.Include(friendship => friendship.SenderId)
-				.Include(friendship => friendship.ReceiverId)
+				.Include(friendship => friendship.Sender)
+					.ThenInclude(user => user!.ProfileImageModel)
+				.Include(friendship => friendship.Receiver)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(friendship => new Friendship
 				{
 					Id = friendship.Id,
@@ -27,13 +29,13 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 					{
 						Id = friendship.Sender.Id,
 						UserName = friendship.Sender.UserName,
-						ProfileImage = friendship.Sender.ProfileImage
+						ProfileImageModel = friendship.Sender.ProfileImageModel
 					},
 					Receiver = friendship.Receiver == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
 						Id = friendship.Receiver.Id,
 						UserName = friendship.Receiver.UserName,
-						ProfileImage = friendship.Receiver.ProfileImage
+						ProfileImageModel = friendship.Receiver.ProfileImageModel
 					}
 				})
 				.AsNoTracking()
@@ -47,6 +49,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 				.Where(friendship => friendship.Status == ProjectEnums.FriendshipStatus.Accepted)
 				.Where(friendship => friendship.SenderId == userId || friendship.ReceiverId == userId)
 				.Include(friendship => friendship.SenderId == userId ? friendship.Sender : friendship.Receiver)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(friendship => new Friendship // Or friendshipViewModel
 				{
 					Id = friendship.Id,
@@ -59,13 +62,13 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 					{
 						Id = friendship.Sender.Id,
 						UserName = friendship.Sender.UserName,
-						ProfileImage = friendship.Sender.ProfileImage
+						ProfileImageModel = friendship.Sender.ProfileImageModel
 					},
 					Receiver = friendship.Receiver == null || friendship.ReceiverId == userId ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
 						Id = friendship.Receiver.Id,
 						UserName = friendship.Receiver.UserName,
-						ProfileImage = friendship.Receiver.ProfileImage
+						ProfileImageModel = friendship.Receiver.ProfileImageModel
 					},
 				})
 				.AsNoTracking()
@@ -87,6 +90,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 			return await _context.Friendships
 				.Where(friendship => friendship.SenderId == userId && friendship.Status == ProjectEnums.FriendshipStatus.Pending)
 				.Include(friendship => friendship.Receiver)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(friendship => new Friendship // Or friendshipViewModel
 				{
 					Id = friendship.Id,
@@ -98,7 +102,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 					{
 						Id = friendship.Receiver.Id,
 						UserName = friendship.Receiver.UserName,
-						ProfileImage = friendship.Receiver.ProfileImage
+						ProfileImageModel = friendship.Receiver.ProfileImageModel
 					},
 				})
 				.AsNoTracking()
@@ -109,6 +113,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 			return await _context.Friendships
 				.Where(friendship => friendship.ReceiverId == userId && friendship.Status == ProjectEnums.FriendshipStatus.Pending)
 				.Include(friendship => friendship.Sender)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(friendship => new Friendship // Or friendshipViewModel
 				{
 					Id = friendship.Id,
@@ -120,7 +125,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 					{
 						Id = friendship.Sender.Id,
 						UserName = friendship.Sender.UserName,
-						ProfileImage = friendship.Sender.ProfileImage
+						ProfileImageModel = friendship.Sender.ProfileImageModel
 					},
 				})
 				.AsNoTracking()

@@ -9,12 +9,9 @@ using static BasicSocialMedia.Core.Enums.ProjectEnums;
 using Microsoft.EntityFrameworkCore;
 using Ganss.Xss;
 using BasicSocialMedia.Application.Utils;
-using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
-using BasicSocialMedia.Core.Consts;
-using Microsoft.AspNetCore.Http;
 using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
-using BasicSocialMedia.Application.Services.FileModelServices;
+using BasicSocialMedia.Core.Models.FileModels;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
@@ -96,7 +93,14 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 					PostId = post.Id,
 					Files = postDto.Files
 				};
-				await _postFileModelService.AddPostFileAsync(addPostFileDto);
+
+				bool mediaSaved = await _postFileModelService.AddPostFileAsync(addPostFileDto);
+				if (!mediaSaved)
+				{
+					_unitOfWork.Posts.Delete(post);
+					await _unitOfWork.Posts.Save();
+					return new AddPostDto();
+				}
 			}
 			return postDto;
 		}
@@ -116,14 +120,15 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			}
 
 			bool hasNewFiles = postDto.Files is not null && postDto.Files.Count > 0;
-			List<string>? oldMediaPath = postDto?.MediaPaths;
+			List<string>? oldMediaPath = postDto.MediaPaths ?? [];
+			IEnumerable<PostFileModel> postFileModels = (await _unitOfWork.PostFiles.FindAllAsync(file => file.PostId == postDto.Id)).Where(file => file != null)!;
 
 			UpdatePostFileDto? updatePostFileDto = null;
-			if (hasNewFiles && postDto is not null)
+			if (hasNewFiles || oldMediaPath!.Count > 0)
 			{
 				updatePostFileDto = new UpdatePostFileDto()
 				{
-					UserId = postDto.UserId,
+					UserId = postDto!.UserId,
 					PostId = post.Id,
 					Files = postDto.Files,
 					MediaPaths = oldMediaPath
@@ -135,20 +140,30 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			_unitOfWork.Posts.Update(post);
 			int effectedRows = await _unitOfWork.Posts.Save();
 
-			if (effectedRows > 0 && updatePostFileDto != null)
+			if (effectedRows > 0)
 			{
-				await _postFileModelService.UpdatePostFileAsync(updatePostFileDto);
+				if ( updatePostFileDto != null)
+				{
+					await _postFileModelService.UpdatePostFileAsync(updatePostFileDto);
+				}
+				if(updatePostFileDto is null && postFileModels.Any())
+				{
+					await _postFileModelService.DeletePostFileByPostIdAsync(postDto.Id);
+				}
+
 				return postDto;
 			}
 			return postDto;
 		}
 		public async Task<bool> DeletePostAsync(int postId)
 		{
-			Post? post = await _unitOfWork.Posts.GetByIdAsync(postId);
+			Post? post = await _unitOfWork.Posts.GetByIdWithTrackingAsync(postId);
 			if (post == null) return false;
+			List<string> files = (await _unitOfWork.PostFiles.GetAllAsync(file => file.PostId == post.Id)).Select(file => file!.Path).ToList();
+
 			_unitOfWork.Posts.Delete(post);
 			int effectedRows = await _unitOfWork.Posts.Save();
-			if (effectedRows > 0) await _postFileModelService.DeletePostFileByPostIdAsync(postId);
+			if (effectedRows > 0) _postFileModelService.DeletePostFiles(files);
 			return true;
 		}
 

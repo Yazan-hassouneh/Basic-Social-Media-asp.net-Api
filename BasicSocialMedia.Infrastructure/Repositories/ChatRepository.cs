@@ -15,32 +15,33 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 		{
 			Chat? chat = await _context.Chats
 				.Include(chat => chat.User1)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(chat => chat.User2)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(chat => chat.Files)
-				.Select(chat => new Chat 
+				.Select(chat => new Chat
+				{
+					Id = chat.Id,
+					Files = chat.Files.Select(file => new MessageFileModel
 					{
-						Id = chat.Id,
-						Files = chat.Files.Select(file => new MessageFileModel
-						{
-							Id = file.Id,
-							UserId = file.UserId,
-							Path = file.Path,
-						}).ToList(),
-						CreatedOn = chat.CreatedOn,
-						// ... other properties of Chat ...
-						User1 = chat.User1 == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-						{
-							Id = chat.User1.Id,
-							UserName = chat.User1.UserName,
-							ProfileImage = chat.User1.ProfileImage
-						},
-						User2 = chat.User2 == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-						{
-							Id = chat.User2.Id,
-							UserName = chat.User2.UserName,
-							ProfileImage = chat.User2.ProfileImage
-						}
-					})
+						Id = file.Id,
+						UserId = file.UserId,
+						Path = file.Path,
+					}).ToList(),
+					CreatedOn = chat.CreatedOn,
+					User1 = chat.User1 == null ? null : new ApplicationUser
+					{
+						Id = chat.User1.Id,
+						UserName = chat.User1.UserName,
+						ProfileImageModel = chat.User1.ProfileImageModel
+					},
+					User2 = chat.User2 == null ? null : new ApplicationUser
+					{
+						Id = chat.User2.Id,
+						UserName = chat.User2.UserName,
+						ProfileImageModel = chat.User2.ProfileImageModel
+					}
+				})
 				.AsNoTracking()
 				.FirstOrDefaultAsync(c => c.Id == id);
 
@@ -51,27 +52,28 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 			return await _context.Chats
 				.Where(chat => chat.User1Id == userId || chat.User2Id == userId)
 				.Include(chat => chat.User1)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(chat => chat.User2)
-				.Select(chat => new Chat // Or ChatViewModel
+					.ThenInclude(user => user!.ProfileImageModel)
+				.Select(chat => new Chat
 				{
 					Id = chat.Id,
 					CreatedOn = chat.CreatedOn,
-					// ... other properties of Chat ...
-					User1 = chat.User1 == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
+					User1 = chat.User1 == null ? null : new ApplicationUser
 					{
-						Id = chat.User1.Id, 
+						Id = chat.User1.Id,
 						UserName = chat.User1.UserName,
-						ProfileImage = chat.User1.ProfileImage
+						ProfileImageModel = chat.User1.ProfileImageModel
 					},
-					User2 = chat.User2 == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
+					User2 = chat.User2 == null ? null : new ApplicationUser
 					{
-						Id = chat.User2.Id, 
+						Id = chat.User2.Id,
 						UserName = chat.User2.UserName,
-						ProfileImage = chat.User2.ProfileImage
+						ProfileImageModel = chat.User2.ProfileImageModel
 					}
 				})
 				.AsNoTracking()
-				.ToListAsync(); 
+				.ToListAsync();
 		}
 	}
 }

@@ -18,8 +18,8 @@ namespace BasicSocialMedia.Core.Models.MainModels
 		public string UserId { get; set; } = null!;
 		public virtual ApplicationUser? User { get; set; }
 		public virtual ICollection<Comment> Comments { get; set; } = [];
-		public virtual IEnumerable<PostFileModel> Files { get; set; } = [];
-		public virtual IEnumerable<CommentFileModel> CommentFiles { get; set; } = [];
+		public virtual IEnumerable<PostFileModel> Files { get; set; } = new HashSet<PostFileModel>();
+		public virtual IEnumerable<CommentFileModel> CommentFiles { get; set; } = new HashSet<CommentFileModel>();
 		public virtual ICollection<PostReaction> PostReactions { get; set; } = [];
 	}
 }

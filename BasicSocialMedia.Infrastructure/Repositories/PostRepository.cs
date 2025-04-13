@@ -22,6 +22,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 		{
 			Post? post = await _context.Posts
 				.Include(post => post.User)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(post => post.Files)
 				.Select(post => new Post // Or ChatViewModel
 				{
@@ -33,6 +34,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = file.Id,
 						UserId = file.UserId,
+						PostId = file.PostId,
 						Path = file.Path,
 					}).ToList(),
 					IsDeleted = post.IsDeleted,
@@ -42,7 +44,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = post.User.Id,
 						UserName = post.User.UserName,
-						ProfileImage = post.User.ProfileImage
+						ProfileImageModel = post.User.ProfileImageModel
 					},
 				})
 				.AsNoTracking()
@@ -55,6 +57,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 			return await _context.Posts
 				.Where(post => post.UserId == userId)
 				.Include(post => post.User)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(post => post.Files)
 				.Select(post => new Post
 				{
@@ -74,7 +77,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = post.User.Id,
 						UserName = post.User.UserName,
-						ProfileImage = post.User.ProfileImage
+						ProfileImageModel = post.User.ProfileImageModel
 					},
 				})
 				.AsNoTracking()
@@ -86,6 +89,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 			return await _context.Posts
 				.Where(matcher)
 				.Include(post => post.User)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(post => post.Files)
 				.Select(post => new Post
 				{
@@ -105,7 +109,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = post.User.Id,
 						UserName = post.User.UserName,
-						ProfileImage = post.User.ProfileImage
+						ProfileImageModel = post.User.ProfileImageModel
 					},
 				})
 				.AsNoTracking()

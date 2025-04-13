@@ -23,6 +23,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 				.Include(comment => comment.User)
 				.Include(comment => comment.CommentReactions)
 					.ThenInclude(reaction => reaction.User)
+						.ThenInclude(user => user!.ProfileImageModel)
 				.Include(comment => comment.Files)
 				.Select(comment => new Comment
 				{
@@ -38,7 +39,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 						{
 							Id = cr.User.Id,
 							UserName = cr.User.UserName,
-							ProfileImage = cr.User.ProfileImage,
+							ProfileImageModel = cr.User.ProfileImageModel,
 						},
 					}).ToList(),
 					Files = comment.Files.Select(file => new CommentFileModel
@@ -52,7 +53,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = comment.User.Id,
 						UserName = comment.User.UserName,
-						ProfileImage = comment.User.ProfileImage
+						ProfileImageModel = comment.User.ProfileImageModel
 					}
 				})
 				.AsNoTracking()
@@ -68,6 +69,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 				.Include(comment => comment.User)
 				.Include(comment => comment.CommentReactions)
 					.ThenInclude(reaction => reaction.User)
+						.ThenInclude(user => user!.ProfileImageModel)
 				.Include(comment => comment.Files)
 				.Select(comment => new Comment
 				{
@@ -83,7 +85,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 						{
 							Id = cr.User.Id,
 							UserName = cr.User.UserName,
-							ProfileImage = cr.User.ProfileImage,
+							ProfileImageModel = cr.User.ProfileImageModel,
 						},
 					}).ToList(),
 					Files = comment.Files.Select(file => new CommentFileModel
@@ -97,7 +99,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = comment.User.Id,
 						UserName = comment.User.UserName,
-						ProfileImage = comment.User.ProfileImage
+						ProfileImageModel = comment.User.ProfileImageModel
 					}
 				})
 				.AsNoTracking()

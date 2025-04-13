@@ -9,7 +9,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.FilConfig
 	{
 		public void Configure(EntityTypeBuilder<PostFileModel> builder)
 		{
-			BaseFileModelConfig.ConfigurePostComment(builder);
+			BaseFileModelConfig.ConfigureFile(builder);
 
 			builder.Property(model => model.PostId).IsRequired();
 

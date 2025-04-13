@@ -32,15 +32,26 @@ namespace BasicSocialMedia.Infrastructure.Repositories.BaseRepo
 		{
 			return await _context.Set<T>().AsNoTracking().Where(matcher).ToListAsync();
 		}
+		public async Task<IEnumerable<T?>> FindAllWithTrackingAsync(Expression<Func<T, bool>> matcher)
+		{
+			return await _context.Set<T>().Where(matcher).ToListAsync();
+		}
 		public async Task<T> AddAsync(T entity)
 		{
 			await _context.Set<T>().AddAsync(entity);
 			return entity;
-		}		
+		}
 		public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
 		{
-			await _context.Set<T>().AddRangeAsync(entities);
-			return entities;
+			try
+			{
+				await _context.Set<T>().AddRangeAsync(entities);
+				return entities;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error adding range of entities", ex);
+			}
 		}
 		public T Update(T entity)
 		{

@@ -14,7 +14,9 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 		{
 			Follow? follow = await _context.Follows
 				.Include(follow => follow.Follower)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(follow => follow.FollowingUser)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(follow => new Follow
 				{
 					Id = follow.Id,
@@ -26,13 +28,13 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 					{
 						Id = follow.Follower.Id,
 						UserName = follow.Follower.UserName,
-						ProfileImage = follow.Follower.ProfileImage
+						ProfileImageModel = follow.Follower.ProfileImageModel
 					},
 					FollowingUser = follow.FollowingUser == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
 					{
 						Id = follow.FollowingUser.Id,
 						UserName = follow.FollowingUser.UserName,
-						ProfileImage = follow.FollowingUser.ProfileImage
+						ProfileImageModel = follow.FollowingUser.ProfileImageModel
 					}
 				})
 				.AsNoTracking()
@@ -45,6 +47,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 			return await _context.Follows
 				.Where(follow => follow.FollowingId == userId)
 				.Include(follow => follow.Follower)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(follow => new Follow // Or followViewModel
 				{
 					Id = follow.Id,
@@ -55,7 +58,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 					{
 						Id = follow.Follower.Id,
 						UserName = follow.Follower.UserName,
-						ProfileImage = follow.Follower.ProfileImage
+						ProfileImageModel = follow.Follower.ProfileImageModel
 					},
 				})
 				.AsNoTracking()
@@ -66,6 +69,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 			return await _context.Follows
 				.Where(follow => follow.FollowerId == userId)
 				.Include(follow => follow.FollowingUser)
+					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(follow => new Follow // Or followViewModel
 				{
 					Id = follow.Id,
@@ -76,7 +80,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 					{
 						Id = follow.FollowingUser.Id,
 						UserName = follow.FollowingUser.UserName,
-						ProfileImage = follow.FollowingUser.ProfileImage
+						ProfileImageModel = follow.FollowingUser.ProfileImageModel
 					},
 				})
 				.AsNoTracking()

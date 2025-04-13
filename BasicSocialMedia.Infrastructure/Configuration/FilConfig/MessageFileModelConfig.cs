@@ -9,7 +9,7 @@ namespace BasicSocialMedia.Infrastructure.Configuration.FilConfig
 	{
 		public void Configure(EntityTypeBuilder<MessageFileModel> builder)
 		{
-			BaseFileModelConfig.ConfigurePostComment(builder);
+			BaseFileModelConfig.ConfigureFile(builder);
 
 			builder.Property(model => model.MessageId).IsRequired();
 			builder.Property(model => model.ChatId).IsRequired();
@@ -22,8 +22,8 @@ namespace BasicSocialMedia.Infrastructure.Configuration.FilConfig
 
 			builder.HasOne(chatFile => chatFile.Chat)
 						.WithMany(chat => chat.Files)
-						.HasForeignKey(chatFile => chatFile.MessageId)
-						.OnDelete(DeleteBehavior.Cascade);
+						.HasForeignKey(chatFile => chatFile.ChatId)
+						.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

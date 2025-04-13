@@ -1,5 +1,6 @@
 ﻿using BasicSocialMedia.Core.DTOs.AuthDTOs;
 using BasicSocialMedia.Core.DTOs.Comment;
+using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 
 namespace BasicSocialMedia.Core.DTOs.PostDTOs
 {
@@ -7,7 +8,7 @@ namespace BasicSocialMedia.Core.DTOs.PostDTOs
 	{
 		public int Id { get; set; }
 		public string? Content { get; set; }
-		public List<string>? Files { get; set; }
+		public List<GetPostFilesDto>? Files { get; set; }
 		public int CommentsCount { get; set; }
 		public int ReactionsCount { get; set; }
 		public DateTime CreatedOn { get; set; }

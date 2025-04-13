@@ -15,11 +15,15 @@ namespace BasicSocialMedia.Core.Consts
 		public const string PostsImagesPath = "/Uploads/Posts/Images/";
 		public const string PostsVideosPath = "/Uploads/Posts/Video/";
 
+		//Images Settings
 		public const string ImagesAllowedExtension = ".jpeg,.jpg,.png";
+		public static readonly string[] AllowedImagesMimeTypes = { "image/png", "image/jpeg", "image/jpg", "image/gif" };
 		public const int ImagesMaxSizeInMB = 3;
 		public const int ImagesMaxSizeInBytes = ImagesMaxSizeInMB * 1024 * 1024;
 
+		//Video Settings
 		public const string VideoAllowedExtension = ".mp4,.mov,.avi";
+		public static readonly string[] AllowedVideosMimeTypes = { "video/mp4", "video/avi", "video/quicktime" };
 		public const int VideoMaxSizeInMB = 300;
 		public const int VideoMaxSizeInBytes = ImagesMaxSizeInMB * 1024 * 1024;
 	}

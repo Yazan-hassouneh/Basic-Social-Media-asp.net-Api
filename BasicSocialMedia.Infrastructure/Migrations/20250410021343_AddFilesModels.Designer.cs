@@ -4,6 +4,7 @@ using BasicSocialMedia.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BasicSocialMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250410021343_AddFilesModels")]
+    partial class AddFilesModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,6 +89,9 @@ namespace BasicSocialMedia.Infrastructure.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfileImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -256,12 +262,9 @@ namespace BasicSocialMedia.Infrastructure.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("ProfileImages", "File");
                 });
@@ -793,17 +796,6 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("BasicSocialMedia.Core.Models.FileModels.ProfileImageModel", b =>
-                {
-                    b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "User")
-                        .WithOne("ProfileImageModel")
-                        .HasForeignKey("BasicSocialMedia.Core.Models.FileModels.ProfileImageModel", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("BasicSocialMedia.Core.Models.M2MRelations.Block", b =>
                 {
                     b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "Blocked")
@@ -1023,8 +1015,6 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.Navigation("Friendships");
 
                     b.Navigation("Posts");
-
-                    b.Navigation("ProfileImageModel");
                 });
 
             modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Chat", b =>
