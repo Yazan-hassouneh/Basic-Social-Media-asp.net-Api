@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BasicSocialMedia.Core.DTOs.FileModelsDTOs
 {
-	public class UpdateCommentFileDto : IMediaPaths, IIFormFile, IUserIdDto, IPostIdDto, ICommentIdDto
+	public class UpdateCommentFileDto : IIFormFileAndMediaPath, IUserIdDto, IPostIdDto, ICommentIdDto
 	{
 		public string UserId { get; set; } = null!;
 		public int CommentId { get; set; }

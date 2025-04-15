@@ -1,4 +1,5 @@
 ﻿using BasicSocialMedia.Core.DTOs.AuthDTOs;
+using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 
 namespace BasicSocialMedia.Core.DTOs.Comment
 {
@@ -10,7 +11,7 @@ namespace BasicSocialMedia.Core.DTOs.Comment
 		public int ReactionsCount { get; set; }
 		public string RowVersion { get; set; } = null!;
 		public string? Content { get; set; }
-		public List<string>? Files { get; set; }
+		public List<GetCommentFileDto>? Files { get; set; }
 		public GetBasicUserInfo User { get; set; } = null!;
 		public List<GetBasicUserInfo>? ReactionsList { get; set; }
 	}

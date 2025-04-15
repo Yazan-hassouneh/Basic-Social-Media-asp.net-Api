@@ -4,13 +4,17 @@ using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.FileModels;
+using FluentValidation;
 
 namespace BasicSocialMedia.Application.Services.FileModelServices
 {
-	public class MessageFileModelService(IUnitOfWork unitOfWork, IImageService imageService) : IMessageFileModelService
+	public class MessageFileModelService(IUnitOfWork unitOfWork, IImageService imageService, IValidator<AddMessageFileDto> addMessageFileValidator, IValidator<UpdateMessageFileDto> updateMessageFileValidator) : IMessageFileModelService
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IImageService _imageService = imageService;
+
+		private readonly IValidator<AddMessageFileDto> _addMessageFileValidator = addMessageFileValidator;
+		private readonly IValidator<UpdateMessageFileDto> _updateMessageFileValidator = updateMessageFileValidator;
 
 		public async Task<IEnumerable<string>> GetAllFilesByChatIdAsync(int chatId)
 		{
@@ -32,7 +36,9 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 		}
 		public async Task<bool> AddMessageFileAsync(AddMessageFileDto addMessageFilesDto)
 		{
-			if (addMessageFilesDto == null || addMessageFilesDto.Files.Count == 0) return false;
+			var validationResult = await _addMessageFileValidator.ValidateAsync(addMessageFilesDto);
+			if (!validationResult.IsValid) return false;
+
 			List<string> paths = await _imageService.GetPaths(addMessageFilesDto.Files, FileSettings.MessagesImagesPath, FileSettings.MessagesVideosPath);
 			try
 			{
@@ -46,7 +52,8 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 				}).ToList();
 
 				await _unitOfWork.MessageFiles.AddRangeAsync(messageFileModels);
-				await _unitOfWork.MessageFiles.Save();
+				int effectedRows = await _unitOfWork.MessageFiles.Save();
+				if (effectedRows == 0) return false;
 				return true;
 			}
 			catch (Exception)
@@ -61,32 +68,34 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 		}
 		public async Task<bool> UpdateMessageFileAsync(UpdateMessageFileDto updateMessageFileDto)
 		{
-			if (updateMessageFileDto.MediaPaths is null && updateMessageFileDto.Files is null) return false;
-			IEnumerable<MessageFileModel?> files = await _unitOfWork.MessageFiles.GetAllAsync(messageFile => messageFile.MessageId == updateMessageFileDto.MessageId);
-			if (files != null && files.Any() && updateMessageFileDto.MediaPaths != null)
+			var validationResult = await _updateMessageFileValidator.ValidateAsync(updateMessageFileDto);
+			if (!validationResult.IsValid) return false;
+
+			if (updateMessageFileDto.MediaPaths?.Count > 0)
 			{
-				foreach (var file in files)
+				var files = await _unitOfWork.MessageFiles.GetAllAsync(messageFile => messageFile.MessageId == updateMessageFileDto.MessageId);
+				var filesToDelete = files?.Where(f => f != null && !updateMessageFileDto.MediaPaths.Contains(f.Path)).ToList();
+
+				if (filesToDelete?.Count > 0)
 				{
-					if (file != null && !updateMessageFileDto.MediaPaths.Contains(file!.Path))
-					{
-						// delete from projectFile
-						_imageService.DeleteImage(file!.Path, FileSettings.MessagesImagesPath);
-						// delete from database
-						_unitOfWork.MessageFiles.Delete(file);
-						await _unitOfWork.MessageFiles.Save();
-					}
+					// delete from projectFile
+					foreach (var file in filesToDelete) _imageService.DeleteImage(file!.Path, FileSettings.CommentsImagesPath);
+					// delete from database
+					foreach (var file in filesToDelete) _unitOfWork.MessageFiles.Delete(file!);
+
+					await _unitOfWork.MessageFiles.Save();
 				}
 			}
 
-			AddMessageFileDto addMessageFileDto = new()
+			AddMessageFileDto addCommentFileDto = new()
 			{
 				UserId = updateMessageFileDto.UserId,
 				MessageId = updateMessageFileDto.MessageId,
 				ChatId = updateMessageFileDto.ChatId,
-				Files = updateMessageFileDto.Files
+				Files = updateMessageFileDto.Files,
 			};
 
-			return await AddMessageFileAsync(addMessageFileDto);
+			return await AddMessageFileAsync(addCommentFileDto);
 		}
 		public async Task<bool> DeleteMessageFileByChatIdAsync(int chatId)
 		{

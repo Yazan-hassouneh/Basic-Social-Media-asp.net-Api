@@ -1,5 +1,7 @@
 ﻿using BasicSocialMedia.Application.Utils;
+using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 using BasicSocialMedia.Core.DTOs.PostDTOs;
+using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.MainModels;
 using System.Net;
 
@@ -25,5 +27,13 @@ namespace BasicSocialMedia.Application.Mappers
 				.ForMember(destination => destination.RowVersion, opt => opt.ConvertUsing<Base64StringToByteArrayConverter, string>(src => src.RowVersion));
 
 		}
+		protected static List<GetPostFilesDto> MapPostFiles(IEnumerable<PostFileModel>? files) =>
+			files?.Select(postFile => new GetPostFilesDto
+			{
+				Id = postFile.Id,
+				UserId = postFile.UserId,
+				Path = postFile.Path,
+				PostId = postFile.PostId
+			}).ToList() ?? [];
 	}
 }

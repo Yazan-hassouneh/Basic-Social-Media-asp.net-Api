@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BasicSocialMedia.Core.DTOs.FileModelsDTOs
 {
-	public class UpdateMessageFileDto : IUserIdDto, IChatIdDto, IIFormFile, IMessageIdDto, IMediaPaths
+	public class UpdateMessageFileDto : IIFormFileAndMediaPath, IMessageIdDto, IUserIdDto, IChatIdDto
 	{
 		public string UserId { get; set; } = null!;
 		public int MessageId { get; set; }

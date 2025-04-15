@@ -6,14 +6,15 @@ using BasicSocialMedia.Infrastructure.Data;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 
-namespace BasicSocialMedia.Application.DTOsValidation.FileModelsDTOs.PostFileModelsDTOs
+namespace BasicSocialMedia.Application.DTOsValidation.FileModelsDTOs.CommentFileModesDTOs
 {
-	public class UpdatePostFileDtoValidator : AbstractValidator<UpdatePostFileDto>
+	public class UpdateCommentFileDtoValidator : AbstractValidator<UpdateCommentFileDto>
 	{
-		public UpdatePostFileDtoValidator(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+		public UpdateCommentFileDtoValidator(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
 		{
 			Include(new BaseUserIdDtoValidation(userManager));
 			Include(new BasePostIdDtoValidation(context));
+			Include(new BaseCommentIdDtoValidation(context)); 
 			Include(new BaseIFormFileAndMediaPathValidator());
 		}
 	}

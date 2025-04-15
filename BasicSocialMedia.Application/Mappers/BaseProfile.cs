@@ -27,13 +27,5 @@ namespace BasicSocialMedia.Application.Mappers
 				ProfileImage = cr.User?.ProfileImageModel!.Path ?? string.Empty
 			}).ToList() ?? [];		
 		
-		protected static List<GetPostFilesDto> MapPostFiles(IEnumerable<PostFileModel>? files) =>
-			files?.Select(postFile => new GetPostFilesDto
-			{
-				Id = postFile.Id,
-				UserId = postFile.UserId,
-				Path = postFile.Path,
-				PostId = postFile.PostId
-			}).ToList() ?? [];
 	}
 }

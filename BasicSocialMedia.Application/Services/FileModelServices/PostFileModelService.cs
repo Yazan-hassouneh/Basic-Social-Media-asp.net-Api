@@ -60,7 +60,7 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 		public async Task<bool> UpdatePostFileAsync(UpdatePostFileDto updatePostFileDto)
 		{
 			var validationResult = await _updatePostFileValidator.ValidateAsync(updatePostFileDto);
-			if (!validationResult.IsValid || (updatePostFileDto.MediaPaths is null && updatePostFileDto.Files is null)) return false;
+			if (!validationResult.IsValid) return false;
 
 			if (updatePostFileDto.MediaPaths?.Count > 0)
 			{

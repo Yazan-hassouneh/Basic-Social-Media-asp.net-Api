@@ -1,6 +1,11 @@
-﻿using BasicSocialMedia.Core.Consts;
+﻿using BasicSocialMedia.Application.DTOsValidation.PostDtosValidation;
+using BasicSocialMedia.Application.Services.ModelsServices;
+using BasicSocialMedia.Application.Services.ValidationServices;
+using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.Comment;
+using BasicSocialMedia.Core.DTOs.PostDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.ValidationServices;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +15,13 @@ namespace BasicSocialMedia.Web.Controllers
 	[Route("api/[controller]")]
 	[ApiController]
 	[Authorize(Policy = PoliciesSettings.allowAllUsersPolicy)]
-	public class CommentController(ICommentService commentService, IValidator<AddCommentDto> addCommentDtoValidator, IValidator<UpdateCommentDto> updateCommentDtoValidator, IAuthorizationService authorizationService) : ControllerBase
+	public class CommentController(ICommentService commentService, IValidator<AddCommentDto> addCommentDtoValidator, IValidator<UpdateCommentDto> updateCommentDtoValidator, IAuthorizationService authorizationService, IFileValidationResult fileValidationResult) : ControllerBase
 	{
 		private readonly ICommentService _commentService = commentService;
 		private readonly IValidator<AddCommentDto> _addCommentDtoValidator = addCommentDtoValidator;
 		private readonly IValidator<UpdateCommentDto> _updateCommentDtoValidator = updateCommentDtoValidator;
 		private readonly IAuthorizationService _authorizationService = authorizationService;
+		private readonly IFileValidationResult _fileValidationResult = fileValidationResult;
 
 
 		[HttpGet]
@@ -64,24 +70,30 @@ namespace BasicSocialMedia.Web.Controllers
 
 		[HttpPost]
 		[Route("create")]
-		public async Task<IActionResult> CreateNewComment([FromBody] AddCommentDto CommentDto)
+		public async Task<IActionResult> CreateNewComment([FromForm] AddCommentDto CommentDto)
 		{
+			var dtoResult = await _addCommentDtoValidator.ValidateAsync(CommentDto);
+			var fileResult = await _fileValidationResult.ValidateFiles(CommentDto.Files);
+
+			if (!dtoResult.IsValid) return BadRequest(dtoResult.Errors);
+			if (string.IsNullOrEmpty(CommentDto.Content) && !fileResult.Any()) return BadRequest(dtoResult.Errors);
+
 			var isUserOwner = await _authorizationService.AuthorizeAsync(User, CommentDto.UserId, PoliciesSettings.Ownership);
 			if (!isUserOwner.Succeeded) return Forbid();
 
-			var result = await _addCommentDtoValidator.ValidateAsync(CommentDto);
-			if (!result.IsValid) return BadRequest(result.Errors);
 			AddCommentDto Comment = await _commentService.CreateCommentAsync(CommentDto);
 			return Ok(Comment);
 		}
 
 		[HttpPut]
 		[Route("update/{commentId}")]
-		public async Task<IActionResult> UpdateComment([FromBody] UpdateCommentDto CommentDto)
+		public async Task<IActionResult> UpdateComment([FromForm] UpdateCommentDto CommentDto)
 		{
-			var result = await _updateCommentDtoValidator.ValidateAsync(CommentDto);
-			if (!result.IsValid) return BadRequest(result.Errors);
+			var dtoResult = await _updateCommentDtoValidator.ValidateAsync(CommentDto);
+			var fileResult = await _fileValidationResult.ValidateFiles(CommentDto.Files);
 
+			if (!dtoResult.IsValid) return BadRequest(dtoResult.Errors);
+			if (string.IsNullOrEmpty(CommentDto.Content) && !fileResult.Any() && CommentDto.MediaPaths!.Count == 0) return BadRequest(dtoResult.Errors);
 
 			var isUserOwner = await _authorizationService.AuthorizeAsync(User, CommentDto.UserId, PoliciesSettings.Ownership);
 			if (!isUserOwner.Succeeded) return Forbid();

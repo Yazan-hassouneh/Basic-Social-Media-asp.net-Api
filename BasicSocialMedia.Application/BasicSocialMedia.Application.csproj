@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOsValidation\FileModelsDTOs\CommentFileModesDTOs\" />
-    <Folder Include="DTOsValidation\FileModelsDTOs\MessageFileModelsDTOs\" />
     <Folder Include="Exceptions\" />
     <Folder Include="BackgroundJobs\" />
   </ItemGroup>

@@ -1,23 +1,25 @@
-﻿using BasicSocialMedia.Application.Services.FileServices;
-using BasicSocialMedia.Core.Consts;
+﻿using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.FileModels;
-using BasicSocialMedia.Core.Models.MainModels;
-using System.ComponentModel.Design;
+using FluentValidation;
 
 namespace BasicSocialMedia.Application.Services.FileModelServices
 {
-	public class CommentFileModelService(IUnitOfWork unitOfWork, IImageService imageService) : ICommentFileModeService
+	public class CommentFileModelService(IUnitOfWork unitOfWork, IImageService imageService, IValidator<AddCommentFileDto> addCommentFileValidator, IValidator<UpdateCommentFileDto> updateCommentFileValidator) : ICommentFileModeService
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IImageService _imageService = imageService;
+		private readonly IValidator<AddCommentFileDto> _addCommentFileValidator = addCommentFileValidator;
+		private readonly IValidator<UpdateCommentFileDto> _updateCommentFileValidator = updateCommentFileValidator;
 
 		public async Task<bool> AddCommentFileAsync(AddCommentFileDto addCommentFilesDto)
 		{
-			if (addCommentFilesDto == null || addCommentFilesDto.Files.Count == 0) return false;
+			var validationResult = await _addCommentFileValidator.ValidateAsync(addCommentFilesDto);
+			if (!validationResult.IsValid) return false;
+
 			List<string> paths = await _imageService.GetPaths(addCommentFilesDto.Files, FileSettings.CommentsImagesPath, FileSettings.CommentsVideosPath);
 			try
 			{
@@ -31,7 +33,8 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 				}).ToList();
 
 				await _unitOfWork.CommentFiles.AddRangeAsync(commentFileModels);
-				await _unitOfWork.CommentFiles.Save();
+				int effectedRows = await _unitOfWork.CommentFiles.Save();
+				if (effectedRows == 0) return false;
 				return true;
 			}
 			catch (Exception)
@@ -46,20 +49,22 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 		}
 		public async Task<bool> UpdateCommentFileAsync(UpdateCommentFileDto updateCommentFileDto)
 		{
-			if (updateCommentFileDto.MediaPaths is null && updateCommentFileDto.Files is null) return false;
-			IEnumerable<CommentFileModel?> files = await _unitOfWork.CommentFiles.GetAllAsync(commentFile => commentFile.CommentId == updateCommentFileDto.CommentId);
-			if (files != null && files.Any() && updateCommentFileDto.MediaPaths != null)
+			var validationResult = await _updateCommentFileValidator.ValidateAsync(updateCommentFileDto);
+			if (!validationResult.IsValid) return false;
+
+			if (updateCommentFileDto.MediaPaths?.Count > 0)
 			{
-				foreach (var file in files)
+				var files = await _unitOfWork.CommentFiles.GetAllAsync(commentFile => commentFile.CommentId == updateCommentFileDto.CommentId);
+				var filesToDelete = files?.Where(f => f != null && !updateCommentFileDto.MediaPaths.Contains(f.Path)).ToList();
+
+				if (filesToDelete?.Count > 0)
 				{
-					if (file != null && !updateCommentFileDto.MediaPaths.Contains(file!.Path))
-					{
-						// delete from projectFile
-						_imageService.DeleteImage(file!.Path, FileSettings.CommentsImagesPath);
-						// delete from database
-						_unitOfWork.CommentFiles.Delete(file);
-						await _unitOfWork.CommentFiles.Save();
-					}
+					// delete from projectFile
+					foreach (var file in filesToDelete) _imageService.DeleteImage(file!.Path, FileSettings.CommentsImagesPath);
+					// delete from database
+					foreach (var file in filesToDelete) _unitOfWork.CommentFiles.Delete(file!);
+
+					await _unitOfWork.CommentFiles.Save();
 				}
 			}
 
