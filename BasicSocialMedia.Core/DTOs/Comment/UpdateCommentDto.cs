@@ -11,7 +11,6 @@ namespace BasicSocialMedia.Core.DTOs.Comment
 		public string UserId { get; set; } = null!;
 		public string? Content { get; set; }
 		public List<string>? MediaPaths { get; set; }
-		public string? Media { get; set; }
 		public string RowVersion { get; set; } = null!;// Required for concurrency handling
 	}
 }

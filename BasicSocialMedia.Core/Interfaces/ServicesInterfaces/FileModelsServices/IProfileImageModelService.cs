@@ -6,8 +6,9 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices
 	{
 		Task<IEnumerable<string>> GetAllImagesByUserIdAsync(string userId);
 		Task<bool> AddProfileImageAsync(AddProfileImageDto addProfileImageDto);
-		Task<bool> UpdateMessageFileAsync(UpdateProfileImageDto updateProfileImageDto);
+		Task<bool> UpdateMessageFileAsync(AddProfileImageDto addProfileImageDto);
 		Task<bool> DeleteProfileImageByImageIdAsync(int imageId);
 		Task<bool> DeleteProfileImageByUserIdAsync(string userId);
+		Task<string?> GetUserId(int profileImage);
 	}
 }

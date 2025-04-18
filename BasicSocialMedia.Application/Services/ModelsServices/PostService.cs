@@ -150,8 +150,6 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 				{
 					await _postFileModelService.DeletePostFileByPostIdAsync(postDto.Id);
 				}
-
-				return postDto;
 			}
 			return postDto;
 		}

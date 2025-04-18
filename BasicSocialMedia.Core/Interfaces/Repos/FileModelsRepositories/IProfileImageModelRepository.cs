@@ -5,5 +5,6 @@ namespace BasicSocialMedia.Core.Interfaces.Repos.FileModelsRepositories
 {
 	public interface IProfileImageModelRepository : IBaseFileModelsRepository<ProfileImageModel>
 	{
+		Task<string?> GetUserId(int profileImageId);
 	}
 }

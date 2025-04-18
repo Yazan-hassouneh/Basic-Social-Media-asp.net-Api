@@ -5,6 +5,7 @@ namespace BasicSocialMedia.Core.Interfaces.Repos
 {
 	public interface IMessageRepository : IBaseRepository<Message>
 	{
+		Task<string?> GetUserId(int messageId);
 		Task<IEnumerable<Message?>> GetAllAsync(int chatId);
 	}
 }

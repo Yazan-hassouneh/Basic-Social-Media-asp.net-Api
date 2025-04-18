@@ -4,6 +4,7 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 {
 	public interface IMessagesServices
 	{
+		Task<string?> GetUserId(int messageId);
 		Task<IEnumerable<GetMessagesDto>> GetMessagesByChatIdAsync(int chatId);
 		Task<AddMessageDto> CreateMessageAsync(AddMessageDto message);
 		Task<UpdateMessageDto?> UpdateMessageAsync(UpdateMessageDto message);

@@ -143,5 +143,21 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 				return false;
 			}
 		}
+		public bool DeleteCommentFiles(List<string> files)
+		{
+			try
+			{
+				foreach (var file in files)
+				{
+					// delete from projectFile
+					_imageService.DeleteImage(file, FileSettings.CommentsImagesPath);
+				}
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
 	}
 }

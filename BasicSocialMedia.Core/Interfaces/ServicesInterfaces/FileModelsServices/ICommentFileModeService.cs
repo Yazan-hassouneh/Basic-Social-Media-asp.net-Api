@@ -9,5 +9,6 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices
 		Task<bool> DeleteCommentFileByCommentIdAsync(int commentId);
 		Task<bool> DeleteCommentFileByPostIdAsync(int postId);
 		Task<bool> DeleteCommentFileByFileIdAsync(int fileId);
+		bool DeleteCommentFiles(List<string> files);
 	}
 }

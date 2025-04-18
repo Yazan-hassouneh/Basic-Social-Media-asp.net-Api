@@ -23,6 +23,12 @@ namespace BasicSocialMedia.Web.Startup
 					options.RequireRole(RolesSettings.adminRoleName, RolesSettings.superAdminRoleName);
 				})
 
+				.AddPolicy(PoliciesSettings.allowSuperAdminAdminModeratorPolicy, options =>
+				{
+					options.RequireAuthenticatedUser();
+					options.RequireRole(RolesSettings.superAdminRoleName, RolesSettings.ModeratorRoleName, RolesSettings.userRoleName);
+				})
+
 				.AddPolicy(PoliciesSettings.allowOnlySuperAdminPolicy, options =>
 				{
 					options.RequireAuthenticatedUser();

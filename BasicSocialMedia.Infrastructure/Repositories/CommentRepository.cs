@@ -30,6 +30,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					Id = comment.Id,
 					CreatedOn = comment.CreatedOn,
 					Content = comment.Content,
+					PostId = comment.PostId,
 					RowVersion = comment.RowVersion,
 					CommentReactions = comment.CommentReactions.Select(cr => new CommentReaction
 					{
@@ -46,6 +47,8 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = file.Id,
 						UserId = file.UserId,
+						PostId = file.PostId,
+						CommentId = comment.Id,
 						Path = file.Path,
 					}).ToList(),
 					// ... other properties of comment ...
@@ -76,6 +79,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					Id = comment.Id,
 					CreatedOn = comment.CreatedOn,
 					Content = comment.Content,
+					PostId = comment.PostId,
 					RowVersion = comment.RowVersion,
 					CommentReactions = comment.CommentReactions.Select(cr => new CommentReaction
 					{
@@ -92,6 +96,8 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = file.Id,
 						UserId = file.UserId,
+						PostId = file.PostId,
+						CommentId = comment.Id,
 						Path = file.Path,
 					}).ToList(),
 					// ... other properties of comment ...

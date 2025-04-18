@@ -53,5 +53,10 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			await _unitOfWork.Messages.Save();
 			return true;
 		}
+
+		public Task<string?> GetUserId(int messageId)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

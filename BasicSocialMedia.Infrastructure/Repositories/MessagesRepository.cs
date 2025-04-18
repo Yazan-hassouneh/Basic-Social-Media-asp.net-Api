@@ -10,6 +10,12 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 	internal class MessagesRepository(ApplicationDbContext context) : BaseRepository<Message>(context), IMessageRepository
 	{
 		private readonly ApplicationDbContext _context = context;
+
+		public async Task<string?> GetUserId(int postId)
+		{
+			Message? message = await _context.Messages.AsNoTracking().FirstOrDefaultAsync(post => post.Id == postId);
+			return "Empty String";
+		}
 		public override async Task<Message?> GetByIdAsync(int id)
 		{
 			Message? message = await _context.Messages

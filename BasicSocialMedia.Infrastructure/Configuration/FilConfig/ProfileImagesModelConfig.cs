@@ -10,6 +10,8 @@ namespace BasicSocialMedia.Infrastructure.Configuration.FilConfig
 		public void Configure(EntityTypeBuilder<ProfileImageModel> builder)
 		{
 			BaseFileModelConfig.ConfigureFile(builder);
+
+			builder.Property(model => model.Current).HasDefaultValue(true);
 		}
 	}
 }

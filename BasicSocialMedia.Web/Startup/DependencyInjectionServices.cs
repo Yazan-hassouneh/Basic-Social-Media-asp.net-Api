@@ -91,7 +91,6 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IValidator<AddMessageFileDto>, AddMessageFileDtoValidator>();
 			services.AddScoped<IValidator<UpdatePostFileDto>, UpdatePostFileDtoValidator>();
 			services.AddScoped<IValidator<AddPostReactionDto>, AddPostReactionDtoValidator>();
-			services.AddScoped<IValidator<UpdateProfileImageDto>, UpdateProfileImageValidator>();
 			services.AddScoped<IValidator<UpdateCommentFileDto>, UpdateCommentFileDtoValidator>();
 			services.AddScoped<IValidator<SendFollowRequestDto>, SendFollowRequestDtoValidator>();
 			services.AddScoped<IValidator<UpdateMessageFileDto>, UpdateMessageFileDtoValidator>();
