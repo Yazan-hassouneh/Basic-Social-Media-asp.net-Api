@@ -1,6 +1,8 @@
 ﻿using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.AuthDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
+using BasicSocialMedia.Core.Models.AuthModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +10,14 @@ namespace BasicSocialMedia.Web.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class AccountController(IJWTService jwtService, IAccountService accountService) : ControllerBase
+	public class AccountController(IJWTService jwtService, IAccountService accountService, UserManager<ApplicationUser> userManager, IAuthorizationService authorizationService) : ControllerBase
 	{
 		private readonly IJWTService _jwtService = jwtService;
 		private readonly IAccountService _accountService = accountService;
+		private readonly UserManager<ApplicationUser> _userManager = userManager;
+		private readonly IAuthorizationService _authorizationService = authorizationService;
+
+
 		[HttpPost]
 		[Route("create")]
 		public async Task<IActionResult> Create([FromBody] CreateAccountDto newAccount)
@@ -58,6 +64,37 @@ namespace BasicSocialMedia.Web.Controllers
 			var result = await _jwtService.RevokeTokenAsync(token);
 			if (!result) return BadRequest("Token is invalid");
 			return Ok();
+		}
+
+		[HttpPost("delete/{userId}")]
+		[Authorize]
+		public async Task<IActionResult> SoftDeleteUser([FromRoute] string userId)
+		{
+			var authorizationOwnership = await _authorizationService.AuthorizeAsync(User, userId, PoliciesSettings.Ownership);
+			var authorizationCanDelete = await _authorizationService.AuthorizeAsync(User, userId, PoliciesSettings.allowSuperAdminAdminPolicy);
+			if (!authorizationOwnership.Succeeded && !authorizationCanDelete.Succeeded)
+			{
+				return Forbid(); // Return forbidden if the user does not meet the policy requirements
+			}
+
+			var user = await _userManager.FindByIdAsync(userId);
+			if (user is null) return NotFound();
+
+			user.IsDeleted = true;
+			var result = await _userManager.UpdateAsync(user);
+
+			if (result.Succeeded)
+			{
+				// set Background Jobs
+				return Ok("User soft-deleted successfully");
+			}
+
+			foreach (var error in result.Errors)
+			{
+				ModelState.AddModelError("", error.Description);
+			}
+
+			return BadRequest(ModelState);
 		}
 
 		private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)

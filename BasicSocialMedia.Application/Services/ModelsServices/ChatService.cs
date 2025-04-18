@@ -58,5 +58,9 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			return true;
 		}
 
+		public Task<string?> GetUserId(int chatId)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

@@ -22,6 +22,8 @@ namespace BasicSocialMedia.Infrastructure.Configuration.AuthConfig
 				.WithOne(p => p.User)
 				.HasForeignKey<ProfileImageModel>(p => p.UserId)
 				.OnDelete(DeleteBehavior.Cascade);
+
+			builder.HasQueryFilter(u => !u.IsDeleted);
 		}
 	}
 }
