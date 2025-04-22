@@ -1,6 +1,7 @@
 ﻿using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.M2MRelations;
 using BasicSocialMedia.Core.Models.MainModels;
+using BasicSocialMedia.Core.Models.Messaging;
 using Microsoft.AspNetCore.Identity;
 
 namespace BasicSocialMedia.Core.Models.AuthModels

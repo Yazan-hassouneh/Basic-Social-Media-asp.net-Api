@@ -3,7 +3,8 @@ using BasicSocialMedia.Core.DTOs.ChatDTOs;
 using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
-using BasicSocialMedia.Core.Models.MainModels;
+using BasicSocialMedia.Core.Models.Messaging;
+using Umbraco.Core.Models.Membership;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
@@ -12,12 +13,17 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
 		private readonly IMessagesServices _messagesServices = messagesServices;
-		public async Task<GetChatDto?> GetChatByIdAsync(int chatId)
+
+		public Task<string?> GetUserId(int chatId)
+		{
+			throw new NotImplementedException();
+		}
+		public async Task<GetChatDto?> GetChatByIdAsync(int chatId, string userId)
 		{
 			Chat? chat = await _unitOfWork.Chats.GetByIdAsync(chatId);
 			if (chat is null) return null;
 			GetChatDto chatDto = _mapper.Map<GetChatDto>(chat);
-			IEnumerable<GetMessagesDto> messages = await _messagesServices.GetMessagesByChatIdAsync(chatId);
+			IEnumerable<GetMessagesDto> messages = await _messagesServices.GetMessagesByChatIdAsync(chatId, userId);
 			chatDto.Messages = messages;
 
 			return chatDto;
@@ -48,19 +54,38 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			return chat;
 		}
-		public async Task<bool> DeleteChatAsync(int chatId)
+		public async Task<bool> DeleteChatAsync(int chatId, string userId)
 		{
 			Chat? chat = await _unitOfWork.Chats.GetByIdAsync(chatId);
 			if (chat is null) return false;
 
-			_unitOfWork.Chats.Delete(chat);
-			await _unitOfWork.Chats.Save();
+			var existing = await _unitOfWork.ChatDeletion.FindWithTrackingAsync(cd => cd.ChatId == chatId && cd.UserId == userId);
+
+			if (existing == null)
+			{
+				await _unitOfWork.ChatDeletion.AddAsync(new ChatDeletion
+				{
+					ChatId = chatId,
+					UserId = userId,
+					DeletedAt = DateTime.UtcNow
+				});
+			}
+			else
+			{
+				existing.DeletedAt = DateTime.UtcNow;
+				_unitOfWork.ChatDeletion.Update(existing);
+			}
+
+			await _unitOfWork.DeletedMessages.Save();
+
+			/*
+				Add Background Job to check if both users deleted the chat, if so delete the chat and deletedChat  
+
+				_unitOfWork.Chats.Delete(chat);
+				await _unitOfWork.Chats.Save();
+			 */
 			return true;
 		}
 
-		public Task<string?> GetUserId(int chatId)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

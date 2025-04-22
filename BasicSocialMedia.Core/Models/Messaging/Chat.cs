@@ -2,9 +2,9 @@
 using BasicSocialMedia.Core.Models.AuthModels;
 using BasicSocialMedia.Core.Models.FileModels;
 
-namespace BasicSocialMedia.Core.Models.MainModels
+namespace BasicSocialMedia.Core.Models.Messaging
 {
-	public class Chat : IChatMessage
+	public class Chat : IId, ITimestamp
 	{
 		public int Id { get; set; }
 		public DateTime CreatedOn { get; set; }

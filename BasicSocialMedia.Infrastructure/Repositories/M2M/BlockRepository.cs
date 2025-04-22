@@ -32,12 +32,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 					CreatedOn = blocking.CreatedOn,
 					BlockerId = string.Empty,
 					BlockedId = blocking.BlockedId,
-					Blocked = blocking.Blocked == null || blocking.BlockedId == userId ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-					{
-						Id = blocking.Blocked.Id,
-						UserName = blocking.Blocked.UserName,
-						ProfileImageModel = blocking.Blocked.ProfileImageModel
-					},
+					Blocked = blocking.Blocked == null || blocking.BlockedId == userId 
+					? null 
+					: blocking.Blocked.IsDeleted
+						? new ApplicationUser
+						{
+							Id = blocking.Blocked.Id,
+							UserName = "Deleted User",
+							ProfileImageModel = null
+						}
+						: new ApplicationUser
+						{
+							Id = blocking.Blocked.Id,
+							UserName = blocking.Blocked.UserName,
+							ProfileImageModel = blocking.Blocked.ProfileImageModel
+						},
 				})
 				.AsNoTracking()
 				.ToListAsync();

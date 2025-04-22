@@ -1,15 +1,19 @@
-﻿using BasicSocialMedia.Core.Models.MainModels;
+﻿using BasicSocialMedia.Core.Models.Messaging;
 using BasicSocialMedia.Infrastructure.Configuration.BaseConfig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BasicSocialMedia.Infrastructure.Configuration.MainConfig
+namespace BasicSocialMedia.Infrastructure.Configuration.MessagingConfig
 {
 	internal class ChatConfig : IEntityTypeConfiguration<Chat>
 	{
 		public void Configure(EntityTypeBuilder<Chat> builder)
 		{
-			BaseChatMessageConfig.ConfigureChatMessage(builder);
+			BaseIdConfig.ConfigureId(builder);
+			BaseTimestampConfig.ConfigureTimestamp(builder);
+
+			builder.Property(i => i.User1Id).IsRequired();
+			builder.Property(i => i.User2Id).IsRequired();
 
 			builder.HasOne(chat => chat.User1)
 				.WithMany(user => user.Chats)

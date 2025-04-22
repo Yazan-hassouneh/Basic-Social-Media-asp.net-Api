@@ -14,8 +14,8 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MainConfig
 			builder.HasOne(reaction => reaction.Comment)
 						.WithMany(post => post.CommentReactions)
 						.HasForeignKey(reaction => reaction.CommentId)
-						.OnDelete(DeleteBehavior.Cascade);			
-			
+						.OnDelete(DeleteBehavior.Cascade);
+
 			builder.HasOne(reaction => reaction.User)
 						.WithMany()
 						.HasForeignKey(reaction => reaction.UserId)

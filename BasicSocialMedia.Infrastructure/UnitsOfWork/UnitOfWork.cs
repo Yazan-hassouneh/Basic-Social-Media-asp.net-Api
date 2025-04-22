@@ -1,6 +1,7 @@
 ﻿using BasicSocialMedia.Core.Interfaces.Repos;
 using BasicSocialMedia.Core.Interfaces.Repos.FileModelsRepositories;
 using BasicSocialMedia.Core.Interfaces.Repos.M2M;
+using BasicSocialMedia.Core.Interfaces.Repos.MessagingRepos;
 using BasicSocialMedia.Core.Interfaces.Repos.Reactions;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.AuthModels;
@@ -8,6 +9,7 @@ using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Infrastructure.Repositories;
 using BasicSocialMedia.Infrastructure.Repositories.FileRepos;
 using BasicSocialMedia.Infrastructure.Repositories.M2M;
+using BasicSocialMedia.Infrastructure.Repositories.MessagingRepos;
 using BasicSocialMedia.Infrastructure.Repositories.ReactionRepos;
 using Microsoft.AspNetCore.Identity;
 
@@ -31,6 +33,8 @@ namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 		public ICommentFileModelRepository CommentFiles { get; private set; }
 		public IMessageFileModelRepository MessageFiles { get; private set; }
 		public IProfileImageModelRepository ProfileImages { get; private set; }
+		public IDeletedMessagesRepository DeletedMessages { get; private set; }
+		public IChatDeletionRepository ChatDeletion { get; private set; }
 
 		public UnitOfWork(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
 		{
@@ -45,11 +49,13 @@ namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 			Messages = new MessagesRepository(_context);
 			Friendship = new FriendshipRepository(_context);
 			PostFiles = new PostFileModelRepository(_context);
+			ChatDeletion = new ChatDeletionRepository(_context);
 			PostReactions = new PostReactionsRepository(_context);
 			CommentFiles = new CommentFileModelRepository(_context);
 			MessageFiles = new MessageFileModelRepository(_context);
-			CommentReactions = new CommentReactionsRepository(_context);
 			ProfileImages = new ProfileImageModelRepository(_context);
+			DeletedMessages = new DeletedMessagesRepository(_context);
+			CommentReactions = new CommentReactionsRepository(_context);
 		}
 		public async Task<int> Complete() => await _context.SaveChangesAsync();
 		public void Dispose() => _context.Dispose();

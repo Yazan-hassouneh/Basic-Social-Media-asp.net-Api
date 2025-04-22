@@ -24,6 +24,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 				.Include(post => post.User)
 					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(post => post.Files)
+				.Where(post => !post.User!.IsDeleted)
 				.Select(post => new Post // Or ChatViewModel
 				{
 					Id = post.Id,
@@ -56,6 +57,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 		{
 			return await _context.Posts
 				.Where(post => post.UserId == userId)
+				.Where(post => !post.User!.IsDeleted)
 				.Include(post => post.User)
 					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(post => post.Files)
@@ -88,6 +90,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 		{
 			return await _context.Posts
 				.Where(matcher)
+				.Where(post => !post.User!.IsDeleted)
 				.Include(post => post.User)
 					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(post => post.Files)

@@ -1,7 +1,7 @@
 ﻿using BasicSocialMedia.Core.DTOs.ChatDTOs;
 using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 using BasicSocialMedia.Core.Models.FileModels;
-using BasicSocialMedia.Core.Models.MainModels;
+using BasicSocialMedia.Core.Models.Messaging;
 
 namespace BasicSocialMedia.Application.Mappers
 {

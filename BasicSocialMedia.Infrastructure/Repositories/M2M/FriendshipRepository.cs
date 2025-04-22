@@ -47,29 +47,34 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 		{
 			return await _context.Friendships
 				.Where(friendship => friendship.Status == ProjectEnums.FriendshipStatus.Accepted)
-				.Where(friendship => friendship.SenderId == userId || friendship.ReceiverId == userId)
-				.Include(friendship => friendship.SenderId == userId ? friendship.Sender : friendship.Receiver)
-					.ThenInclude(user => user!.ProfileImageModel)
-				.Select(friendship => new Friendship // Or friendshipViewModel
+				.Where(friendship =>
+					(friendship.SenderId == userId && !friendship.Receiver!.IsDeleted) ||
+					(friendship.ReceiverId == userId && !friendship.Sender!.IsDeleted))
+				.Select(friendship => new Friendship
 				{
 					Id = friendship.Id,
 					CreatedOn = friendship.CreatedOn,
 					Status = friendship.Status,
-					SenderId = friendship.SenderId == userId ? string.Empty : friendship.ReceiverId,
-					ReceiverId = friendship.ReceiverId == userId ? string.Empty : friendship.SenderId,
-					// ... other properties of friendship ...
-					Sender = friendship.Sender == null || friendship.SenderId == userId ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-					{
-						Id = friendship.Sender.Id,
-						UserName = friendship.Sender.UserName,
-						ProfileImageModel = friendship.Sender.ProfileImageModel
-					},
-					Receiver = friendship.Receiver == null || friendship.ReceiverId == userId ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-					{
-						Id = friendship.Receiver.Id,
-						UserName = friendship.Receiver.UserName,
-						ProfileImageModel = friendship.Receiver.ProfileImageModel
-					},
+					SenderId = friendship.SenderId == userId ? string.Empty : friendship.SenderId,
+					ReceiverId = friendship.ReceiverId == userId ? string.Empty : friendship.ReceiverId,
+
+					Sender = friendship.Sender == null || friendship.SenderId == userId
+						? null
+						: new ApplicationUser
+						{
+							Id = friendship.Sender.Id,
+							UserName = friendship.Sender.UserName,
+							ProfileImageModel = friendship.Sender.ProfileImageModel
+						},
+
+					Receiver = friendship.Receiver == null || friendship.ReceiverId == userId
+						? null
+						: new ApplicationUser
+						{
+							Id = friendship.Receiver.Id,
+							UserName = friendship.Receiver.UserName,
+							ProfileImageModel = friendship.Receiver.ProfileImageModel
+						},
 				})
 				.AsNoTracking()
 				.ToListAsync();
@@ -78,7 +83,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 		{
 			IEnumerable<string> Ids = await _context.Friendships
 				.Where(friendship => friendship.Status == ProjectEnums.FriendshipStatus.Accepted)
-				.Where(friendship => friendship.SenderId == userId || friendship.ReceiverId == userId)
+				.Where(friendship => (friendship.SenderId == userId && !friendship.Receiver!.IsDeleted) || (friendship.ReceiverId == userId && !friendship.Sender!.IsDeleted) )
 				.Select(friendship => friendship.SenderId == userId ? friendship.ReceiverId : friendship.SenderId)
 				.AsNoTracking()
 				.ToListAsync();
@@ -89,6 +94,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 		{
 			return await _context.Friendships
 				.Where(friendship => friendship.SenderId == userId && friendship.Status == ProjectEnums.FriendshipStatus.Pending)
+				.Where(friendship => friendship.SenderId == userId && !friendship.Receiver!.IsDeleted)
 				.Include(friendship => friendship.Receiver)
 					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(friendship => new Friendship // Or friendshipViewModel
@@ -112,6 +118,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 		{
 			return await _context.Friendships
 				.Where(friendship => friendship.ReceiverId == userId && friendship.Status == ProjectEnums.FriendshipStatus.Pending)
+				.Where(friendship => friendship.ReceiverId == userId && !friendship.Sender!.IsDeleted)
 				.Include(friendship => friendship.Sender)
 					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(friendship => new Friendship // Or friendshipViewModel

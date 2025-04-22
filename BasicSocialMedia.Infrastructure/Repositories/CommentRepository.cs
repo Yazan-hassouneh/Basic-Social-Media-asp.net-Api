@@ -36,12 +36,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = cr.Id,
 						UserId = cr.UserId,
-						User = cr.User == null ? null : new ApplicationUser
-						{
-							Id = cr.User.Id,
-							UserName = cr.User.UserName,
-							ProfileImageModel = cr.User.ProfileImageModel,
-						},
+						User = cr.User == null 
+						? null 
+						: cr.User!.IsDeleted 
+							? new ApplicationUser
+							{
+								Id = cr.User.Id,
+								UserName = "Deleted User",
+								ProfileImageModel = null
+							}
+							: new ApplicationUser
+							{
+								Id = cr.User.Id,
+								UserName = cr.User.UserName,
+								ProfileImageModel = cr.User.ProfileImageModel,
+							},
 					}).ToList(),
 					Files = comment.Files.Select(file => new CommentFileModel
 					{
@@ -52,12 +61,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 						Path = file.Path,
 					}).ToList(),
 					// ... other properties of comment ...
-					User = comment.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-					{
-						Id = comment.User.Id,
-						UserName = comment.User.UserName,
-						ProfileImageModel = comment.User.ProfileImageModel
-					}
+					User = comment.User == null 
+					? null 
+					: comment.User.IsDeleted 
+						? new ApplicationUser // Or anonymous type, handle potential nulls
+						{
+							Id = comment.User.Id,
+							UserName = "Deleted User",
+							ProfileImageModel = null
+						}
+						: new ApplicationUser
+						{
+							Id = comment.User.Id,
+							UserName = comment.User.UserName,
+							ProfileImageModel = comment.User.ProfileImageModel
+						}
 				})
 				.AsNoTracking()
 				.AsSplitQuery() // Use split query for better performance with large data sets
@@ -85,12 +103,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 					{
 						Id = cr.Id,
 						UserId = cr.UserId,
-						User = cr.User == null ? null : new ApplicationUser
-						{
-							Id = cr.User.Id,
-							UserName = cr.User.UserName,
-							ProfileImageModel = cr.User.ProfileImageModel,
-						},
+						User = cr.User == null 
+						? null 
+						: cr.User!.IsDeleted 
+							? new ApplicationUser
+							{
+								Id = cr.User.Id,
+								UserName = "Deleted User",
+								ProfileImageModel = null
+							}
+							: new ApplicationUser
+							{
+								Id = cr.User.Id,
+								UserName = cr.User.UserName,
+								ProfileImageModel = cr.User.ProfileImageModel,
+							},
 					}).ToList(),
 					Files = comment.Files.Select(file => new CommentFileModel
 					{
@@ -101,12 +128,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories
 						Path = file.Path,
 					}).ToList(),
 					// ... other properties of comment ...
-					User = comment.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-					{
-						Id = comment.User.Id,
-						UserName = comment.User.UserName,
-						ProfileImageModel = comment.User.ProfileImageModel
-					}
+					User = comment.User == null
+					? null
+					: comment.User.IsDeleted
+						? new ApplicationUser // Or anonymous type, handle potential nulls
+						{
+							Id = comment.User.Id,
+							UserName = "Deleted User",
+							ProfileImageModel = null
+						}
+						: new ApplicationUser
+						{
+							Id = comment.User.Id,
+							UserName = comment.User.UserName,
+							ProfileImageModel = comment.User.ProfileImageModel
+						}
 				})
 				.AsNoTracking()
 				.ToListAsync();

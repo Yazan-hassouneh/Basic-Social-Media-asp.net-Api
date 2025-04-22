@@ -6,8 +6,8 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 	{
 		Task<string?> GetUserId(int chatId);
 		Task<IEnumerable<GetChatDto>?> GetChatsByUserIdAsync(string userId);
-		Task<GetChatDto?> GetChatByIdAsync(int chatId);
+		Task<GetChatDto?> GetChatByIdAsync(int chatId, string userId);
 		Task<AddChatDto> CreateChatAsync(AddChatDto chat);
-		Task<bool> DeleteChatAsync(int chatId);
+		Task<bool> DeleteChatAsync(int chatId, string userId);
 	}
 }

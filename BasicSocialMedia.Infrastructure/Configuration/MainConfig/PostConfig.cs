@@ -12,9 +12,9 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MainConfig
 			BasePostCommentConfig.ConfigurePostComment(builder);
 
 			builder.HasOne(post => post.User)
-						.WithMany(user => user.Posts)
-						.HasForeignKey(post => post.UserId)
-						.OnDelete(DeleteBehavior.Cascade);
+				   .WithMany(user => user.Posts)
+				   .HasForeignKey(post => post.UserId)
+				   .OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

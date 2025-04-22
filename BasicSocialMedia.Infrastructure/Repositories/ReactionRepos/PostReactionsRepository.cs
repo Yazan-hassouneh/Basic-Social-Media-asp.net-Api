@@ -25,12 +25,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 				{
 					Id = postReaction.Id,
 					CreatedOn = postReaction.CreatedOn,
-					User = postReaction.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-					{
-						Id = postReaction.User.Id,
-						UserName = postReaction.User.UserName,
-						ProfileImageModel = postReaction.User.ProfileImageModel
-					}
+					User = postReaction.User == null
+						? null
+						: postReaction.User.IsDeleted
+							? new ApplicationUser // Or anonymous type, handle potential nulls
+							{
+								Id = postReaction.User.Id,
+								UserName = "Deleted User",
+								ProfileImageModel = null
+							}
+							: new ApplicationUser
+							{
+								Id = postReaction.User.Id,
+								UserName = postReaction.User.UserName,
+								ProfileImageModel = postReaction.User.ProfileImageModel
+							}
 				})
 				.AsNoTracking()
 				.FirstOrDefaultAsync(c => c.Id == id);
@@ -47,12 +56,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 				{
 					Id = postReaction.Id,
 					CreatedOn = postReaction.CreatedOn,
-					User = postReaction.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-					{
-						Id = postReaction.User.Id,
-						UserName = postReaction.User.UserName,
-						ProfileImageModel = postReaction.User.ProfileImageModel
-					}
+					User = postReaction.User == null
+						? null
+						: postReaction.User.IsDeleted
+							? new ApplicationUser // Or anonymous type, handle potential nulls
+							{
+								Id = postReaction.User.Id,
+								UserName = "Deleted User",
+								ProfileImageModel = null
+							}
+							: new ApplicationUser
+							{
+								Id = postReaction.User.Id,
+								UserName = postReaction.User.UserName,
+								ProfileImageModel = postReaction.User.ProfileImageModel
+							}
 				})
 				.AsNoTracking()
 				.ToListAsync();

@@ -2,7 +2,7 @@
 using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
-using BasicSocialMedia.Core.Models.MainModels;
+using BasicSocialMedia.Core.Models.Messaging;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
@@ -10,9 +10,14 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
-		public async Task<IEnumerable<GetMessagesDto>> GetMessagesByChatIdAsync(int chatId)
+
+		public Task<string?> GetUserId(int messageId)
 		{
-			IEnumerable<Message?> messages = await _unitOfWork.Messages.GetAllAsync(chatId);
+			throw new NotImplementedException();
+		}
+		public async Task<IEnumerable<GetMessagesDto>> GetMessagesByChatIdAsync(int chatId, string userId)
+		{
+			IEnumerable<Message?> messages = await _unitOfWork.Messages.GetAllAsync(chatId, userId);
 			IEnumerable<Message?> noneNullMessages = messages.Where(message => message != null);
 
 			if (noneNullMessages == null || !noneNullMessages.Any()) return Enumerable.Empty<GetMessagesDto>();
@@ -24,8 +29,8 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			var newMessage = new Message
 			{
 				Content = message.Content,
-				User1Id = message.User1Id,
-				User2Id = message.User2Id,
+				SenderId = message.User1Id,
+				ReceiverId = message.User2Id,
 			};
 
 			await _unitOfWork.Messages.AddAsync(newMessage);
@@ -49,14 +54,21 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			if (existingMessage == null) return false;
 
-			_unitOfWork.Messages.Delete(existingMessage);
-			await _unitOfWork.Messages.Save();
+			DeletedMessage deletedMessage = new()
+			{
+				UserId = existingMessage.SenderId,
+				ChatId = existingMessage.ChatId,
+				MessageId = existingMessage.Id
+			};
+			await _unitOfWork.DeletedMessages.AddAsync(deletedMessage);
+			await _unitOfWork.DeletedMessages.Save();
+
+			/*
+				Add Background Job To check if the both user deleted the message, if true 
+					delete message from the database, and remove the deletedMessage from the database .
+			 */
 			return true;
 		}
 
-		public Task<string?> GetUserId(int messageId)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using BasicSocialMedia.Core.Interfaces.Repos.BaseRepo;
-using BasicSocialMedia.Core.Models.MainModels;
+using BasicSocialMedia.Core.Models.Messaging;
 
-namespace BasicSocialMedia.Core.Interfaces.Repos
+namespace BasicSocialMedia.Core.Interfaces.Repos.MessagingRepos
 {
 	public interface IChatRepository : IBaseRepository<Chat>
 	{

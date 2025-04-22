@@ -1,6 +1,7 @@
 ﻿using BasicSocialMedia.Core.Interfaces.Repos;
 using BasicSocialMedia.Core.Interfaces.Repos.FileModelsRepositories;
 using BasicSocialMedia.Core.Interfaces.Repos.M2M;
+using BasicSocialMedia.Core.Interfaces.Repos.MessagingRepos;
 using BasicSocialMedia.Core.Interfaces.Repos.Reactions;
 
 namespace BasicSocialMedia.Core.Interfaces.UnitOfWork
@@ -17,9 +18,11 @@ namespace BasicSocialMedia.Core.Interfaces.UnitOfWork
 		public IFriendshipRepository Friendship { get; }
 		public IBlockRepository Blocking { get; }
 		public IPostFileModelRepository PostFiles { get; }
+		public IChatDeletionRepository ChatDeletion { get; }
 		public ICommentFileModelRepository CommentFiles { get; }
 		public IMessageFileModelRepository MessageFiles { get; }
 		public IProfileImageModelRepository ProfileImages { get; }
+		public IDeletedMessagesRepository DeletedMessages { get; }
 
 	}
 }

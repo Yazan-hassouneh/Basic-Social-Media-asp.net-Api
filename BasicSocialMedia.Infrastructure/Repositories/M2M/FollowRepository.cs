@@ -46,6 +46,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 		{
 			return await _context.Follows
 				.Where(follow => follow.FollowingId == userId)
+				.Where(follow => !follow.Follower!.IsDeleted )
 				.Include(follow => follow.Follower)
 					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(follow => new Follow // Or followViewModel
@@ -68,6 +69,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 		{
 			return await _context.Follows
 				.Where(follow => follow.FollowerId == userId)
+				.Where(follow => !follow.FollowingUser!.IsDeleted)
 				.Include(follow => follow.FollowingUser)
 					.ThenInclude(user => user!.ProfileImageModel)
 				.Select(follow => new Follow // Or followViewModel
@@ -90,6 +92,7 @@ namespace BasicSocialMedia.Infrastructure.Repositories.M2M
 		{
 			return await _context.Follows
 				.Where(follow => follow.FollowerId == userId)
+				.Where(follow => !follow.FollowingUser!.IsDeleted)
 				.Select(follow => follow.FollowingId)
 				.AsNoTracking()
 				.ToListAsync();

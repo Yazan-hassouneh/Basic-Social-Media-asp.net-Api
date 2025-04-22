@@ -1,5 +1,5 @@
 ﻿using BasicSocialMedia.Core.Interfaces.ModelsInterfaces;
-using BasicSocialMedia.Core.Models.MainModels;
+using BasicSocialMedia.Core.Models.Messaging;
 using System.ComponentModel.DataAnnotations;
 
 namespace BasicSocialMedia.Core.Models.FileModels

@@ -2,7 +2,7 @@
 using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.Models.FileModels;
-using BasicSocialMedia.Core.Models.MainModels;
+using BasicSocialMedia.Core.Models.Messaging;
 
 namespace BasicSocialMedia.Application.Mappers
 {
@@ -12,8 +12,8 @@ namespace BasicSocialMedia.Application.Mappers
 		{
 			CreateMap<Message, GetMessagesDto>()
 				.ForMember(destination => destination.Id, opt => opt.MapFrom(src => src.Id))
-				.ForMember(destination => destination.User1Id, opt => opt.MapFrom(src => src.User1Id))
-				.ForMember(destination => destination.User2Id, opt => opt.MapFrom(src => src.User2Id))
+				.ForMember(destination => destination.User1Id, opt => opt.MapFrom(src => src.SenderId))
+				.ForMember(destination => destination.User2Id, opt => opt.MapFrom(src => src.ReceiverId))
 				.ForMember(destination => destination.Content, opt => opt.MapFrom(src => src.Content))
 				.ForMember(destination => destination.Files, opt => opt.MapFrom(src => MapMessageFiles(src.Files)))
 				.ForMember(destination => destination.IsRead, opt => opt.MapFrom(src => src.IsRead))

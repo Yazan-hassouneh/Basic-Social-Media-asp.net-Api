@@ -1,6 +1,7 @@
 ﻿using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.M2MRelations;
 using BasicSocialMedia.Core.Models.MainModels;
+using BasicSocialMedia.Core.Models.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 namespace BasicSocialMedia.Infrastructure.Tables_Schema
@@ -21,6 +22,8 @@ namespace BasicSocialMedia.Infrastructure.Tables_Schema
 		{
 			builder.Entity<Chat>().ToTable("Chats", schema : "Messages");
 			builder.Entity<Message>().ToTable("Messages", schema : "Messages");
+			builder.Entity<DeletedMessage>().ToTable("DeletedMessages", schema : "Messages");
+			builder.Entity<ChatDeletion>().ToTable("ChatDeletions", schema : "Messages");
 		}
 		public static void AddRelationsSchema(this ModelBuilder builder)
 		{

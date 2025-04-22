@@ -2,10 +2,12 @@
 using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.M2MRelations;
 using BasicSocialMedia.Core.Models.MainModels;
+using BasicSocialMedia.Core.Models.Messaging;
 using BasicSocialMedia.Infrastructure.Configuration.AuthConfig;
 using BasicSocialMedia.Infrastructure.Configuration.FilConfig;
 using BasicSocialMedia.Infrastructure.Configuration.M2MConfig;
 using BasicSocialMedia.Infrastructure.Configuration.MainConfig;
+using BasicSocialMedia.Infrastructure.Configuration.MessagingConfig;
 using BasicSocialMedia.Infrastructure.Tables_Schema;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,8 @@ namespace BasicSocialMedia.Infrastructure.Data
 		public DbSet<Block> Blocking { get; set; }
 		public DbSet<CommentReaction> CommentReactions { get; set; }
 		public DbSet<PostReaction> PostReactions { get; set; }
+		public DbSet<DeletedMessage> DeletedMessages { get; set; }
+		public DbSet<ChatDeletion> ChatDeletions { get; set; }
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
@@ -45,8 +49,10 @@ namespace BasicSocialMedia.Infrastructure.Data
 			builder.ApplyConfiguration(new BlockingConfig());
 			builder.ApplyConfiguration(new FollowingConfig());
 			builder.ApplyConfiguration(new FriendshipConfig());
+			builder.ApplyConfiguration(new ChatDeletionConfig());
 			builder.ApplyConfiguration(new PostReactionConfig());
 			builder.ApplyConfiguration(new PostFileModelConfig());
+			builder.ApplyConfiguration(new DeletedMessageConfig());
 			builder.ApplyConfiguration(new CommentReactionConfig());
 			builder.ApplyConfiguration(new ApplicationUserConfig());
 			builder.ApplyConfiguration(new CommentFileModelConfig());

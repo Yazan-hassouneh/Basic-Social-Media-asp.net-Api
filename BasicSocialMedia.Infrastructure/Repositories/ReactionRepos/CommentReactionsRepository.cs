@@ -4,6 +4,7 @@ using BasicSocialMedia.Core.Models.MainModels;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Infrastructure.Repositories.BaseRepo;
 using Microsoft.EntityFrameworkCore;
+using Superpower.Parsers;
 
 namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 {
@@ -25,12 +26,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 				{
 					Id = commentReaction.Id,
 					CreatedOn = commentReaction.CreatedOn,
-					User = commentReaction.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-					{
-						Id = commentReaction.User.Id,
-						UserName = commentReaction.User.UserName,
-						ProfileImageModel = commentReaction.User.ProfileImageModel,
-					}
+					User = commentReaction.User == null
+						? null
+						: commentReaction.User.IsDeleted
+							? new ApplicationUser // Or anonymous type, handle potential nulls
+							{
+								Id = commentReaction.User.Id,
+								UserName = "Deleted User",
+								ProfileImageModel = null
+							}
+							: new ApplicationUser
+							{
+								Id = commentReaction.User.Id,
+								UserName = commentReaction.User.UserName,
+								ProfileImageModel = commentReaction.User.ProfileImageModel
+							}
 				})
 				.AsNoTracking()
 				.FirstOrDefaultAsync(c => c.Id == id);
@@ -47,12 +57,21 @@ namespace BasicSocialMedia.Infrastructure.Repositories.ReactionRepos
 				{
 					Id = commentReaction.Id,
 					CreatedOn = commentReaction.CreatedOn,
-					User = commentReaction.User == null ? null : new ApplicationUser // Or anonymous type, handle potential nulls
-					{
-						Id = commentReaction.User.Id,
-						UserName = commentReaction.User.UserName,
-						ProfileImageModel = commentReaction.User.ProfileImageModel
-					}
+					User = commentReaction.User == null
+						? null
+						: commentReaction.User.IsDeleted
+							? new ApplicationUser // Or anonymous type, handle potential nulls
+							{
+								Id = commentReaction.User.Id,
+								UserName = "Deleted User",
+								ProfileImageModel = null
+							}
+							: new ApplicationUser
+							{
+								Id = commentReaction.User.Id,
+								UserName = commentReaction.User.UserName,
+								ProfileImageModel = commentReaction.User.ProfileImageModel
+							}
 				})
 				.AsNoTracking()
 				.ToListAsync();

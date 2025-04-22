@@ -79,19 +79,20 @@ namespace BasicSocialMedia.Web.Controllers
 
 			var user = await _userManager.FindByIdAsync(userId);
 			if (user is null) return NotFound();
+			if (user.IsDeleted) return BadRequest();
 
 			user.IsDeleted = true;
 			var result = await _userManager.UpdateAsync(user);
 
 			if (result.Succeeded)
 			{
-				// set Background Jobs
-				return Ok("User soft-deleted successfully");
+				// Trigger background jobs here if needed
+				return Ok("User soft-deleted successfully.");
 			}
 
 			foreach (var error in result.Errors)
 			{
-				ModelState.AddModelError("", error.Description);
+				ModelState.AddModelError(string.Empty, error.Description);
 			}
 
 			return BadRequest(ModelState);
