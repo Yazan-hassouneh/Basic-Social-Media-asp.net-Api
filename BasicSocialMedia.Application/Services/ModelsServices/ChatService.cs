@@ -4,7 +4,6 @@ using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.Messaging;
-using Umbraco.Core.Models.Membership;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {

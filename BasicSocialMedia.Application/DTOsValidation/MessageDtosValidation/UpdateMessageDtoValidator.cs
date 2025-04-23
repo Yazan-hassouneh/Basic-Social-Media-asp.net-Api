@@ -1,8 +1,11 @@
-﻿using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation.File;
+﻿using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation;
+using BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation.File;
 using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.MessageDTOs;
+using BasicSocialMedia.Core.Models.AuthModels;
 using BasicSocialMedia.Infrastructure.Data;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BasicSocialMedia.Application.DTOsValidation.MessageDtosValidation
@@ -10,11 +13,13 @@ namespace BasicSocialMedia.Application.DTOsValidation.MessageDtosValidation
 	public class UpdateMessageDtoValidator : AbstractValidator<UpdateMessageDto>
 	{
 		private readonly ApplicationDbContext _context;
-		public UpdateMessageDtoValidator(ApplicationDbContext context)
+		public UpdateMessageDtoValidator(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
 		{
 			_context = context;
 
 			Include(new BaseUpdateFileValidator());
+			Include(new BaseChatIdDtoValidator(context));
+			Include(new BaseUserIdDtoValidation(userManager));
 
 			RuleFor(x => x.Id)
 				.GreaterThan(0).WithMessage(ValidationSettings.GeneralErrorMessage)

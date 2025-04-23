@@ -8,6 +8,7 @@ namespace BasicSocialMedia.Core.DTOs.MessageDTOs
 	{
 		public List<IFormFile> Files { get; set; } = [];
 		public string? Content { get; set; }
+		public int ChatId { get; set; }
 		public string User1Id { get; set; } = null!;
 		public string User2Id { get; set; } = null!;
 	}

@@ -20,7 +20,7 @@ namespace BasicSocialMedia.Application.Mappers
 				.ReverseMap();
 		}
 
-		private List<GetMessageFileDto> MapChatFiles(IEnumerable<MessageFileModel> files)
+		private static List<GetMessageFileDto> MapChatFiles(IEnumerable<MessageFileModel> files)
 		{
 			return files.Select(file => new GetMessageFileDto
 			{

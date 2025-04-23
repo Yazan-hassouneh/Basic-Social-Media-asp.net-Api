@@ -1,19 +1,32 @@
 ﻿using AutoMapper;
+using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.Messaging;
+using Serilog;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
-	public class MessageService(IUnitOfWork unitOfWork, IMapper mapper) : IMessagesServices
+	public class MessageService(IUnitOfWork unitOfWork, IMapper mapper, IMessageFileModelService messageFileModelService, ILogger logger) : IMessagesServices
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
+		private readonly IMessageFileModelService _messageFileModelService = messageFileModelService;
+		private readonly ILogger _logger = logger;
 
 		public Task<string?> GetUserId(int messageId)
 		{
 			throw new NotImplementedException();
+		}
+		public async Task<MessageExistDto?> GetMessageByIdAsync(int messageId)
+		{
+			Message? existingMessage = await _unitOfWork.Messages.GetByIdAsync(messageId);
+
+			if (existingMessage == null) return null;
+			return _mapper.Map<MessageExistDto?>(existingMessage);
+
 		}
 		public async Task<IEnumerable<GetMessagesDto>> GetMessagesByChatIdAsync(int chatId, string userId)
 		{
@@ -24,29 +37,57 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			return _mapper.Map<IEnumerable<GetMessagesDto>>(noneNullMessages);	
 		}
-		public async Task<AddMessageDto> CreateMessageAsync(AddMessageDto message)
+		public async Task<bool> CreateMessageAsync(AddMessageDto message)
 		{
-			var newMessage = new Message
-			{
-				Content = message.Content,
-				SenderId = message.User1Id,
-				ReceiverId = message.User2Id,
-			};
+			Message newMessage = _mapper.Map<Message>(message);
 
-			await _unitOfWork.Messages.AddAsync(newMessage);
-			await _unitOfWork.Messages.Save();
-			return message;
+			try
+			{
+				var addedMessage = await _unitOfWork.Messages.AddAsync(newMessage);
+				int affectedRows = await _unitOfWork.Messages.Save();
+
+				if (message.Files != null && message.Files.Count > 0 && affectedRows > 0)
+				{
+					AddMessageFileDto addMessageFileDto = _mapper.Map<AddMessageFileDto>(message);
+					addMessageFileDto.MessageId = addedMessage.Id;
+
+					bool fileResult = await _messageFileModelService.AddMessageFileAsync(addMessageFileDto);
+					return fileResult;
+				}
+
+				return affectedRows > 0;
+			}
+			catch (Exception ex)
+			{
+				_logger.Error(ex, "Error occurred while creating a message");
+				return false;
+			}
 		}
-		public async Task<UpdateMessageDto?> UpdateMessageAsync(UpdateMessageDto message)
+		public async Task<bool> UpdateMessageAsync(UpdateMessageDto message)
 		{
 			Message? existingMessage = await _unitOfWork.Messages.GetByIdAsync(message.Id);
-
-			if (existingMessage == null) return null;
-
+			if (existingMessage == null) return false;
 			existingMessage.Content = message.Content;
-			_unitOfWork.Messages.Update(existingMessage);
-			await _unitOfWork.Messages.Save();
-			return message;
+
+			try
+			{
+				Message updatedMessage = _unitOfWork.Messages.Update(existingMessage);
+
+				if (message.Files != null && message.Files.Count > 0)
+				{
+					UpdateMessageFileDto updateMessageFileDto = _mapper.Map<UpdateMessageFileDto>(message);
+
+					bool fileResult = await _messageFileModelService.UpdateMessageFileAsync(updateMessageFileDto);
+					if (!fileResult) return false;
+				}
+				int affectedRows = await _unitOfWork.Messages.Save();
+				return affectedRows > 0;
+			}
+			catch (Exception ex)
+			{
+				_logger.Error(ex, "Error occurred while Updating a message");
+				return false;
+			}
 		}
 		public async Task<bool> DeleteMessageAsync(int messageId)
 		{
@@ -54,12 +95,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			if (existingMessage == null) return false;
 
-			DeletedMessage deletedMessage = new()
-			{
-				UserId = existingMessage.SenderId,
-				ChatId = existingMessage.ChatId,
-				MessageId = existingMessage.Id
-			};
+			DeletedMessage deletedMessage = _mapper.Map<DeletedMessage>(existingMessage);
 			await _unitOfWork.DeletedMessages.AddAsync(deletedMessage);
 			await _unitOfWork.DeletedMessages.Save();
 
@@ -69,6 +105,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			 */
 			return true;
 		}
+
 
 	}
 }

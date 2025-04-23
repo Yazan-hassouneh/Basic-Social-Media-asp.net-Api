@@ -1,40 +1,65 @@
-﻿using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
-using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
+﻿using BasicSocialMedia.Core.Consts;
+using BasicSocialMedia.Core.DTOs.MessageDTOs;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BasicSocialMedia.Web.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class MessageController(IMessageFileModelService messageFileModelService) : ControllerBase
+	[Authorize(Policy = PoliciesSettings.allowAllUsersPolicy)]
+	public class MessageController(IMessagesServices messagesServices, IValidator<AddMessageDto> addMessageDtoValidator, IAuthorizationService authorizationService, IValidator<UpdateMessageDto> updateMessageDtoValidator) : ControllerBase
 	{
-		private readonly IMessageFileModelService _messageFileModelService = messageFileModelService;
+		private readonly IMessagesServices _messagesServices = messagesServices;
+		private readonly IValidator<AddMessageDto> _addMessageDtoValidator = addMessageDtoValidator;
+		private readonly IValidator<UpdateMessageDto> _updateMessageDtoValidator = updateMessageDtoValidator;
+		private readonly IAuthorizationService _authorizationService = authorizationService;
 
-		[HttpGet("GetAllFilesByChatId/{chatId}")]
-		public async Task<IActionResult> GetAllFilesByChatId(int chatId)
+		[HttpPost("AddMessage")]
+		public async Task<IActionResult> AddMessageAsync([FromForm] AddMessageDto addMessageDto)
 		{
-			var result = await _messageFileModelService.GetAllFilesByChatIdAsync(chatId);
-			return Ok(result);
+			ValidationResult validationResult = _addMessageDtoValidator.Validate(addMessageDto);
+
+			if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
+
+			var user1Ownership = await _authorizationService.AuthorizeAsync(User, addMessageDto.User1Id, PoliciesSettings.Ownership);
+			var user2Ownership = await _authorizationService.AuthorizeAsync(User, addMessageDto.User2Id, PoliciesSettings.Ownership);
+			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2
+
+			var result = await _messagesServices.CreateMessageAsync(addMessageDto);
+			if (result) return Ok();
+			return BadRequest();
+		}		
+		
+		[HttpPost("updateMessage")]
+		public async Task<IActionResult> UpdateMessageAsync([FromForm] UpdateMessageDto updateMessageDto)
+		{
+			ValidationResult validationResult = _updateMessageDtoValidator.Validate(updateMessageDto);
+
+			if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
+
+			var userOwnership = await _authorizationService.AuthorizeAsync(User, updateMessageDto.UserId, PoliciesSettings.Ownership);
+			if (!userOwnership.Succeeded) return Forbid(); // User is neither User1 nor User2
+
+			var result = await _messagesServices.UpdateMessageAsync(updateMessageDto);
+			if (result) return Ok();
+			return BadRequest();
 		}
 
-		[HttpGet("GetAllFilesByMessageId/{messageId}")]
-		public async Task<IActionResult> GetAllFilesByMessageId(int messageId)
+		[HttpDelete("delete/{messageId}")]
+		public async Task<IActionResult> DeleteMessageAsync(int messageId)
 		{
-			var result = await _messageFileModelService.GetAllFilesByMessageIdAsync(messageId);
-			return Ok(result);
-		}
+			var message = await _messagesServices.GetMessageByIdAsync(messageId);
+			if (message == null) return NotFound();
 
-		[HttpGet("GetAllFilesByUserId/{userId}")]
-		public async Task<IActionResult> GetAllFilesByUserId(string userId)
-		{
-			var result = await _messageFileModelService.GetAllFilesByUserIdAsync(userId);
-			return Ok(result);
-		}
+			var user1Ownership = await _authorizationService.AuthorizeAsync(User, message.User1Id, PoliciesSettings.Ownership);
+			var user2Ownership = await _authorizationService.AuthorizeAsync(User, message.User2Id, PoliciesSettings.Ownership);
+			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2
 
-		[HttpPost("AddMessageFile")]
-		public async Task<IActionResult> AddMessageFile([FromForm] AddMessageFileDto addMessageFilesDto)
-		{
-			var result = await _messageFileModelService.AddMessageFileAsync(addMessageFilesDto);
+			var result = await _messagesServices.DeleteMessageAsync(messageId);
 			if (result) return Ok();
 			return BadRequest();
 		}
