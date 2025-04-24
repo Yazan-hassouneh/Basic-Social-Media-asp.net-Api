@@ -15,7 +15,7 @@ namespace BasicSocialMedia.Application.Mappers
 				.ForMember(destination => destination.User1Id, opt => opt.MapFrom(src => src.SenderId))
 				.ForMember(destination => destination.User2Id, opt => opt.MapFrom(src => src.ReceiverId))
 				.ForMember(destination => destination.Content, opt => opt.MapFrom(src => src.Content))
-				.ForMember(destination => destination.Files, opt => opt.MapFrom(src => MapMessageFiles(src.Files)))
+				.ForMember(destination => destination.Files, opt => opt.MapFrom(src => MapFromMessageFileToGEtMessageFiles(src.Files)))
 				.ForMember(destination => destination.IsRead, opt => opt.MapFrom(src => src.IsRead))
 				.ForMember(destination => destination.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn))
 				.ReverseMap();
@@ -23,7 +23,13 @@ namespace BasicSocialMedia.Application.Mappers
 			CreateMap<AddMessageDto, AddMessageFileDto>()
 				.ForMember(destination => destination.ChatId, opt => opt.MapFrom(src => src.ChatId))
 				.ForMember(destination => destination.UserId, opt => opt.MapFrom(src => src.User1Id))
-				.ForMember(destination => destination.Files, opt => opt.MapFrom(src => src.Files));			
+				.ForMember(destination => destination.Files, opt => opt.MapFrom(src => src.Files));
+
+			CreateMap<AddMessageDto, Message>()
+				.ForMember(destination => destination.ChatId, opt => opt.MapFrom(src => src.ChatId))
+				.ForMember(destination => destination.SenderId, opt => opt.MapFrom(src => src.User1Id))
+				.ForMember(destination => destination.ReceiverId, opt => opt.MapFrom(src => src.User2Id))
+				.ForMember(destination => destination.Content, opt => opt.MapFrom(src => src.Content));			
 			
 			CreateMap<Message, DeletedMessage>()
 				.ForMember(destination => destination.ChatId, opt => opt.MapFrom(src => src.ChatId))
@@ -43,7 +49,7 @@ namespace BasicSocialMedia.Application.Mappers
 				.ForMember(destination => destination.Files, opt => opt.MapFrom(src => src.Files));
 		}
 
-		private static List<GetMessageFileDto> MapMessageFiles(IEnumerable<MessageFileModel> files)
+		private static List<GetMessageFileDto> MapFromMessageFileToGEtMessageFiles(IEnumerable<MessageFileModel> files)
 		{
 			return files.Select(file => new GetMessageFileDto
 			{

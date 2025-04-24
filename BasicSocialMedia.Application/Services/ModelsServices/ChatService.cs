@@ -1,30 +1,42 @@
 ﻿using AutoMapper;
 using BasicSocialMedia.Core.DTOs.ChatDTOs;
-using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.Messaging;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
-	public class ChatService(IUnitOfWork unitOfWork, IMapper mapper, IMessagesServices messagesServices) : IChatServices
+	public class ChatService(IUnitOfWork unitOfWork, IMapper mapper, IMessagesServices messagesServices, IMessageFileModelService messageFileModelService) : IChatServices
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
 		private readonly IMessagesServices _messagesServices = messagesServices;
+		private readonly IMessageFileModelService _messageFileModelService = messageFileModelService;
 
-		public Task<string?> GetUserId(int chatId)
+		public async Task<Dictionary<string, string>?> GetUsersId(int chatId)
 		{
-			throw new NotImplementedException();
+			Chat? chat = await _unitOfWork.Chats.GetByIdAsync(chatId);
+			if (chat == null) return null;
+			Dictionary<string, string> users = new()
+		   {
+			   { "user1Id", chat.User1Id },
+			   { "user2Id", chat.User2Id }
+		   };
+			return users;
+		}
+		public async Task<IEnumerable<string>?> GetFilesByChatIdAsync(int chatId)
+		{
+			Chat? chat = await _unitOfWork.Chats.GetByIdAsync(chatId);
+			if (chat is null) return null;
+			return await _messageFileModelService.GetAllFilesByChatIdAsync(chatId);
 		}
 		public async Task<GetChatDto?> GetChatByIdAsync(int chatId, string userId)
 		{
 			Chat? chat = await _unitOfWork.Chats.GetByIdAsync(chatId);
 			if (chat is null) return null;
 			GetChatDto chatDto = _mapper.Map<GetChatDto>(chat);
-			IEnumerable<GetMessagesDto> messages = await _messagesServices.GetMessagesByChatIdAsync(chatId, userId);
-			chatDto.Messages = messages;
-
+			chatDto.Messages = await _messagesServices.GetMessagesByChatIdAsync(chatId, userId);
 			return chatDto;
 		}
 		public async Task<IEnumerable<GetChatDto>?> GetChatsByUserIdAsync(string userId)

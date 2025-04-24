@@ -20,10 +20,15 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MessagingConfig
 				.HasForeignKey(dm => dm.MessageId)
 				.OnDelete(DeleteBehavior.Cascade);
 
+			builder.HasOne(dm => dm.Chat)
+				.WithMany()
+				.HasForeignKey(dm => dm.ChatId)
+				.OnDelete(DeleteBehavior.Restrict);
+
 			builder.HasOne(dm => dm.User)
 				.WithMany() // Optional: or .WithMany(u => u.DeletedMessages) if you add collection on user
 				.HasForeignKey(dm => dm.UserId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

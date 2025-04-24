@@ -5,16 +5,16 @@ using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.Messaging;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
-	public class MessageService(IUnitOfWork unitOfWork, IMapper mapper, IMessageFileModelService messageFileModelService, ILogger logger) : IMessagesServices
+	public class MessageService(IUnitOfWork unitOfWork, IMapper mapper, IMessageFileModelService messageFileModelService, ILogger<MessageService> logger) : IMessagesServices
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
 		private readonly IMessageFileModelService _messageFileModelService = messageFileModelService;
-		private readonly ILogger _logger = logger;
+		private readonly ILogger<MessageService> _logger = logger;
 
 		public Task<string?> GetUserId(int messageId)
 		{
@@ -59,7 +59,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			}
 			catch (Exception ex)
 			{
-				_logger.Error(ex, "Error occurred while creating a message");
+				_logger.LogError(ex, "Error occurred while creating a message");
 				return false;
 			}
 		}
@@ -85,7 +85,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			}
 			catch (Exception ex)
 			{
-				_logger.Error(ex, "Error occurred while Updating a message");
+				_logger.LogError(ex, "Error occurred while Updating a message");
 				return false;
 			}
 		}

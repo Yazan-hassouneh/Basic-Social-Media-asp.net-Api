@@ -1028,7 +1028,7 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.HasOne("BasicSocialMedia.Core.Models.Messaging.Chat", "Chat")
                         .WithMany()
                         .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BasicSocialMedia.Core.Models.Messaging.Message", "Message")
@@ -1040,7 +1040,7 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Chat");

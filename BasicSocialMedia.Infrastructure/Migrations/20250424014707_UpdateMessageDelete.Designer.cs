@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BasicSocialMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250422012703_AddChatIdDeleteMessage")]
-    partial class AddChatIdDeleteMessage
+    [Migration("20250424014707_UpdateMessageDelete")]
+    partial class UpdateMessageDelete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -371,36 +371,6 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.ToTable("Friendships", "Relations");
                 });
 
-            modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Chat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("User1Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("User2Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("User1Id");
-
-                    b.HasIndex("User2Id");
-
-                    b.ToTable("Chats", "Messages");
-                });
-
             modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -473,75 +443,6 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.ToTable("CommentReactions", "Reactions");
                 });
 
-            modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.DeletedMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChatId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MessageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChatId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("MessageId", "UserId")
-                        .IsUnique();
-
-                    b.ToTable("DeletedMessages", "Messages");
-                });
-
-            modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChatId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<bool>("IsRead")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("ReceiverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChatId");
-
-                    b.ToTable("Messages", "Messages");
-                });
-
             modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -610,6 +511,134 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PostReactions", "Reactions");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("User1Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("User2Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("Chats", "Messages");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.ChatDeletion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("ChatDeletions", "Messages");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.DeletedMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MessageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("MessageId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("DeletedMessages", "Messages");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRead")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.ToTable("Messages", "Messages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -803,13 +832,13 @@ namespace BasicSocialMedia.Infrastructure.Migrations
 
             modelBuilder.Entity("BasicSocialMedia.Core.Models.FileModels.MessageFileModel", b =>
                 {
-                    b.HasOne("BasicSocialMedia.Core.Models.MainModels.Chat", "Chat")
+                    b.HasOne("BasicSocialMedia.Core.Models.Messaging.Chat", "Chat")
                         .WithMany("Files")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("BasicSocialMedia.Core.Models.MainModels.Message", "Message")
+                    b.HasOne("BasicSocialMedia.Core.Models.Messaging.Message", "Message")
                         .WithMany("Files")
                         .HasForeignKey("MessageId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -899,25 +928,6 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Chat", b =>
-                {
-                    b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "User1")
-                        .WithMany("Chats")
-                        .HasForeignKey("User1Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "User2")
-                        .WithMany()
-                        .HasForeignKey("User2Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User1");
-
-                    b.Navigation("User2");
-                });
-
             modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Comment", b =>
                 {
                     b.HasOne("BasicSocialMedia.Core.Models.MainModels.Post", "Post")
@@ -956,44 +966,6 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.DeletedMessage", b =>
-                {
-                    b.HasOne("BasicSocialMedia.Core.Models.MainModels.Chat", "Chat")
-                        .WithMany()
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BasicSocialMedia.Core.Models.MainModels.Message", "Message")
-                        .WithMany("DeletedByUsers")
-                        .HasForeignKey("MessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Chat");
-
-                    b.Navigation("Message");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Message", b =>
-                {
-                    b.HasOne("BasicSocialMedia.Core.Models.MainModels.Chat", "Chat")
-                        .WithMany("Messages")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Chat");
-                });
-
             modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Post", b =>
                 {
                     b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "User")
@@ -1022,6 +994,74 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.Chat", b =>
+                {
+                    b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "User1")
+                        .WithMany("Chats")
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "User2")
+                        .WithMany()
+                        .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.ChatDeletion", b =>
+                {
+                    b.HasOne("BasicSocialMedia.Core.Models.Messaging.Chat", "Chat")
+                        .WithMany()
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.DeletedMessage", b =>
+                {
+                    b.HasOne("BasicSocialMedia.Core.Models.Messaging.Chat", "Chat")
+                        .WithMany()
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BasicSocialMedia.Core.Models.Messaging.Message", "Message")
+                        .WithMany("DeletedByUsers")
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BasicSocialMedia.Core.Models.AuthModels.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("Message");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.Message", b =>
+                {
+                    b.HasOne("BasicSocialMedia.Core.Models.Messaging.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1092,23 +1132,9 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.Navigation("ProfileImageModel");
                 });
 
-            modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Chat", b =>
-                {
-                    b.Navigation("Files");
-
-                    b.Navigation("Messages");
-                });
-
             modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Comment", b =>
                 {
                     b.Navigation("CommentReactions");
-
-                    b.Navigation("Files");
-                });
-
-            modelBuilder.Entity("BasicSocialMedia.Core.Models.MainModels.Message", b =>
-                {
-                    b.Navigation("DeletedByUsers");
 
                     b.Navigation("Files");
                 });
@@ -1122,6 +1148,20 @@ namespace BasicSocialMedia.Infrastructure.Migrations
                     b.Navigation("Files");
 
                     b.Navigation("PostReactions");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.Chat", b =>
+                {
+                    b.Navigation("Files");
+
+                    b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("BasicSocialMedia.Core.Models.Messaging.Message", b =>
+                {
+                    b.Navigation("DeletedByUsers");
+
+                    b.Navigation("Files");
                 });
 #pragma warning restore 612, 618
         }

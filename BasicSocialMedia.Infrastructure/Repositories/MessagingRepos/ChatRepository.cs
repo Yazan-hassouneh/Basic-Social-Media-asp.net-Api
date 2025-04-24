@@ -18,17 +18,12 @@ namespace BasicSocialMedia.Infrastructure.Repositories.MessagingRepos
 					.ThenInclude(user => user!.ProfileImageModel)
 				.Include(chat => chat.User2)
 					.ThenInclude(user => user!.ProfileImageModel)
-				.Include(chat => chat.Files)
 				.Select(chat => new Chat
 				{
 					Id = chat.Id,
-					Files = chat.Files.Select(file => new MessageFileModel
-					{
-						Id = file.Id,
-						UserId = file.UserId,
-						Path = file.Path,
-					}).ToList(),
 					CreatedOn = chat.CreatedOn,
+					User1Id = chat.User1Id,
+					User2Id	= chat.User2Id,
 					User1 = chat.User1 == null
 					? null
 					: chat.User1.IsDeleted

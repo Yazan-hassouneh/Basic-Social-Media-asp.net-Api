@@ -22,7 +22,7 @@ namespace BasicSocialMedia
 			builder.Logging.ClearProviders();
 			builder.Logging.AddConsole();
 
-            builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection("SecuritySettings"));
+			builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection("SecuritySettings"));
 			builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
 			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(

@@ -1,4 +1,5 @@
-﻿using BasicSocialMedia.Core.Consts;
+﻿using BasicSocialMedia.Application.Utils;
+using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.ChatDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using FluentValidation;
@@ -32,6 +33,27 @@ namespace BasicSocialMedia.Web.Controllers
 			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2  
 
 			return Ok(chat);
+		}		
+		
+		[HttpGet]
+		[Route("getChatFile/{chatId}")]
+		[Authorize]
+		public async Task<IActionResult> GetChatFilesById(int chatId)
+		{
+			var userId = User.GetUserId(); // Extract the string value from the claim  
+			if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+			var usersId = await _chatServices.GetUsersId(chatId).ConfigureAwait(false);
+			if (usersId is null) return Forbid();
+
+			if (!usersId.TryGetValue("user1Id", out var user1Id) || !usersId.TryGetValue("user2Id", out var user2Id)) return Forbid();
+
+			var user1Ownership = await _authorizationService.AuthorizeAsync(User, user1Id, PoliciesSettings.Ownership);
+			var user2Ownership = await _authorizationService.AuthorizeAsync(User, user2Id, PoliciesSettings.Ownership);
+			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2  
+
+			IEnumerable<string>? files = await _chatServices.GetFilesByChatIdAsync(chatId);
+			return files is not null ? Ok(files) : NotFound();
 		}
 
 		[HttpGet]
@@ -65,7 +87,7 @@ namespace BasicSocialMedia.Web.Controllers
 		[Route("delete/{chatId}")]
 		public async Task<IActionResult> DeleteChat(int chatId)
 		{
-			var userId = User.FindFirst("userId")?.Value; // Extract the string value from the claim  
+			var userId = User.GetUserId(); // Extract the string value from the claim  
 			if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
 			GetChatDto? chat = await _chatServices.GetChatByIdAsync(chatId, userId);

@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using BasicSocialMedia.Core.DTOs.AuthDTOs;
-using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
 using BasicSocialMedia.Core.Interfaces.ModelsInterfaces;
 using BasicSocialMedia.Core.Models.AuthModels;
-using BasicSocialMedia.Core.Models.FileModels;
 
 namespace BasicSocialMedia.Application.Mappers
 {

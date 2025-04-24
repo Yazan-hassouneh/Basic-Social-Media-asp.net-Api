@@ -21,13 +21,13 @@ namespace BasicSocialMedia.Web.Controllers
 		[HttpPost("AddMessage")]
 		public async Task<IActionResult> AddMessageAsync([FromForm] AddMessageDto addMessageDto)
 		{
-			ValidationResult validationResult = _addMessageDtoValidator.Validate(addMessageDto);
+			ValidationResult validationResult = await _addMessageDtoValidator.ValidateAsync(addMessageDto);
 
 			if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
 			var user1Ownership = await _authorizationService.AuthorizeAsync(User, addMessageDto.User1Id, PoliciesSettings.Ownership);
 			var user2Ownership = await _authorizationService.AuthorizeAsync(User, addMessageDto.User2Id, PoliciesSettings.Ownership);
-			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2
+			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2  
 
 			var result = await _messagesServices.CreateMessageAsync(addMessageDto);
 			if (result) return Ok();
