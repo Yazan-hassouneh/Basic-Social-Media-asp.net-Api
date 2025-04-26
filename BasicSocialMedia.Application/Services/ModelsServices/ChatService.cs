@@ -56,8 +56,8 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		{
 			Chat newChat = new()
 			{
-				User1Id = chat.User1Id,
-				User2Id = chat.User2Id
+				User1Id = chat.SenderId,
+				User2Id = chat.ReceiverId
 			};
 
 			await _unitOfWork.Chats.AddAsync(newChat);

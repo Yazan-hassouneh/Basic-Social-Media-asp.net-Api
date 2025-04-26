@@ -3,7 +3,7 @@
 	public class MessageExistDto
 	{
 		public int Id { get; set; }
-		public string User1Id { get; set; } = null!;
-		public string User2Id { get; set; } = null!;
+		public string SenderId { get; set; } = null!;
+		public string ReceiverId { get; set; } = null!;
 	}
 }

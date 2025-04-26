@@ -27,8 +27,8 @@ namespace BasicSocialMedia.Application.Mappers
 			return messages.Select(message => new GetMessagesDto
 			{
 				Id = message.Id,
-				User1Id = message.SenderId,
-				User2Id = message.ReceiverId,
+				SenderId = message.SenderId,
+				ReceiverId = message.ReceiverId,
 				Content = message.Content,
 				CreatedOn = message.CreatedOn,
 				IsRead = message.IsRead,

@@ -22,7 +22,7 @@ namespace BasicSocialMedia.Web.Controllers
 		[Route("getById/{chatId}")]
 		public async Task<IActionResult> GetChatById(int chatId)
 		{
-			var userId = User.FindFirst("userId")?.Value; // Extract the string value from the claim  
+			var userId = User.GetUserId(); // Extract the string value from the claim  
 			if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
 			GetChatDto? chat = await _chatServices.GetChatByIdAsync(chatId, userId);
@@ -75,9 +75,13 @@ namespace BasicSocialMedia.Web.Controllers
 			var result = await _addChatDtoValidator.ValidateAsync(chatDto);
 			if (!result.IsValid) return BadRequest(result.Errors);
 
-			var user1Ownership = await _authorizationService.AuthorizeAsync(User, chatDto.User1Id, PoliciesSettings.Ownership);
-			var user2Ownership = await _authorizationService.AuthorizeAsync(User, chatDto.User2Id, PoliciesSettings.Ownership);
-			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2
+			var user1Ownership = await _authorizationService.AuthorizeAsync(User, chatDto.SenderId, PoliciesSettings.Ownership);
+			var user2Ownership = await _authorizationService.AuthorizeAsync(User, chatDto.ReceiverId, PoliciesSettings.Ownership);
+			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2  
+
+			string? userId = User.GetUserId(); // Marked as nullable to handle potential null values  
+			if (userId is null) return Unauthorized();
+			chatDto.SenderId = userId;
 
 			AddChatDto chat = await _chatServices.CreateChatAsync(chatDto);
 			return Ok(chat);
@@ -87,7 +91,7 @@ namespace BasicSocialMedia.Web.Controllers
 		[Route("delete/{chatId}")]
 		public async Task<IActionResult> DeleteChat(int chatId)
 		{
-			var userId = User.GetUserId(); // Extract the string value from the claim  
+			var userId = User.GetUserId(); // Marked as nullable to handle potential null values  
 			if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
 			GetChatDto? chat = await _chatServices.GetChatByIdAsync(chatId, userId);

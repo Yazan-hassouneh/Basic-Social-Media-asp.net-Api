@@ -18,7 +18,6 @@ namespace BasicSocialMedia.Application.DTOsValidation.MessageDtosValidation
 			_context = context;
 
 			Include(new BaseUpdateFileValidator());
-			Include(new BaseChatIdDtoValidator(context));
 			Include(new BaseUserIdDtoValidation(userManager));
 
 			RuleFor(x => x.Id)

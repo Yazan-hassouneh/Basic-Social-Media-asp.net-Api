@@ -1,4 +1,5 @@
-﻿using BasicSocialMedia.Core.Consts;
+﻿using BasicSocialMedia.Application.Utils;
+using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.PostDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.ValidationServices;
@@ -58,7 +59,7 @@ namespace BasicSocialMedia.Web.Controllers
 		[Route("getAllByUserFriends")]
 		public async Task<IActionResult> GetAllPostsByUserFriends()
 		{
-			var userId = User.FindFirst("userId")?.Value;
+			var userId = User.GetUserId();
 			if (userId == null) return Unauthorized();
 
 			IEnumerable<GetPostDto> posts = await _postService.GetPostsByUserFriendsAsync(userId);
@@ -71,7 +72,7 @@ namespace BasicSocialMedia.Web.Controllers
 		[Route("getAllByUserFollowings")]
 		public async Task<IActionResult> GetAllPostsByUserFollowings()
 		{
-			var userId = User.FindFirst("userId")?.Value;
+			var userId = User.GetUserId();
 			if (userId == null) return Unauthorized();
 
 			IEnumerable<GetPostDto> posts = await _postService.GetPostsByUserFollowingsAsync(userId);

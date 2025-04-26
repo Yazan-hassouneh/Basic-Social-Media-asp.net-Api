@@ -14,11 +14,7 @@ namespace BasicSocialMedia.Application.DTOsValidation.BaseInterfaceValidation
 		{
 			_userManager = userManager;
 
-			RuleFor(x => x.User1Id)
-				.NotEmpty().WithMessage(ValidationSettings.GeneralErrorMessage)
-				.MustAsync(UserExists).WithMessage(ValidationSettings.GeneralErrorMessage);
-
-			RuleFor(x => x.User2Id)
+			RuleFor(x => x.ReceiverId)
 				.NotEmpty().WithMessage(ValidationSettings.GeneralErrorMessage)
 				.MustAsync(UserExists).WithMessage(ValidationSettings.GeneralErrorMessage);
 		}

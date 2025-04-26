@@ -71,23 +71,25 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 			var validationResult = await _updateMessageFileValidator.ValidateAsync(updateMessageFileDto);
 			if (!validationResult.IsValid) return false;
 
+			var AllMessageFiles = await _unitOfWork.MessageFiles.GetAllAsync(messageFile => messageFile.MessageId == updateMessageFileDto.MessageId);
+			List<MessageFileModel?>? filesToDelete = AllMessageFiles.ToList();
+
 			if (updateMessageFileDto.MediaPaths?.Count > 0)
 			{
-				var files = await _unitOfWork.MessageFiles.GetAllAsync(messageFile => messageFile.MessageId == updateMessageFileDto.MessageId);
-				var filesToDelete = files?.Where(f => f != null && !updateMessageFileDto.MediaPaths.Contains(f.Path)).ToList();
-
-				if (filesToDelete?.Count > 0)
-				{
-					// delete from projectFile
-					foreach (var file in filesToDelete) _imageService.DeleteImage(file!.Path, FileSettings.CommentsImagesPath);
-					// delete from database
-					foreach (var file in filesToDelete) _unitOfWork.MessageFiles.Delete(file!);
-
-					await _unitOfWork.MessageFiles.Save();
-				}
+				filesToDelete = AllMessageFiles?.Where(file => !updateMessageFileDto.MediaPaths.Contains(file!.Path)).ToList();
 			}
 
-			AddMessageFileDto addCommentFileDto = new()
+			if (filesToDelete?.Count > 0)
+			{
+				// delete from projectFile
+				foreach (var file in filesToDelete) _imageService.DeleteImage(file!.Path, FileSettings.CommentsImagesPath);
+				// delete from database
+				foreach (var file in filesToDelete) _unitOfWork.MessageFiles.Delete(file!);
+
+				await _unitOfWork.MessageFiles.Save();
+			}
+
+			AddMessageFileDto addMessageFileDto = new()
 			{
 				UserId = updateMessageFileDto.UserId,
 				MessageId = updateMessageFileDto.MessageId,
@@ -95,7 +97,7 @@ namespace BasicSocialMedia.Application.Services.FileModelServices
 				Files = updateMessageFileDto.Files,
 			};
 
-			return await AddMessageFileAsync(addCommentFileDto);
+			return await AddMessageFileAsync(addMessageFileDto);
 		}
 		public async Task<bool> DeleteMessageFileByChatIdAsync(int chatId)
 		{

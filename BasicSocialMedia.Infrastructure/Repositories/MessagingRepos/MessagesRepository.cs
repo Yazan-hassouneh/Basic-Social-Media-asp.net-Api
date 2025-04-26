@@ -16,6 +16,20 @@ namespace BasicSocialMedia.Infrastructure.Repositories.MessagingRepos
 			Message? message = await _context.Messages.AsNoTracking().FirstOrDefaultAsync(message => message.Id == messageId);
 			return "Empty String";
 		}
+		public async Task<Message?> MessageExist(int messageId)
+		{
+			Message? message = await _context.Messages
+				.Select(message => new Message
+				{
+					Id = message.Id,
+					SenderId = message.SenderId,
+					ReceiverId = message.ReceiverId,
+					ChatId = message.ChatId,
+				})
+				.FirstOrDefaultAsync(message => message.Id == messageId);
+
+			return message;
+		}
 		public async Task<Message?> GetByIdAsync(int id, string userId)
 		{
 			Message? message = await _context.Messages
@@ -79,5 +93,6 @@ namespace BasicSocialMedia.Infrastructure.Repositories.MessagingRepos
 				};
 			}).OrderByDescending(m => m.CreatedOn);
 		}
+
 	}
 }

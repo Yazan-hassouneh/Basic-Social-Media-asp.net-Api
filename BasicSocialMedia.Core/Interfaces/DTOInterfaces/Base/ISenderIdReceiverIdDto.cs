@@ -1,8 +1,11 @@
-﻿namespace BasicSocialMedia.Core.Interfaces.DTOInterfaces.Base
+﻿using System.Text.Json.Serialization;
+
+namespace BasicSocialMedia.Core.Interfaces.DTOInterfaces.Base
 {
 	public interface ISenderIdReceiverIdDto
 	{
-		public string User1Id { get; set; }
-		public string User2Id { get; set; }
+		public string ReceiverId { get; set; }
+		[JsonIgnore]
+		public string? SenderId { get; set; }
 	}
 }
