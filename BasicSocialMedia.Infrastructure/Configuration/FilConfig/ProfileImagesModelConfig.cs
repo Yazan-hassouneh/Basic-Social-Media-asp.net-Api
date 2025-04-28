@@ -12,6 +12,11 @@ namespace BasicSocialMedia.Infrastructure.Configuration.FilConfig
 			BaseFileModelConfig.ConfigureFile(builder);
 
 			builder.Property(model => model.Current).HasDefaultValue(true);
+
+			builder.HasOne(p => p.User) // ProfileImageModel has one User
+				  .WithOne(u => u.ProfileImageModel) // User has one ProfileImageModel
+				  .HasForeignKey<ProfileImageModel>(p => p.UserId) // ProfileImageModel's UserId is the foreign key
+				  .OnDelete(DeleteBehavior.Cascade); // When User is deleted, delete ProfileImageModel
 		}
 	}
 }

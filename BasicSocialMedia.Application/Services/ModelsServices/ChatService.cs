@@ -87,7 +87,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 				_unitOfWork.ChatDeletion.Update(existing);
 			}
 
-			await _unitOfWork.DeletedMessages.Save();
+			await _unitOfWork.ChatDeletion.Save();
 
 			/*
 				Add Background Job to check if both users deleted the chat, if so delete the chat and deletedChat  

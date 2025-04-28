@@ -43,6 +43,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		public async Task<bool> CreateMessageAsync(AddMessageDto message)
 		{
 			Message newMessage = _mapper.Map<Message>(message);
+			newMessage.Content = _sanitizer.Sanitize(message.Content ?? string.Empty);
 			try
 			{
 				var addedMessage = await _unitOfWork.Messages.AddAsync(newMessage);

@@ -3,6 +3,7 @@ using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Web.Middlewares;
 using BasicSocialMedia.Web.Startup;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 
 namespace BasicSocialMedia
@@ -15,7 +16,8 @@ namespace BasicSocialMedia
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddHangFireConfiguration(builder.Configuration);
+			builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddLogging();
@@ -30,6 +32,7 @@ namespace BasicSocialMedia
 	             ));
 
             builder.Services.AddUnitOfWorkInjection();
+            builder.Services.AddBackgroundJobsInjection();
 			builder.Services.AddIdentityServices();
 			builder.Services.AddJWTServices(builder);
 			builder.Services.AddHttpContextAccessor(); 
@@ -59,8 +62,9 @@ namespace BasicSocialMedia
 			app.UseAuthentication();
 			app.UseAuthorization();
 
-			app.UseMiddleware<SecretKeyMiddleware>();
+			//app.UseMiddleware<SecretKeyMiddleware>();
 
+            app.UseHangfireDashboard(BackgroundJobsSettings.HangFireDashboardPath);
             app.MapControllers();
 
             app.Run();

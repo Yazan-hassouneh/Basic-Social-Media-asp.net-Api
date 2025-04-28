@@ -45,5 +45,22 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			await _unitOfWork.PostReactions.Save();
 			return true;
 		}
+		public async Task<bool> DeletePostReactionsByPostIdAsync(int postId)
+		{
+			try
+			{
+				IEnumerable<PostReaction?> postReaction = await _unitOfWork.PostReactions.FindAllWithTrackingAsync(reaction => reaction.PostId == postId);
+				IEnumerable<PostReaction> NonNullPostReaction = postReaction.Where(reaction => reaction != null).Select(reaction => reaction!).ToList();
+
+				// delete from database
+				_unitOfWork.PostReactions.DeleteRange(NonNullPostReaction);
+				await _unitOfWork.PostReactions.Save();
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
 	}
 }

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Hangfire" Version="1.8.18" />
     <PackageReference Include="HtmlSanitizer" Version="9.0.876" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="9.0.3" />
@@ -30,8 +31,8 @@
   <ItemGroup>
     <Folder Include="wwwroot\Uploads\Comments\Images\" />
     <Folder Include="wwwroot\Uploads\Comments\Video\" />
-    <Folder Include="wwwroot\Uploads\Meessages\Images\" />
-    <Folder Include="wwwroot\Uploads\Meessages\Video\" />
+    <Folder Include="wwwroot\Uploads\Messages\Images\" />
+    <Folder Include="wwwroot\Uploads\Messages\Video\" />
     <Folder Include="wwwroot\Uploads\Posts\Images\" />
     <Folder Include="wwwroot\Uploads\Posts\Video\" />
     <Folder Include="wwwroot\Uploads\ProfileImgs\" />

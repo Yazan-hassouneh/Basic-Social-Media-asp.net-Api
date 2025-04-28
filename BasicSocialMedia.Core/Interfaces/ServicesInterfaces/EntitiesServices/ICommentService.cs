@@ -11,5 +11,6 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 		Task<AddCommentDto> CreateCommentAsync(AddCommentDto commentDto);
 		Task<UpdateCommentDto?> UpdateCommentAsync(UpdateCommentDto commentDto);
 		Task<bool> DeleteCommentAsync(int commentId);
+		Task<bool> DeleteCommentsByPostIdAsync(int postId);
 	}
 }

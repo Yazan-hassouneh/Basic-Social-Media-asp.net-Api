@@ -1,5 +1,4 @@
 ﻿using BasicSocialMedia.Core.DTOs.ReactionsDTOs;
-using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 
 namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 {
@@ -9,5 +8,6 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 		Task<IEnumerable<GetReactionDto>> GetPostReactionsByPostIdAsync(int postId);
 		Task<AddPostReactionDto> CreatePostReactionAsync(AddPostReactionDto postReactionDto);
 		Task<bool> DeletePostReactionAsync(int reactionId);
+		Task<bool> DeletePostReactionsByPostIdAsync(int postId);
 	}
 }

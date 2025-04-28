@@ -1,26 +1,23 @@
 ﻿using AutoMapper;
-using BasicSocialMedia.Application.Services.FileModelServices;
 using BasicSocialMedia.Application.Utils;
 using BasicSocialMedia.Core.DTOs.Comment;
 using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
-using BasicSocialMedia.Core.DTOs.PostDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.MainModels;
 using Ganss.Xss;
-using Microsoft.Extensions.Hosting;
-using static BasicSocialMedia.Core.Enums.ProjectEnums;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
-	public class CommentService(IUnitOfWork unitOfWork, IMapper mapper, HtmlSanitizer sanitizer, ICommentFileModeService commentFileModeService) : ICommentService
+	public class CommentService(IUnitOfWork unitOfWork, IMapper mapper, HtmlSanitizer sanitizer, ICommentFileModeService commentFileModeService, ICommentReactionService commentReactionService) : ICommentService
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
 		private readonly HtmlSanitizer _sanitizer = sanitizer;
 		private readonly ICommentFileModeService _commentFileModeService = commentFileModeService;
+		private readonly ICommentReactionService _commentReactionService = commentReactionService;
 
 		public async Task<GetCommentDto> GetCommentByIdAsync(int commentId)
 		{
@@ -135,7 +132,21 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			List<string> files = (await _unitOfWork.CommentFiles.GetAllAsync(file => file.CommentId == comment.Id)).Select(file => file!.Path).ToList();
 			_unitOfWork.Comments.Delete(comment);
 			int effectedRows = await _unitOfWork.Comments.Save();
-			if (effectedRows > 0) _commentFileModeService.DeleteCommentFiles(files);
+			if (effectedRows > 0)
+			{
+				_commentFileModeService.DeleteCommentFiles(files);
+				await _commentReactionService.GetCommentReactionsByCommentIdAsync(commentId);
+			}
+			return true;
+		}		
+		public async Task<bool> DeleteCommentsByPostIdAsync(int postId)
+		{
+			IEnumerable<Comment?> comments = await _unitOfWork.Comments.FindAllWithTrackingAsync(comment => comment.PostId == postId);
+			IEnumerable<Comment> nonNullableComments = comments.Where(comment => comment != null).Select(comment => comment!);
+			if (comments == null) return false;
+
+			_unitOfWork.Comments.DeleteRange(nonNullableComments);
+			await _unitOfWork.Comments.Save();
 			return true;
 		}
 

@@ -15,13 +15,15 @@ using BasicSocialMedia.Core.Models.FileModels;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
-	public class PostService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, HtmlSanitizer sanitizer, IPostFileModelService postFileModelService) : IPostService
+	public class PostService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, HtmlSanitizer sanitizer, IPostFileModelService postFileModelService, IPostReactionService postReactionService, ICommentService commentService) : IPostService
 	{
 		private readonly UserManager<ApplicationUser> _userManager = userManager;
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IMapper _mapper = mapper;
 		private readonly HtmlSanitizer _sanitizer = sanitizer;
 		private readonly IPostFileModelService _postFileModelService = postFileModelService;
+		private readonly IPostReactionService _postReactionService = postReactionService;
+		private readonly ICommentService _commentService = commentService;
 
 		/*
 			✅ Prevents XSS attacks by removing harmful scripts
@@ -159,9 +161,15 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			if (post == null) return false;
 			List<string> files = (await _unitOfWork.PostFiles.GetAllAsync(file => file.PostId == post.Id)).Select(file => file!.Path).ToList();
 
+
 			_unitOfWork.Posts.Delete(post);
 			int effectedRows = await _unitOfWork.Posts.Save();
-			if (effectedRows > 0) _postFileModelService.DeletePostFiles(files);
+			if (effectedRows > 0)
+			{
+				_postFileModelService.DeletePostFiles(files); // deleted from project structure
+				await _postReactionService.DeletePostReactionsByPostIdAsync(postId); // better to do it with backgroundJob
+				await _commentService.DeleteCommentsByPostIdAsync(postId); // better to do it with backgroundJob
+			}
 			return true;
 		}
 

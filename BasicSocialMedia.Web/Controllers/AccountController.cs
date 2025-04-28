@@ -5,6 +5,9 @@ using BasicSocialMedia.Core.Models.AuthModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Hangfire;
+using BasicSocialMedia.Core.Interfaces.BackgroundJobsInterfaces;
+using BasicSocialMedia.Application.BackgroundJobs;
 
 namespace BasicSocialMedia.Web.Controllers
 {
@@ -66,7 +69,7 @@ namespace BasicSocialMedia.Web.Controllers
 			return Ok();
 		}
 
-		[HttpPost("delete/{userId}")]
+		[HttpPut("delete/{userId}")]
 		[Authorize]
 		public async Task<IActionResult> SoftDeleteUser([FromRoute] string userId)
 		{
@@ -86,8 +89,8 @@ namespace BasicSocialMedia.Web.Controllers
 
 			if (result.Succeeded)
 			{
-				// Trigger background jobs here if needed
-				return Ok("User soft-deleted successfully.");
+				BackgroundJob.Schedule<AccountBackgroundJobs>(x => x.HardDeleteUserAsync(userId), TimeSpan.FromSeconds(BackgroundJobsSettings.HardDeleteAccountAfterDays));
+				return Ok("User Deleted Successfully");
 			}
 
 			foreach (var error in result.Errors)

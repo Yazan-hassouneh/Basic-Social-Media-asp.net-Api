@@ -15,12 +15,12 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MainConfig
 					.WithMany()
 					.HasForeignKey(comment => comment.UserId)
 					.HasPrincipalKey(user => user.Id)
-					.OnDelete(DeleteBehavior.Restrict);
+					.OnDelete(DeleteBehavior.Cascade);
 
 			builder.HasOne(comment => comment.Post)
 						.WithMany(post => post.Comments)
 						.HasForeignKey(comment => comment.PostId)
-						.OnDelete(DeleteBehavior.Cascade);
+						.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

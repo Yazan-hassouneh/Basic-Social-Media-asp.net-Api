@@ -1,4 +1,5 @@
-﻿using BasicSocialMedia.Application.CustomPolicies.Block;
+﻿using BasicSocialMedia.Application.BackgroundJobs;
+using BasicSocialMedia.Application.CustomPolicies.Block;
 using BasicSocialMedia.Application.CustomPolicies.Moderation;
 using BasicSocialMedia.Application.CustomPolicies.Ownership;
 using BasicSocialMedia.Application.CustomPolicies.PostVisibility;
@@ -30,6 +31,7 @@ using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.DTOs.PostDTOs;
 using BasicSocialMedia.Core.DTOs.ProfileImage;
 using BasicSocialMedia.Core.DTOs.ReactionsDTOs;
+using BasicSocialMedia.Core.Interfaces.BackgroundJobsInterfaces;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EnumsServices;
@@ -103,6 +105,11 @@ namespace BasicSocialMedia.Web.Startup
 		internal static IServiceCollection AddUnitOfWorkInjection(this IServiceCollection services)
 		{
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
+			return services;
+		}		
+		internal static IServiceCollection AddBackgroundJobsInjection(this IServiceCollection services)
+		{
+			services.AddScoped<IAccountBackgroundJobs, AccountBackgroundJobs>();
 			return services;
 		}			
 		internal static IServiceCollection AddCustomPoliciesInjection(this IServiceCollection services)
