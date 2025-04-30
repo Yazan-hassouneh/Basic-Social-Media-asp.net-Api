@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Hangfire;
-using BasicSocialMedia.Core.Interfaces.BackgroundJobsInterfaces;
 using BasicSocialMedia.Application.BackgroundJobs;
 
 namespace BasicSocialMedia.Web.Controllers

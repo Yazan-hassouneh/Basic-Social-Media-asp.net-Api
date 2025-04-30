@@ -1,5 +1,4 @@
-﻿using BasicSocialMedia.Core.Interfaces.BackgroundJobsInterfaces;
-using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
+﻿using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices;
 using BasicSocialMedia.Core.Models.AuthModels;
 using Hangfire;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BasicSocialMedia.Application.BackgroundJobs
 {
-	public class AccountBackgroundJobs(UserManager<ApplicationUser> userManager, ICommentReactionService commentReactionService, IFollowService followServices, IFriendshipService friendshipServices, IBlockService blockServices, IPostService postService, IChatServices chatServices, ICommentService commentService, IPostReactionService postReactionService) : IAccountBackgroundJobs
+	public class AccountBackgroundJobs(UserManager<ApplicationUser> userManager, ICommentReactionService commentReactionService, IFollowService followServices, IFriendshipService friendshipServices, IBlockService blockServices, IPostService postService, IChatServices chatServices, ICommentService commentService, IPostReactionService postReactionService)
 	{
 		private readonly UserManager<ApplicationUser> _userManager = userManager;
 		private readonly IPostService _postService = postService;
@@ -27,19 +26,13 @@ namespace BasicSocialMedia.Application.BackgroundJobs
 			var chats = await _chatServices.GetChatsByUserIdAsync(userId);
 			if (chats != null)
 			{
-				foreach (var chat in chats)
-				{
-					bool isBothUsersDeleted = await _chatServices.IsChatCompletelyDeletedAsync(chat.Id);
-					if (isBothUsersDeleted)
-					{
-						await _chatServices.HardDeleteChatAsync(chat.Id);
-					}
-				}
+				foreach (var chat in chats) await _chatServices.HardDeleteChatAsync(chat.Id);
 			}
+
 			await _chatServices.SetUserIdToNull(userId);
-			await _blockServices.DeleteBlockingByUserIdAsync(userId);
-			await _friendshipServices.RemoveFriendAsync(userId);
-			await _followServices.CancelFollowingAsync(userId);
+			await _blockServices.DeleteBlockListByUserIdAsync(userId);
+			await _friendshipServices.RemoveFriendsByUserIdAsync(userId);
+			await _followServices.CancelAllFollowingsByFollowingIdAsync(userId);
 			await _commentReactionService.DeleteCommentReactionsByUserIdAsync(userId);
 			await _postReactionService.DeletePostReactionsByUserIdAsync(userId);
 			await _commentService.DeleteCommentsByUserIdAsync(userId);

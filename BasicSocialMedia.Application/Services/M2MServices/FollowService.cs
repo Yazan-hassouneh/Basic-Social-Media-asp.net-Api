@@ -69,11 +69,11 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 			await _unitOfWork.Following.Save();
 			return true;
 		}		
-		public async Task<bool> CancelFollowingAsync(string followingId)
+		public async Task<bool> CancelAllFollowingsByFollowingIdAsync(string followingId)
 		{ 
-			Follow? follow = await _unitOfWork.Following.FindAsync(follow => follow.FollowingId == followingId);
-			if (follow == null) return true;
-			_unitOfWork.Following.Delete(follow);
+			IEnumerable<Follow?> follows = await _unitOfWork.Following.FindAllWithTrackingAsync(follow => follow.FollowingId == followingId);
+			IEnumerable<Follow> nonNullableFollows = follows.Where(follow => follow != null).Select(follow => follow!);
+			_unitOfWork.Following.DeleteRange(nonNullableFollows);
 			await _unitOfWork.Following.Save();
 			return true;
 		}

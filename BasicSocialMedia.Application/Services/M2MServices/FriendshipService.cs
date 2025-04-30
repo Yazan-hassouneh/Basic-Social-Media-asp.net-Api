@@ -98,11 +98,11 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 			await _unitOfWork.Friendship.Save();
 			return true;
 		}
-		public async Task<bool> RemoveFriendAsync(string friendId)
+		public async Task<bool> RemoveFriendsByUserIdAsync(string userId)
 		{
-			Friendship? friendship = await _unitOfWork.Friendship.FindWithTrackingAsync(friendship => friendship.SenderId == friendId || friendship.ReceiverId == friendId);
-			if (friendship == null) return true;
-			_unitOfWork.Friendship.Delete(friendship);
+			IEnumerable<Friendship?> friendships = await _unitOfWork.Friendship.FindAllWithTrackingAsync(friendship => friendship.SenderId == userId || friendship.ReceiverId == userId);
+			IEnumerable<Friendship> NonNullableFriendships = friendships.Where(friendship => friendship != null).Select(friendship => friendship!);
+			_unitOfWork.Friendship.DeleteRange(NonNullableFriendships);
 			await _unitOfWork.Friendship.Save();
 			return true;
 		}

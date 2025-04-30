@@ -40,12 +40,12 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 			await _unitOfWork.Blocking.Save();
 			return true;
 		}		
-		public async Task<bool> DeleteBlockingByUserIdAsync(string userId)
+		public async Task<bool> DeleteBlockListByUserIdAsync(string userId)
 		{
-			var blockEntity = await _unitOfWork.Blocking.FindWithTrackingAsync(blockEntity => blockEntity.BlockedId == userId || blockEntity.BlockerId == userId);
-			if (blockEntity == null) return false;
+			IEnumerable<Block?> blockEntity = await _unitOfWork.Blocking.FindAllWithTrackingAsync(blockEntity => blockEntity.BlockedId == userId || blockEntity.BlockerId == userId);
+			IEnumerable<Block> nonNullableBlockEntity = blockEntity.Where(blockEntity => blockEntity != null).Select(blockEntity => blockEntity!);
 
-			_unitOfWork.Blocking.Delete(blockEntity);
+			_unitOfWork.Blocking.DeleteRange(nonNullableBlockEntity);
 			await _unitOfWork.Blocking.Save();
 			return true;
 		}

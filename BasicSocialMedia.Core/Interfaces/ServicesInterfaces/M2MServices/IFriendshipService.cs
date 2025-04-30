@@ -12,7 +12,7 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices
 		Task<bool> SendFriendRequestAsync(SendFriendRequestDto requestDto);
 		Task<Friendship?> DoesFriendshipExist(string userId1, string userId2);
 		Task<bool> RemoveFriendAsync(int friendshipId);
-		Task<bool> RemoveFriendAsync(string friendId);
+		Task<bool> RemoveFriendsByUserIdAsync(string friendId);
 		Task<bool> AcceptRequestAsync(int friendshipId);
 		Task<bool> RejectRequestAsync(int friendshipId);
 		Task<bool> SetUserIdToNull(string userId);

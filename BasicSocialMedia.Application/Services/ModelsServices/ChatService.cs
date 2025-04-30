@@ -122,12 +122,6 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			}
 
 			await _unitOfWork.ChatDeletion.Save();
-
-			if(await IsChatCompletelyDeletedAsync(chatId))
-			{
-				bool result =  await HardDeleteChatAsync(chatId);
-				if (!result) return false;
-			}
 			return true;
 		}
 		public async Task<bool> IsChatCompletelyDeletedAsync(int chatId)
@@ -139,15 +133,19 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		}		
 		public async Task<bool> HardDeleteChatAsync(int chatId)
 		{
-			Chat? chat = await _unitOfWork.Chats.GetByIdWithTrackingAsync(chatId);
-			if (chat is null) return false;
+			if (await IsChatCompletelyDeletedAsync(chatId))
+			{
+				Chat? chat = await _unitOfWork.Chats.GetByIdWithTrackingAsync(chatId);
+				if (chat is null) return false;
 
-			// Delete associated file models  
-			await _messageFileModelService.DeleteMessageFileByChatIdAsync(chatId);
+				// Delete associated file models  
+				await _messageFileModelService.DeleteMessageFileByChatIdAsync(chatId);
 
-			// Delete the chat itself  
-			_unitOfWork.Chats.Delete(chat);
-			await _unitOfWork.Chats.Save();
+				// Delete the chat itself  
+				_unitOfWork.Chats.Delete(chat);
+				int effectedRow = await _unitOfWork.Chats.Save();
+				return effectedRow == 1;
+			}
 			return true;
 		}
 

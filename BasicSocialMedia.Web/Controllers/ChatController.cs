@@ -1,8 +1,10 @@
-﻿using BasicSocialMedia.Application.Utils;
+﻿using BasicSocialMedia.Application.BackgroundJobs;
+using BasicSocialMedia.Application.Utils;
 using BasicSocialMedia.Core.Consts;
 using BasicSocialMedia.Core.DTOs.ChatDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using FluentValidation;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -103,6 +105,7 @@ namespace BasicSocialMedia.Web.Controllers
 
 			bool isDeleted = await _chatServices.SoftDeleteChatAsync(chatId, userId);
 			if (!isDeleted) return BadRequest("something went wrong!");
+			BackgroundJob.Enqueue<ChatBackgroundJobs>(x => x.HardDeleteChat(chatId));
 			return Ok();
 		}
 	}

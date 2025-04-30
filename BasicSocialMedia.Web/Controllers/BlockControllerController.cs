@@ -34,8 +34,8 @@ namespace BasicSocialMedia.Web.Controllers
 				BlockedId = request.BlockedId
 			};
 
-			bool isFollowCancel = await _followService.CancelFollowingAsync(request.BlockedId);
-			bool isFriendshipCancel =  await _friendshipService.RemoveFriendAsync(request.BlockedId);
+			bool isFollowCancel = await _followService.CancelAllFollowingsByFollowingIdAsync(request.BlockedId);
+			bool isFriendshipCancel =  await _friendshipService.RemoveFriendsByUserIdAsync(request.BlockedId);
 			if (isFollowCancel && isFriendshipCancel) await _blockService.BlockUserAsync(block);
 			return Ok(new { message = "User blocked successfully" });
 		}
