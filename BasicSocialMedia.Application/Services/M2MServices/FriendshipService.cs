@@ -123,6 +123,37 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 				.Select(friend => _mapper.Map<GetFriendsDto>(friend!))
 				.ToList();
 		}
+		public async Task<bool> SetUserIdToNull(string userId)
+		{
+			var friendships = await _unitOfWork.Friendship.FindAllWithTrackingAsync(friendship => friendship.SenderId == userId || friendship.ReceiverId == userId);
+			if (friendships == null || !friendships.Any()) return true;
+
+			if (friendships.Any())
+			{
+				foreach (var friendship in friendships)
+				{
+					bool updated = false;
+
+					if (friendship!.SenderId == userId)
+					{
+						friendship.SenderId = null;
+						updated = true;
+					}
+
+					if (friendship.ReceiverId == userId)
+					{
+						friendship.ReceiverId = null;
+						updated = true;
+					}
+
+					if (updated) _unitOfWork.Friendship.Update(friendship);
+				}
+
+				await _unitOfWork.Friendship.Save();
+				return true;
+			}
+			return true;
+		}
 
 	}
 }

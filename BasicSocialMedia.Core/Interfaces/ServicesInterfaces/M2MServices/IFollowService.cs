@@ -10,5 +10,6 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices
 		Task<bool> FollowAsync(SendFollowRequestDto requestDto);
 		Task<bool> CancelFollowingAsync(int followId);
 		Task<bool> CancelFollowingAsync(string followingId);
+		Task<bool> SetUserIdToNull(string userId);
 	}
 }

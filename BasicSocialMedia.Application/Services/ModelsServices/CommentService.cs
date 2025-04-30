@@ -21,7 +21,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 		public async Task<GetCommentDto> GetCommentByIdAsync(int commentId)
 		{
-			Comment? comment = await _unitOfWork.Comments.GetByIdAsync(commentId);
+			Core.Models.MainModels.Comment? comment = await _unitOfWork.Comments.GetByIdAsync(commentId);
 			if (comment == null) return new GetCommentDto();
 			GetCommentDto commentDto = _mapper.Map<GetCommentDto>(comment);
 			return commentDto;
@@ -32,17 +32,17 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		}
 		public async Task<IEnumerable<GetCommentDto>> GetCommentsByPostIdAsync(int postId)
 		{
-			IEnumerable<Comment?> comments = await _unitOfWork.Comments.GetAllAsync(postId);
+			IEnumerable<Core.Models.MainModels.Comment?> comments = await _unitOfWork.Comments.GetAllAsync(postId);
 			return getCommentDTOs(comments);
 		}
 		public async Task<IEnumerable<GetCommentDto>> GetCommentsByUserIdAsync(string userId)
 		{
-			IEnumerable<Comment?> comments = await _unitOfWork.Comments.FindAllAsync(comment => comment.UserId == userId);
+			IEnumerable<Core.Models.MainModels.Comment?> comments = await _unitOfWork.Comments.FindAllAsync(comment => comment.UserId == userId);
 			return getCommentDTOs(comments);
 		}
 		public async Task<AddCommentDto> CreateCommentAsync(AddCommentDto commentDto)
 		{
-			Comment comment = new()
+			Core.Models.MainModels.Comment comment = new()
 			{
 				Content = commentDto.Content,
 				UserId = commentDto.UserId,
@@ -78,7 +78,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			bool isCommentExist = await _unitOfWork.Comments.DoesExist(commentDto.Id, cancellationToken);
 			if (!isCommentExist) return null;
 
-			Comment? comment = await _unitOfWork.Comments.GetByIdWithTrackingAsync(commentDto.Id);
+			Core.Models.MainModels.Comment? comment = await _unitOfWork.Comments.GetByIdWithTrackingAsync(commentDto.Id);
 			if (comment == null) return null;
 
 			byte[] providedRowVersionBytes = Convert.FromBase64String(commentDto.RowVersion);
@@ -127,17 +127,28 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		public async Task<bool> DeleteCommentAsync(int commentId)
 		{
 			Comment? comment = await _unitOfWork.Comments.GetByIdWithTrackingAsync(commentId);
-			if (comment == null) return false;
+			if (comment is null) return false;
 
-			List<string> files = (await _unitOfWork.CommentFiles.GetAllAsync(file => file.CommentId == comment.Id)).Select(file => file!.Path).ToList();
-			_unitOfWork.Comments.Delete(comment);
-			int effectedRows = await _unitOfWork.Comments.Save();
-			if (effectedRows > 0)
+			List<string> files = await GetCommentFiles(comment.Id);
+
+			try
 			{
-				_commentFileModeService.DeleteCommentFiles(files);
-				await _commentReactionService.GetCommentReactionsByCommentIdAsync(commentId);
+				// First delete related entities
+				bool isRelatedEntitiesDeleted = await IsRelatedEntitiesDeleted(files, commentId);
+				if (!isRelatedEntitiesDeleted) return false;
+				// Then delete the Comment
+				_unitOfWork.Comments.Delete(comment);
+				int effectedRows = await _unitOfWork.Comments.Save();
+
+				if (effectedRows == 0) throw new Exception("Comment  deletion failed.");
+
+				return true;
 			}
-			return true;
+			catch (Exception ex)
+			{
+				// Log error here if needed
+				return false;
+			}
 		}		
 		public async Task<bool> DeleteCommentsByPostIdAsync(int postId)
 		{
@@ -145,9 +156,54 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			IEnumerable<Comment> nonNullableComments = comments.Where(comment => comment != null).Select(comment => comment!);
 			if (comments == null) return false;
 
-			_unitOfWork.Comments.DeleteRange(nonNullableComments);
-			await _unitOfWork.Comments.Save();
-			return true;
+			try
+			{
+
+				foreach (var comment in nonNullableComments)
+				{
+					List<string> files = await GetCommentFiles(comment.Id);
+					bool isRelatedEntitiesDeleted = await IsRelatedEntitiesDeleted(files, comment.Id);
+					if (!isRelatedEntitiesDeleted) return false;
+
+					_unitOfWork.Comments.Delete(comment);
+					int effectedRows = await _unitOfWork.Comments.Save();
+					if (effectedRows == 0) throw new Exception("Comment  deletion failed.");
+				}
+
+				return true;
+			}
+			catch (Exception ex)
+			{
+				// Log error here if needed
+				return false;
+			}
+		}
+		public async Task<bool> DeleteCommentsByUserIdAsync(string userId)
+		{
+			IEnumerable<Comment?> comments = await _unitOfWork.Comments.FindAllWithTrackingAsync(comment => comment.UserId == userId);
+			IEnumerable<Comment> nonNullableComments = comments.Where(comment => comment != null).Select(comment => comment!);
+			if (comments == null) return false;
+
+			try
+			{
+				foreach (var comment in nonNullableComments)
+				{
+					List<string> files = await GetCommentFiles(comment.Id);
+					bool isRelatedEntitiesDeleted = await IsRelatedEntitiesDeleted(files, comment.Id);
+					if (!isRelatedEntitiesDeleted) return false;
+
+					_unitOfWork.Comments.Delete(comment);
+					int effectedRows = await _unitOfWork.Comments.Save();
+					if (effectedRows == 0) throw new Exception("Comment  deletion failed.");
+				}
+
+				return true;
+			}
+			catch (Exception ex)
+			{
+				// Log error here if needed
+				return false;
+			}
 		}
 
 		//Helper Functions
@@ -157,6 +213,23 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			if (comments == null || !comments.Any()) return [];
 			List<GetCommentDto> commentsDto = comments.Select(_mapper.Map<GetCommentDto>).ToList();
 			return commentsDto;
+		}
+		private async Task<bool> IsRelatedEntitiesDeleted(List<string> files, int commentId)
+		{
+			// The Files Entities Remove Automatically By The Database
+			bool isFileDeleted = _commentFileModeService.DeleteCommentFiles(files);
+			bool isReactionDeleted = await _commentReactionService.DeleteCommentReactionsByCommentIdAsync(commentId);
+
+			if (!isReactionDeleted || !isFileDeleted)
+			{
+				return false;
+			}
+			return true;
+		}
+		private async Task<List<string>> GetCommentFiles(int commentId)
+		{
+			return (await _unitOfWork.CommentFiles.GetAllAsync(file => file.CommentId == commentId)).Select(file => file!.Path).ToList();
+
 		}
 	}
 }

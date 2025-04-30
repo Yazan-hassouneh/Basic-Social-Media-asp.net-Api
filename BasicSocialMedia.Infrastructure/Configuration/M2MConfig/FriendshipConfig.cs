@@ -17,8 +17,8 @@ namespace BasicSocialMedia.Infrastructure.Configuration.M2MConfig
 				.IsRequired()
 				.HasDefaultValue(FriendshipStatus.Pending); // Default as integer
 
-			builder.Property(model => model.SenderId).IsRequired();
-			builder.Property(model => model.ReceiverId).IsRequired();
+			builder.Property(model => model.SenderId).IsRequired(false);
+			builder.Property(model => model.ReceiverId).IsRequired(false);
 			builder.HasIndex(friendship => new { friendship.SenderId, friendship.ReceiverId }).IsUnique();
 
 

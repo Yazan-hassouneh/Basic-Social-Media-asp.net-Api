@@ -4,6 +4,7 @@ using BasicSocialMedia.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BasicSocialMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250430022506_UpdateMessagingRelations")]
+    partial class UpdateMessagingRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -531,11 +534,9 @@ namespace BasicSocialMedia.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("User2Id");
+                    b.HasIndex("User1Id");
 
-                    b.HasIndex("User1Id", "User2Id")
-                        .IsUnique()
-                        .HasFilter("[User1Id] IS NOT NULL AND [User2Id] IS NOT NULL");
+                    b.HasIndex("User2Id");
 
                     b.ToTable("Chats", "Messages");
                 });

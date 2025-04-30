@@ -13,6 +13,12 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MessagingConfig
 
 			builder.Property(i => i.UserId).IsRequired();
 			builder.HasIndex(dm => new { dm.ChatId, dm.UserId }).IsUnique();
+
+			// Define the relationship between ChatDeletion and Chat
+			builder.HasOne(cd => cd.Chat)
+					.WithMany(c => c.ChatDeletions)
+					.HasForeignKey(cd => cd.ChatId)
+					.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

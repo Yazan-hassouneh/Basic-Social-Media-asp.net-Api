@@ -9,5 +9,6 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 		Task<bool> DeleteCommentReaction(int reactionId);
 		Task<string?> GetUserId(int commentReactionId);
 		Task<bool> DeleteCommentReactionsByCommentIdAsync(int commentId);
+		Task<bool> DeleteCommentReactionsByUserIdAsync(string userId);
 	}
 }

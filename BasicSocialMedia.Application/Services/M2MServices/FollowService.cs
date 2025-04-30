@@ -77,5 +77,36 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 			await _unitOfWork.Following.Save();
 			return true;
 		}
+		public async Task<bool> SetUserIdToNull(string userId)
+		{
+			var follows = await _unitOfWork.Following.FindAllWithTrackingAsync(follow => follow.FollowingId == userId || follow.FollowerId == userId);
+			if (follows == null || !follows.Any()) return true;
+
+			if (follows.Any())
+			{
+				foreach (var follow in follows)
+				{
+					bool updated = false;
+
+					if (follow!.FollowerId == userId)
+					{
+						follow.FollowerId = null;
+						updated = true;
+					}
+
+					if (follow.FollowingId == userId)
+					{
+						follow.FollowingId = null;
+						updated = true;
+					}
+
+					if (updated) _unitOfWork.Following.Update(follow);
+				}
+
+				await _unitOfWork.Following.Save();
+				return true;
+			}
+			return true;
+		}
 	}
 }

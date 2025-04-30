@@ -19,10 +19,10 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			Chat? chat = await _unitOfWork.Chats.GetByIdAsync(chatId);
 			if (chat == null) return null;
 			Dictionary<string, string> users = new()
-		   {
+			{
 			   { "user1Id", chat.User1Id },
 			   { "user2Id", chat.User2Id }
-		   };
+			};
 			return users;
 		}
 		public async Task<IEnumerable<string>?> GetFilesByChatIdAsync(int chatId)
@@ -65,7 +65,41 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			return chat;
 		}
-		public async Task<bool> DeleteChatAsync(int chatId, string userId)
+		public async Task<bool> SetUserIdToNull(string userId)
+		{
+			var chats = await _unitOfWork.Chats.FindAllWithTrackingAsync(chat => chat.User1Id == userId || chat.User2Id == userId);
+			if (chats == null || !chats.Any()) return true;
+
+			if (chats.Any())
+			{
+				foreach (var chat in chats)
+				{
+					bool updated = false;
+
+					if (chat!.User1Id == userId)
+					{
+						chat.User1Id = null;
+						updated = true;
+					}
+
+					if (chat.User2Id == userId)
+					{
+						chat.User2Id = null;
+						updated = true;
+					}
+
+					if (updated)
+					{
+						_unitOfWork.Chats.Update(chat);
+					}
+				}
+
+				await _unitOfWork.Chats.Save();
+				return true;
+			}
+			return true;
+		}
+		public async Task<bool> SoftDeleteChatAsync(int chatId, string userId)
 		{
 			Chat? chat = await _unitOfWork.Chats.GetByIdAsync(chatId);
 			if (chat is null) return false;
@@ -89,12 +123,31 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 
 			await _unitOfWork.ChatDeletion.Save();
 
-			/*
-				Add Background Job to check if both users deleted the chat, if so delete the chat and deletedChat  
+			if(await IsChatCompletelyDeletedAsync(chatId))
+			{
+				bool result =  await HardDeleteChatAsync(chatId);
+				if (!result) return false;
+			}
+			return true;
+		}
+		public async Task<bool> IsChatCompletelyDeletedAsync(int chatId)
+		{
+			Chat? chat = await _unitOfWork.Chats.GetByIdAsync(chatId);
+			if (chat is null || (chat.User1Id is null && chat.User2Id is null)) return true;
+			var deletions = await _unitOfWork.ChatDeletion.FindAllAsync(cd => cd.ChatId == chatId);
+			return deletions.Count() == 2;
+		}		
+		public async Task<bool> HardDeleteChatAsync(int chatId)
+		{
+			Chat? chat = await _unitOfWork.Chats.GetByIdWithTrackingAsync(chatId);
+			if (chat is null) return false;
 
-				_unitOfWork.Chats.Delete(chat);
-				await _unitOfWork.Chats.Save();
-			 */
+			// Delete associated file models  
+			await _messageFileModelService.DeleteMessageFileByChatIdAsync(chatId);
+
+			// Delete the chat itself  
+			_unitOfWork.Chats.Delete(chat);
+			await _unitOfWork.Chats.Save();
 			return true;
 		}
 

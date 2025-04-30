@@ -1,6 +1,5 @@
 ﻿using BasicSocialMedia.Core.Interfaces.Repos.MessagingRepos;
 using BasicSocialMedia.Core.Models.AuthModels;
-using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.Messaging;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Infrastructure.Repositories.BaseRepo;

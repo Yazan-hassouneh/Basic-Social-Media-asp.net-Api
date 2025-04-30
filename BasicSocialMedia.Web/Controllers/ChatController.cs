@@ -101,7 +101,7 @@ namespace BasicSocialMedia.Web.Controllers
 			var user2Ownership = await _authorizationService.AuthorizeAsync(User, chat.User2Id, PoliciesSettings.Ownership);
 			if (!user1Ownership.Succeeded && !user2Ownership.Succeeded) return Forbid(); // User is neither User1 nor User2  
 
-			bool isDeleted = await _chatServices.DeleteChatAsync(chatId, userId);
+			bool isDeleted = await _chatServices.SoftDeleteChatAsync(chatId, userId);
 			if (!isDeleted) return BadRequest("something went wrong!");
 			return Ok();
 		}

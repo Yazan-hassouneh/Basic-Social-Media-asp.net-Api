@@ -15,6 +15,8 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices
 		Task<bool> RemoveFriendAsync(string friendId);
 		Task<bool> AcceptRequestAsync(int friendshipId);
 		Task<bool> RejectRequestAsync(int friendshipId);
-		
+		Task<bool> SetUserIdToNull(string userId);
+
+
 	}
 }

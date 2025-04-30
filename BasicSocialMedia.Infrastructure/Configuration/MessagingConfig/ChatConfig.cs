@@ -12,8 +12,10 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MessagingConfig
 			BaseIdConfig.ConfigureId(builder);
 			BaseTimestampConfig.ConfigureTimestamp(builder);
 
-			builder.Property(i => i.User1Id).IsRequired();
-			builder.Property(i => i.User2Id).IsRequired();
+			builder.Property(i => i.User1Id).IsRequired(false);
+			builder.Property(i => i.User2Id).IsRequired(false);
+
+			builder.HasIndex(chat => new { chat.User1Id, chat.User2Id }).IsUnique();
 
 			builder.HasOne(chat => chat.User1)
 				.WithMany(user => user.Chats)

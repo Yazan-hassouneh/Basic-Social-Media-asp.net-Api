@@ -13,8 +13,8 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MessagingConfig
 			BaseTimestampConfig.ConfigureTimestamp(builder);
 			BaseContentConfig.ConfigureContent(builder);
 
-			builder.Property(i => i.SenderId).IsRequired();
-			builder.Property(i => i.ReceiverId).IsRequired();
+			builder.Property(i => i.SenderId).IsRequired(false);
+			builder.Property(i => i.ReceiverId).IsRequired(false);
 
 			builder.Property(model => model.IsRead).IsRequired().HasDefaultValue(false);
 

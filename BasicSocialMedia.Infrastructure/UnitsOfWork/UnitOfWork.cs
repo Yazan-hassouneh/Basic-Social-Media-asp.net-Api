@@ -12,6 +12,7 @@ using BasicSocialMedia.Infrastructure.Repositories.M2M;
 using BasicSocialMedia.Infrastructure.Repositories.MessagingRepos;
 using BasicSocialMedia.Infrastructure.Repositories.ReactionRepos;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 {
@@ -58,6 +59,10 @@ namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 			CommentReactions = new CommentReactionsRepository(_context);
 		}
 		public async Task<int> Complete() => await _context.SaveChangesAsync();
+		public Task<IDbContextTransaction> BeginTransactionAsync()
+		{
+			return _context.Database.BeginTransactionAsync();
+		}
 		public void Dispose() => _context.Dispose();
 	}
 }

@@ -9,5 +9,6 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 		Task<AddPostReactionDto> CreatePostReactionAsync(AddPostReactionDto postReactionDto);
 		Task<bool> DeletePostReactionAsync(int reactionId);
 		Task<bool> DeletePostReactionsByPostIdAsync(int postId);
+		Task<bool> DeletePostReactionsByUserIdAsync(string userId);
 	}
 }

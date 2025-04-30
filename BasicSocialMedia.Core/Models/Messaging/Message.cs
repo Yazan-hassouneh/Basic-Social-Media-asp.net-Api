@@ -13,8 +13,8 @@ namespace BasicSocialMedia.Core.Models.Messaging
 		public bool IsDeleted { get; set; } = false;
 		public int ChatId { get; set; }
 		public Chat? Chat { get; set; }
-		public string SenderId { get; set; } = null!;
-		public string ReceiverId { get; set; } = null!;
+		public string? SenderId { get; set; } 
+		public string? ReceiverId { get; set; }
 		public virtual ICollection<DeletedMessage> DeletedByUsers { get; set; } = new HashSet<DeletedMessage>();
 
 

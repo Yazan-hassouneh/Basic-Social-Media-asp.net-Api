@@ -9,6 +9,9 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 		Task<IEnumerable<string>?> GetFilesByChatIdAsync(int chatId);
 		Task<GetChatDto?> GetChatByIdAsync(int chatId, string userId);
 		Task<AddChatDto> CreateChatAsync(AddChatDto chat);
-		Task<bool> DeleteChatAsync(int chatId, string userId);
+		Task<bool> SoftDeleteChatAsync(int chatId, string userId);
+		Task<bool> IsChatCompletelyDeletedAsync(int chatId);
+		Task<bool> HardDeleteChatAsync(int chatId);
+		Task<bool> SetUserIdToNull(string userId);
 	}
 }

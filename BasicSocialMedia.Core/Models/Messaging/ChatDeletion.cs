@@ -6,7 +6,7 @@ namespace BasicSocialMedia.Core.Models.Messaging
 	{
 		public int Id { get; set; }
 		public int ChatId { get; set; }
-		public string UserId { get; set; } = null!;
+		public string? UserId { get; set; }
 		public DateTime DeletedAt { get; set; }
 
 		public Chat Chat { get; set; } = null!;

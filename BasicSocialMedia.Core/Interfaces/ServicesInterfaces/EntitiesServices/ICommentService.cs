@@ -12,5 +12,6 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices
 		Task<UpdateCommentDto?> UpdateCommentAsync(UpdateCommentDto commentDto);
 		Task<bool> DeleteCommentAsync(int commentId);
 		Task<bool> DeleteCommentsByPostIdAsync(int postId);
+		Task<bool> DeleteCommentsByUserIdAsync(string userId);
 	}
 }

@@ -39,6 +39,46 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 			_unitOfWork.Blocking.Delete(blockEntity);
 			await _unitOfWork.Blocking.Save();
 			return true;
+		}		
+		public async Task<bool> DeleteBlockingByUserIdAsync(string userId)
+		{
+			var blockEntity = await _unitOfWork.Blocking.FindWithTrackingAsync(blockEntity => blockEntity.BlockedId == userId || blockEntity.BlockerId == userId);
+			if (blockEntity == null) return false;
+
+			_unitOfWork.Blocking.Delete(blockEntity);
+			await _unitOfWork.Blocking.Save();
+			return true;
+		}
+		public async Task<bool> SetUserIdToNull(string userId)
+		{
+			var blocked = await _unitOfWork.Blocking.FindAllWithTrackingAsync(block => block.BlockerId == userId || block.BlockedId == userId);
+			if (blocked == null || !blocked.Any()) return true;
+
+			if (blocked.Any())
+			{
+				foreach (var block in blocked)
+				{
+					bool updated = false;
+
+					if (block!.BlockerId == userId)
+					{
+						block.BlockerId = null;
+						updated = true;
+					}
+
+					if (block.BlockedId == userId)
+					{
+						block.BlockedId = null;
+						updated = true;
+					}
+
+					if (updated) _unitOfWork.Blocking.Update(block);
+				}
+
+				await _unitOfWork.Blocking.Save();
+				return true;
+			}
+			return true;
 		}
 	}
 }

@@ -3,6 +3,7 @@ using BasicSocialMedia.Core.Interfaces.Repos.FileModelsRepositories;
 using BasicSocialMedia.Core.Interfaces.Repos.M2M;
 using BasicSocialMedia.Core.Interfaces.Repos.MessagingRepos;
 using BasicSocialMedia.Core.Interfaces.Repos.Reactions;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BasicSocialMedia.Core.Interfaces.UnitOfWork
 {
@@ -23,6 +24,7 @@ namespace BasicSocialMedia.Core.Interfaces.UnitOfWork
 		public IMessageFileModelRepository MessageFiles { get; }
 		public IProfileImageModelRepository ProfileImages { get; }
 		public IDeletedMessagesRepository DeletedMessages { get; }
+		Task<IDbContextTransaction> BeginTransactionAsync();
 
 	}
 }

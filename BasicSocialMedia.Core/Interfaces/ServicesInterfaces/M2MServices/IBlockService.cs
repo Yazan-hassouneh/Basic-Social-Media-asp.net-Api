@@ -8,5 +8,7 @@ namespace BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices
 		Task<IEnumerable<GetBlockUserDto>> GetBlockListAsync(string userId);
 		Task<bool> BlockUserAsync(BlockUserDto requestDto);
 		Task<bool> UnBlockUserAsync(int blockingId);
+		Task<bool> SetUserIdToNull(string userId);
+		Task<bool> DeleteBlockingByUserIdAsync(string userId);
 	}
 }

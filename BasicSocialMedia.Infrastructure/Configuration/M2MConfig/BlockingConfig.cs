@@ -12,8 +12,8 @@ namespace BasicSocialMedia.Infrastructure.Configuration.M2MConfig
 			BaseIdConfig.ConfigureId(builder);
 			BaseTimestampConfig.ConfigureTimestamp(builder);
 
-			builder.Property(model => model.BlockerId).IsRequired();
-			builder.Property(model => model.BlockedId).IsRequired();
+			builder.Property(model => model.BlockerId).IsRequired(false);
+			builder.Property(model => model.BlockedId).IsRequired(false);
 
 			builder.HasIndex(blocking => new { blocking.BlockerId, blocking.BlockedId }).IsUnique();
 

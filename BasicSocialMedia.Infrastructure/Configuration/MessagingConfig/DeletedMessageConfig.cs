@@ -24,11 +24,6 @@ namespace BasicSocialMedia.Infrastructure.Configuration.MessagingConfig
 				.WithMany()
 				.HasForeignKey(dm => dm.ChatId)
 				.OnDelete(DeleteBehavior.Restrict);
-
-			builder.HasOne(dm => dm.User)
-				.WithMany() // Optional: or .WithMany(u => u.DeletedMessages) if you add collection on user
-				.HasForeignKey(dm => dm.UserId)
-				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }
