@@ -26,6 +26,10 @@ namespace BasicSocialMedia.Core.Enums
 			Admin,
 			Moderator,
 			User,
+		}		
+		public enum BackgroundJobTypes
+		{
+			DeleteUserAccount = 1,
 		}
 	}
 }

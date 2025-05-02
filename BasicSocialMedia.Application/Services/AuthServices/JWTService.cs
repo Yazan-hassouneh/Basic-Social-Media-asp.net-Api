@@ -22,9 +22,17 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 		{
 			var authModel = new AuthDto();
 			var user = await _userManager.FindByEmailAsync(model.Email);
+			
 			if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password))
 			{
 				authModel.Message = "Email or Password is incorrect!";
+				authModel.IsDeleted = user!.IsDeleted;
+				return authModel;
+			}
+			if (!await _userManager.IsEmailConfirmedAsync(user))
+			{
+				authModel.Message = "Confirm Your email!";
+				authModel.IsDeleted = user!.IsDeleted;
 				return authModel;
 			}
 
@@ -35,6 +43,7 @@ namespace BasicSocialMedia.Application.Services.AuthServices
 			authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 			authModel.Email = user.Email;
 			authModel.UserName = user.UserName;
+			authModel.IsDeleted = user!.IsDeleted;
 			//authModel.ExpiresOn = jwtSecurityToken.ValidTo;
 			authModel.UserRoles = [.. rolesList];
 

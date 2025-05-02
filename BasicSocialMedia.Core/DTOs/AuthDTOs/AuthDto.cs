@@ -8,6 +8,7 @@ namespace BasicSocialMedia.Core.DTOs.AuthDTOs
 		public bool IsAuthenticated { get; set; } = false;
 		public string UserName { get; set; } = null!;
 		public string Email { get; set; } = null!;
+		public bool IsDeleted { get; set; } = false;
 		public List<string> UserRoles { get; set; } = [];
 		public string Token { get; set; } = null!;
 		//public DateTime ExpiresOn { get; set; }

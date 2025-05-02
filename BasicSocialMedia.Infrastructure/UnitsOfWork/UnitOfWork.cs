@@ -1,4 +1,5 @@
 ﻿using BasicSocialMedia.Core.Interfaces.Repos;
+using BasicSocialMedia.Core.Interfaces.Repos.Auth;
 using BasicSocialMedia.Core.Interfaces.Repos.FileModelsRepositories;
 using BasicSocialMedia.Core.Interfaces.Repos.M2M;
 using BasicSocialMedia.Core.Interfaces.Repos.MessagingRepos;
@@ -7,6 +8,7 @@ using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.AuthModels;
 using BasicSocialMedia.Infrastructure.Data;
 using BasicSocialMedia.Infrastructure.Repositories;
+using BasicSocialMedia.Infrastructure.Repositories.Auth;
 using BasicSocialMedia.Infrastructure.Repositories.FileRepos;
 using BasicSocialMedia.Infrastructure.Repositories.M2M;
 using BasicSocialMedia.Infrastructure.Repositories.MessagingRepos;
@@ -36,6 +38,7 @@ namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 		public IProfileImageModelRepository ProfileImages { get; private set; }
 		public IDeletedMessagesRepository DeletedMessages { get; private set; }
 		public IChatDeletionRepository ChatDeletion { get; private set; }
+		public IUserBackgroundJobs UserBackgroundJobs { get; private set; }
 
 		public UnitOfWork(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
 		{
@@ -57,6 +60,7 @@ namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 			ProfileImages = new ProfileImageModelRepository(_context);
 			DeletedMessages = new DeletedMessagesRepository(_context);
 			CommentReactions = new CommentReactionsRepository(_context);
+			UserBackgroundJobs = new UserBackgroundJobsRepository(_context);
 		}
 		public async Task<int> Complete() => await _context.SaveChangesAsync();
 		public Task<IDbContextTransaction> BeginTransactionAsync()

@@ -31,6 +31,7 @@ namespace BasicSocialMedia.Infrastructure.Data
 		public DbSet<PostReaction> PostReactions { get; set; }
 		public DbSet<DeletedMessage> DeletedMessages { get; set; }
 		public DbSet<ChatDeletion> ChatDeletions { get; set; }
+		public DbSet<UserBackgroundJob> UserBackgroundJobs { get; set; }
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
@@ -57,6 +58,7 @@ namespace BasicSocialMedia.Infrastructure.Data
 			builder.ApplyConfiguration(new ApplicationUserConfig());
 			builder.ApplyConfiguration(new CommentFileModelConfig());
 			builder.ApplyConfiguration(new MessageFileModelConfig());
+			builder.ApplyConfiguration(new UserBackgroundJobConfig());
 			builder.ApplyConfiguration(new ProfileImagesModelConfig());
 		}
 	}

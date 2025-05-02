@@ -1,4 +1,6 @@
-﻿using BasicSocialMedia.Core.Consts;
+﻿using BasicSocialMedia.Application.Services.AuthServices;
+using BasicSocialMedia.Core.Consts;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using BasicSocialMedia.Core.Models.AuthModels;
 using BasicSocialMedia.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,6 +21,7 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddIdentity<ApplicationUser, IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationDbContext>()
 				.AddSignInManager()
+				.AddDefaultTokenProviders()
 				.AddRoles<IdentityRole>();
 
 			return services;
@@ -81,6 +84,10 @@ namespace BasicSocialMedia.Web.Startup
 				Enable CORS in Program.cs
 				app.UseCors(CorsSettings.allowAllOrigins);
 			 */
+		}
+		internal static void AddEmailSender(this IServiceCollection services)
+		{
+			services.AddTransient<IEmailSender, EmailSender>();
 		}
 	}
 }

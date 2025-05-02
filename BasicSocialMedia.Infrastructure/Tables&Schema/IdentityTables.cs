@@ -10,6 +10,7 @@ namespace BasicSocialMedia.Infrastructure.Tables_Schema
 		{
 			builder.Entity<IdentityRole>().ToTable("Roles", schema: "Auth");
 			builder.Entity<ApplicationUser>().ToTable("Users", schema: "Auth");
+			builder.Entity<UserBackgroundJob>().ToTable("UserBackgroundJobs", schema: "Auth");
 			//builder.Entity<RefreshToken>().ToTable("RefreshTokens", schema: "Auth");
 			builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", schema: "Auth");
 			builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", schema: "Auth");

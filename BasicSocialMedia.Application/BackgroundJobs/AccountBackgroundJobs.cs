@@ -1,4 +1,6 @@
-﻿using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
+﻿using BasicSocialMedia.Core.DTOs.AuthDTOs;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices;
 using BasicSocialMedia.Core.Models.AuthModels;
 using Hangfire;
@@ -6,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BasicSocialMedia.Application.BackgroundJobs
 {
-	public class AccountBackgroundJobs(UserManager<ApplicationUser> userManager, ICommentReactionService commentReactionService, IFollowService followServices, IFriendshipService friendshipServices, IBlockService blockServices, IPostService postService, IChatServices chatServices, ICommentService commentService, IPostReactionService postReactionService)
+	public class AccountBackgroundJobs(UserManager<ApplicationUser> userManager, IAccountService accountService, ICommentReactionService commentReactionService, IFollowService followServices, IFriendshipService friendshipServices, IBlockService blockServices, IPostService postService, IChatServices chatServices, ICommentService commentService, IPostReactionService postReactionService)
 	{
 		private readonly UserManager<ApplicationUser> _userManager = userManager;
 		private readonly IPostService _postService = postService;
@@ -17,6 +19,7 @@ namespace BasicSocialMedia.Application.BackgroundJobs
 		private readonly ICommentService _commentService = commentService;
 		private readonly IPostReactionService _postReactionService = postReactionService;
 		private readonly ICommentReactionService _commentReactionService = commentReactionService;
+		private readonly IAccountService _accountService = accountService;
 
 		[AutomaticRetry(Attempts = 0)]
 		public async Task<IdentityResult> HardDeleteUserAsync(string userId)
@@ -52,6 +55,10 @@ namespace BasicSocialMedia.Application.BackgroundJobs
 			}
 
 			return IdentityResult.Failed(new IdentityError { Description = "Failed to delete all posts for the user." });
+		}
+		public async Task<bool> CancelUserHardDeletionAsync(LoginAccountDto loginInfo)
+		{
+			return  await _accountService.TryCancelScheduledDeletionAsync(loginInfo);
 		}
 	}
 }

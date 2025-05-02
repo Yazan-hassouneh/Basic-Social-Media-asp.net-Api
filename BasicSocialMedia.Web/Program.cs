@@ -26,6 +26,11 @@ namespace BasicSocialMedia
 
 			builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection("SecuritySettings"));
 			builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+			builder.Services.Configure<Mail>(builder.Configuration.GetSection("Smtp")); // using security settings
+			/* Smtp Section exist inside secrets.json file, in Development environment 
+             *  appsettings.json file and secrets.json file are merged together
+             */
+
 
 			builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
 		             builder.Configuration.GetConnectionString("AppConnectionString")
@@ -35,6 +40,7 @@ namespace BasicSocialMedia
             builder.Services.AddBackgroundJobsInjection();
 			builder.Services.AddIdentityServices();
 			builder.Services.AddJWTServices(builder);
+			builder.Services.AddEmailSender();
 			builder.Services.AddHttpContextAccessor(); 
             builder.Services.AddPoliciesServices();
 			builder.Services.AddCorsPolicies();

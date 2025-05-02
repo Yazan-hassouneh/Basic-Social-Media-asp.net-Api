@@ -31,7 +31,6 @@ using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.DTOs.PostDTOs;
 using BasicSocialMedia.Core.DTOs.ProfileImage;
 using BasicSocialMedia.Core.DTOs.ReactionsDTOs;
-using BasicSocialMedia.Core.Interfaces.BackgroundJobsInterfaces;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EnumsServices;
@@ -70,6 +69,7 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<ICommentFileModeService, CommentFileModelService>();
 			services.AddScoped<IMessageFileModelService, MessageFileModelService>();
 			services.AddScoped<IProfileImageModelService, ProfileImageModelService>();
+			services.AddScoped<IUserBackgroundJobsServices, UserBackgroundJobsServices>();
 			return services;
 		}		
 		internal static IServiceCollection AddDTOsValidatorsInjection(this IServiceCollection services)
@@ -109,7 +109,7 @@ namespace BasicSocialMedia.Web.Startup
 		}		
 		internal static IServiceCollection AddBackgroundJobsInjection(this IServiceCollection services)
 		{
-			services.AddScoped<IAccountBackgroundJobs, AccountBackgroundJobs>();
+			
 			return services;
 		}			
 		internal static IServiceCollection AddCustomPoliciesInjection(this IServiceCollection services)
