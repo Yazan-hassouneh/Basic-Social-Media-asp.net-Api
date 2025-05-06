@@ -39,6 +39,7 @@ using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.ValidationServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
+using BasicSocialMedia.Core.Interfaces.UnitsOfWork;
 using BasicSocialMedia.Infrastructure.UnitsOfWork;
 using FluentValidation;
 using Ganss.Xss;
@@ -105,6 +106,7 @@ namespace BasicSocialMedia.Web.Startup
 		internal static IServiceCollection AddUnitOfWorkInjection(this IServiceCollection services)
 		{
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
+			services.AddScoped<INotificationUnitOfWork, NotificationUnitOfWork>();
 			return services;
 		}		
 		internal static IServiceCollection AddBackgroundJobsInjection(this IServiceCollection services)
