@@ -30,6 +30,15 @@ namespace BasicSocialMedia.Core.Enums
 		public enum BackgroundJobTypes
 		{
 			DeleteUserAccount = 1,
+		}		
+		public enum NotificationTypes
+		{
+			NewComment = 1,
+			PostReaction = 2,
+			FriendRequest = 3,
+			FriendRequestAccepted = 4,
+			CommentReaction = 5,
+			NewFollower = 6,
 		}
 	}
 }

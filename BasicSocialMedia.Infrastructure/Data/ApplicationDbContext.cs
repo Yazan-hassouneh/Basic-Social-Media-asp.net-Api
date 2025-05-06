@@ -3,11 +3,13 @@ using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.M2MRelations;
 using BasicSocialMedia.Core.Models.MainModels;
 using BasicSocialMedia.Core.Models.Messaging;
+using BasicSocialMedia.Core.Models.Notification;
 using BasicSocialMedia.Infrastructure.Configuration.AuthConfig;
 using BasicSocialMedia.Infrastructure.Configuration.FilConfig;
 using BasicSocialMedia.Infrastructure.Configuration.M2MConfig;
 using BasicSocialMedia.Infrastructure.Configuration.MainConfig;
 using BasicSocialMedia.Infrastructure.Configuration.MessagingConfig;
+using BasicSocialMedia.Infrastructure.Configuration.NotificationConfig;
 using BasicSocialMedia.Infrastructure.Tables_Schema;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -32,15 +34,23 @@ namespace BasicSocialMedia.Infrastructure.Data
 		public DbSet<DeletedMessage> DeletedMessages { get; set; }
 		public DbSet<ChatDeletion> ChatDeletions { get; set; }
 		public DbSet<UserBackgroundJob> UserBackgroundJobs { get; set; }
+		public DbSet<UserNotification> UserNotifications { get; set; }
+		public DbSet<NewCommentNotification> NewCommentNotifications { get; set; }
+		public DbSet<CommentReactionNotification> CommentReactionNotifications { get; set; }
+		public DbSet<NewFollowerNotification> NewFollowerNotifications { get; set; }
+		public DbSet<FriendRequestNotification> FriendRequestNotifications { get; set; }
+		public DbSet<PostReactionNotification> PostReactionNotifications{ get; set; }
+
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
 			builder.AppleyIdentityTablesConfig();
+			builder.AddFileSchema();
 			builder.AddPostsSchema();
 			builder.AddMessagesSchema();
 			builder.AddReactionsSchema();
 			builder.AddRelationsSchema();
-			builder.AddFileSchema();
+			builder.AddNotificationSchema();
 
 			builder.ApplyConfiguration(new PostConfig());
 			builder.ApplyConfiguration(new RoleConfig());
@@ -57,9 +67,15 @@ namespace BasicSocialMedia.Infrastructure.Data
 			builder.ApplyConfiguration(new CommentReactionConfig());
 			builder.ApplyConfiguration(new ApplicationUserConfig());
 			builder.ApplyConfiguration(new CommentFileModelConfig());
+			builder.ApplyConfiguration(new UserNotificationConfig());
 			builder.ApplyConfiguration(new MessageFileModelConfig());
 			builder.ApplyConfiguration(new UserBackgroundJobConfig());
 			builder.ApplyConfiguration(new ProfileImagesModelConfig());
+			builder.ApplyConfiguration(new NewCommentNotificationConfig());
+			builder.ApplyConfiguration(new NewFollowerNotificationConfig());
+			builder.ApplyConfiguration(new PostReactionNotificationConfig());
+			builder.ApplyConfiguration(new FriendRequestNotificationConfig());
+			builder.ApplyConfiguration(new CommentReactionNotificationConfig());
 		}
 	}
 }
