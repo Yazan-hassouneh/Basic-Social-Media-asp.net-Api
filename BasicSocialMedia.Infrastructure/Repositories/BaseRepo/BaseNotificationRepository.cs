@@ -1,5 +1,4 @@
-﻿using BasicSocialMedia.Core.Interfaces.ModelsInterfaces;
-using BasicSocialMedia.Core.Interfaces.Repos.BaseRepo;
+﻿using BasicSocialMedia.Core.Interfaces.Repos.BaseRepo;
 using BasicSocialMedia.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -10,9 +9,13 @@ namespace BasicSocialMedia.Infrastructure.Repositories.BaseRepo
 	{
 		private readonly ApplicationDbContext _context = context;
 
-		public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> matcher)
+		public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> matcher)
 		{
-			return await _context.Set<T>().Where(matcher).OrderDescending().AsNoTracking().ToListAsync();
+			return await _context.Set<T>()
+				.Where(matcher)
+				.OrderDescending()
+				.AsNoTracking()
+				.ToListAsync();
 		}
 	}
 }

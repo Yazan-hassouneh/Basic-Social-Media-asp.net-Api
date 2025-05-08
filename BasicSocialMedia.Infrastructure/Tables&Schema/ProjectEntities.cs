@@ -42,7 +42,6 @@ namespace BasicSocialMedia.Infrastructure.Tables_Schema
 		}
 		public static void AddNotificationSchema(this ModelBuilder builder)
 		{
-			builder.Entity<UserNotification>().ToTable("UserNotifications", schema: "Notification");
 			builder.Entity<NewCommentNotification>().ToTable("NewCommentNotifications", schema: "Notification");
 			builder.Entity<NewFollowerNotification>().ToTable("NewFollowerNotifications", schema: "Notification");
 			builder.Entity<PostReactionNotification>().ToTable("PostReactionNotifications", schema: "Notification");

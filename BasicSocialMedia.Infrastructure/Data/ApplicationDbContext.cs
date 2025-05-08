@@ -34,7 +34,6 @@ namespace BasicSocialMedia.Infrastructure.Data
 		public DbSet<DeletedMessage> DeletedMessages { get; set; }
 		public DbSet<ChatDeletion> ChatDeletions { get; set; }
 		public DbSet<UserBackgroundJob> UserBackgroundJobs { get; set; }
-		public DbSet<UserNotification> UserNotifications { get; set; }
 		public DbSet<NewCommentNotification> NewCommentNotifications { get; set; }
 		public DbSet<CommentReactionNotification> CommentReactionNotifications { get; set; }
 		public DbSet<NewFollowerNotification> NewFollowerNotifications { get; set; }
@@ -67,7 +66,6 @@ namespace BasicSocialMedia.Infrastructure.Data
 			builder.ApplyConfiguration(new CommentReactionConfig());
 			builder.ApplyConfiguration(new ApplicationUserConfig());
 			builder.ApplyConfiguration(new CommentFileModelConfig());
-			builder.ApplyConfiguration(new UserNotificationConfig());
 			builder.ApplyConfiguration(new MessageFileModelConfig());
 			builder.ApplyConfiguration(new UserBackgroundJobConfig());
 			builder.ApplyConfiguration(new ProfileImagesModelConfig());

@@ -1,9 +1,8 @@
-﻿using BasicSocialMedia.Core.Interfaces.ModelsInterfaces;
-using BasicSocialMedia.Core.Models.AuthModels;
+﻿using BasicSocialMedia.Core.DTOs.AuthDTOs;
 
-namespace BasicSocialMedia.Core.Models.Notification
+namespace BasicSocialMedia.Core.DTOs.Notification
 {
-	public class CommentReactionNotification : INotification
+	public class NewCommentNotificationDto
 	{
 		public int Id { get; set; }
 		public string NotificationType { get; set; } = null!;
@@ -12,7 +11,7 @@ namespace BasicSocialMedia.Core.Models.Notification
 		public int PostId { get; set; }
 		public int CommentId { get; set; }
 		public string UserId { get; set; } = null!;
-		public ApplicationUser? User { get; set; }
+		public GetBasicUserInfo? User { get; set; }
 		public DateTime CreatedOn { get; set; }
 	}
 }

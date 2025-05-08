@@ -12,11 +12,6 @@ namespace BasicSocialMedia.Infrastructure.Configuration.NotificationConfig
 			BaseNotificationConfig.ConfigurePostComment(builder);
 
 			builder.Property(x => x.PostId).IsRequired();
-
-			builder.HasOne(i => i.UserNotification)
-					.WithMany(un => un.PostReactionNotifications)
-					.HasForeignKey(i => i.UserNotificationId)
-					.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

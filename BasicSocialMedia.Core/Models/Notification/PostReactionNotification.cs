@@ -12,8 +12,6 @@ namespace BasicSocialMedia.Core.Models.Notification
 		public int PostId { get; set; }
 		public string UserId { get; set; } = null!;
 		public ApplicationUser? User { get; set; }
-		public int UserNotificationId { get; set; }
-		public UserNotification? UserNotification { get; set; }
 		public DateTime CreatedOn { get; set; }
 	}
 }

@@ -14,7 +14,6 @@ namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
 
-		public IUserNotificationRepository UserNotifications { get; private set; }
 		public INewCommentNotificationRepository NewCommentNotifications { get; private set; }
 		public INewFollowerNotificationRepository NewFollowerNotifications { get; private set; }
 		public IPostReactionNotificationRepository PostReactionNotifications { get; private set; }
@@ -27,7 +26,6 @@ namespace BasicSocialMedia.Infrastructure.UnitsOfWork
 			_userManager = userManager;
 			_roleManager = roleManager;
 
-			UserNotifications = new UserNotificationRepository(_context);
 			NewCommentNotifications = new NewCommentNotificationRepository(_context);
 			NewFollowerNotifications = new NewFollowerNotificationRepository(_context);
 			PostReactionNotifications = new PostReactionNotificationRepository(_context);

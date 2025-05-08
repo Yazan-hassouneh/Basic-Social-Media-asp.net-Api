@@ -13,11 +13,6 @@ namespace BasicSocialMedia.Infrastructure.Configuration.NotificationConfig
 
 			builder.Property(x => x.PostId).IsRequired();
 			builder.Property(x => x.CommentId).IsRequired();
-
-			builder.HasOne(i => i.UserNotification)
-					.WithMany(un => un.NewCommentNotifications)
-					.HasForeignKey(i => i.UserNotificationId)
-					.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

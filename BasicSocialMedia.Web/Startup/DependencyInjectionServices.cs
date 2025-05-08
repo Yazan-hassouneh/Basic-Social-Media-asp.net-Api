@@ -21,6 +21,7 @@ using BasicSocialMedia.Application.Services.FileModelServices;
 using BasicSocialMedia.Application.Services.FileServices;
 using BasicSocialMedia.Application.Services.M2MServices;
 using BasicSocialMedia.Application.Services.ModelsServices;
+using BasicSocialMedia.Application.Services.NotificationServices;
 using BasicSocialMedia.Application.Services.ValidationServices;
 using BasicSocialMedia.Core.DTOs.AuthDTOs;
 using BasicSocialMedia.Core.DTOs.ChatDTOs;
@@ -37,9 +38,11 @@ using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EnumsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.NotificationsServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.ValidationServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Interfaces.UnitsOfWork;
+using BasicSocialMedia.Core.Models.Notification;
 using BasicSocialMedia.Infrastructure.UnitsOfWork;
 using FluentValidation;
 using Ganss.Xss;
@@ -71,6 +74,13 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IMessageFileModelService, MessageFileModelService>();
 			services.AddScoped<IProfileImageModelService, ProfileImageModelService>();
 			services.AddScoped<IUserBackgroundJobsServices, UserBackgroundJobsServices>();
+			services.AddScoped<IBaseNotificationService<NewCommentNotification>, BaseNotificationService<NewCommentNotification>>();
+			services.AddScoped<IBaseNotificationService<NewFollowerNotification>, BaseNotificationService<NewFollowerNotification>>();
+			services.AddScoped<IBaseNotificationService<PostReactionNotification>, BaseNotificationService<PostReactionNotification>>();
+			services.AddScoped<IBaseNotificationService<FriendRequestNotification>, BaseNotificationService<FriendRequestNotification>>();
+			services.AddScoped<IBaseNotificationService<CommentReactionNotification>, BaseNotificationService<CommentReactionNotification>>();
+			// Repeat for other types
+
 			return services;
 		}		
 		internal static IServiceCollection AddDTOsValidatorsInjection(this IServiceCollection services)

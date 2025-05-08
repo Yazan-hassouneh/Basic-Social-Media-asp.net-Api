@@ -10,7 +10,5 @@ namespace BasicSocialMedia.Core.Interfaces.ModelsInterfaces
 		public string NotifiedUserId { get; set; }
 		public string UserId { get; set; }
 		public ApplicationUser? User { get; set; }
-		public int UserNotificationId { get; set; }
-		public UserNotification? UserNotification { get; set; }
 	}
 }

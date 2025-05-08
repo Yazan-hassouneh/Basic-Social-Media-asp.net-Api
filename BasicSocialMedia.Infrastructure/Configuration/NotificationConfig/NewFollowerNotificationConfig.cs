@@ -10,11 +10,6 @@ namespace BasicSocialMedia.Infrastructure.Configuration.NotificationConfig
 		public void Configure(EntityTypeBuilder<NewFollowerNotification> builder)
 		{
 			BaseNotificationConfig.ConfigurePostComment(builder);
-
-			builder.HasOne(i => i.UserNotification)
-					.WithMany(un => un.NewFollowerNotifications)
-					.HasForeignKey(i => i.UserNotificationId)
-					.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

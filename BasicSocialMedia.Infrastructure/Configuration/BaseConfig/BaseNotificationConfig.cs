@@ -13,14 +13,13 @@ namespace BasicSocialMedia.Infrastructure.Configuration.BaseConfig
 
 			builder.Property(i => i.UserId).IsRequired();
 			builder.Property(i => i.NotificationType).IsRequired();
-			builder.Property(i => i.UserNotificationId).IsRequired();
 			builder.Property(i => i.NotifiedUserId).IsRequired();
 			builder.Property(i => i.IsRead).IsRequired().HasDefaultValue(false);
 
 			builder.HasOne(i => i.User)
 				   .WithMany()
 				   .HasForeignKey(i => i.UserId)
-				   .OnDelete(DeleteBehavior.Restrict);
+				   .OnDelete(DeleteBehavior.Cascade);
 
 		}
 	}

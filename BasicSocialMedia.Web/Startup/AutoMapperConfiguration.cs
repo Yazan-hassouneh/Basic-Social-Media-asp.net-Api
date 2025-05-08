@@ -1,4 +1,5 @@
 ﻿using BasicSocialMedia.Application.Mappers;
+using BasicSocialMedia.Application.Mappers.NotificationProfiles;
 
 namespace BasicSocialMedia.Web.Startup
 {
@@ -14,7 +15,11 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddAutoMapper(typeof(ReactionProfile));
 			services.AddAutoMapper(typeof(FollowerProfile));
 			services.AddAutoMapper(typeof(FollowingProfile));
-			services.AddAutoMapper(typeof(FriendshipProfile));
+			services.AddAutoMapper(typeof(NewCommentNotificationProfile));
+			services.AddAutoMapper(typeof(NewFollowerNotificationProfile));
+			services.AddAutoMapper(typeof(PostReactionNotificationProfile));
+			services.AddAutoMapper(typeof(FriendRequestNotificationProfile));
+			services.AddAutoMapper(typeof(CommentReactionNotificationProfile));
 			return services;
 		}
 	}

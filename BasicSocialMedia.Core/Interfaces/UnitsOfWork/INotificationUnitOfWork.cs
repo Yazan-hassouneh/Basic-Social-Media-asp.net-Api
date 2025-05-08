@@ -5,7 +5,6 @@ namespace BasicSocialMedia.Core.Interfaces.UnitsOfWork
 {
 	public interface INotificationUnitOfWork : IDisposable
 	{
-		public IUserNotificationRepository UserNotifications { get; }
 		public INewCommentNotificationRepository NewCommentNotifications{ get; }
 		public INewFollowerNotificationRepository NewFollowerNotifications{ get; }
 		public IPostReactionNotificationRepository PostReactionNotifications { get; }
