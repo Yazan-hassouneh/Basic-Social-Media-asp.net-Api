@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using BasicSocialMedia.Application.BackgroundJobs;
 using BasicSocialMedia.Core.DTOs.ReactionsDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.MainModels;
+using Hangfire;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
@@ -33,7 +35,12 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			};
 
 			await _unitOfWork.CommentReactions.AddAsync(commentReaction);
-			await _unitOfWork.CommentReactions.Save();
+			int effectedRows = await _unitOfWork.CommentReactions.Save();
+			if (effectedRows > 0)
+			{
+				// Add Notification
+				BackgroundJob.Enqueue<NotificationBackgroundJobs>(x => x.SendCommentReactionNotification(commentReaction));
+			}
 			await Task.CompletedTask;
 			return commentReactionDto;
 		}

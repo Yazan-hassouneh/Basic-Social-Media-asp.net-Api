@@ -44,6 +44,7 @@ namespace BasicSocialMedia
 			builder.Services.AddHttpContextAccessor(); 
             builder.Services.AddPoliciesServices();
 			builder.Services.AddCorsPolicies();
+            builder.Services.AddRepositoryInjection();
             builder.Services.AddServicesInjection();
             builder.Services.AddHtmlSanitizerInjection();
             builder.Services.AddAutoMapperConfiguration();

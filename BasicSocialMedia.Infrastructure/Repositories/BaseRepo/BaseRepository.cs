@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace BasicSocialMedia.Infrastructure.Repositories.BaseRepo
 {
-	internal class BaseRepository<T>(ApplicationDbContext context) : IBaseRepository<T> where T : class
+	public class BaseRepository<T>(ApplicationDbContext context) : IBaseRepository<T> where T : class
 	{
 		private readonly ApplicationDbContext _context = context;
 		public async Task<bool> DoesExist(int id, CancellationToken cancellationToken)

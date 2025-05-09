@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using BasicSocialMedia.Application.BackgroundJobs;
 using BasicSocialMedia.Core.DTOs.M2MDTOs;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.M2MServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.M2MRelations;
+using Hangfire;
 
 namespace BasicSocialMedia.Application.Services.M2MServices
 {
@@ -58,8 +60,13 @@ namespace BasicSocialMedia.Application.Services.M2MServices
 			};
 
 			await _unitOfWork.Following.AddAsync(follow);
-			await _unitOfWork.Following.Save();
-			return true;
+			int effectedRows = await _unitOfWork.Following.Save();
+			if (effectedRows > 0)
+			{
+				// Add Notification
+				BackgroundJob.Enqueue<NotificationBackgroundJobs>(x => x.SendNewFollowerNotification(follow));
+			}
+			return effectedRows > 0;
 		}
 		public async Task<bool> CancelFollowingAsync(int followId)
 		{ 

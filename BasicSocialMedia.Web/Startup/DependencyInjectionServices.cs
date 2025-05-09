@@ -32,6 +32,7 @@ using BasicSocialMedia.Core.DTOs.MessageDTOs;
 using BasicSocialMedia.Core.DTOs.PostDTOs;
 using BasicSocialMedia.Core.DTOs.ProfileImage;
 using BasicSocialMedia.Core.DTOs.ReactionsDTOs;
+using BasicSocialMedia.Core.Interfaces.Repos.BaseRepo;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.AuthServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EnumsServices;
@@ -43,6 +44,7 @@ using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.ValidationServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Interfaces.UnitsOfWork;
 using BasicSocialMedia.Core.Models.Notification;
+using BasicSocialMedia.Infrastructure.Repositories.BaseRepo;
 using BasicSocialMedia.Infrastructure.UnitsOfWork;
 using FluentValidation;
 using Ganss.Xss;
@@ -74,6 +76,7 @@ namespace BasicSocialMedia.Web.Startup
 			services.AddScoped<IMessageFileModelService, MessageFileModelService>();
 			services.AddScoped<IProfileImageModelService, ProfileImageModelService>();
 			services.AddScoped<IUserBackgroundJobsServices, UserBackgroundJobsServices>();
+			services.AddScoped(typeof(IBaseNotificationService<>), typeof(BaseNotificationService<>));
 			services.AddScoped<IBaseNotificationService<NewCommentNotification>, BaseNotificationService<NewCommentNotification>>();
 			services.AddScoped<IBaseNotificationService<NewFollowerNotification>, BaseNotificationService<NewFollowerNotification>>();
 			services.AddScoped<IBaseNotificationService<PostReactionNotification>, BaseNotificationService<PostReactionNotification>>();
@@ -117,6 +120,11 @@ namespace BasicSocialMedia.Web.Startup
 		{
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped<INotificationUnitOfWork, NotificationUnitOfWork>();
+			return services;
+		}		
+		internal static IServiceCollection AddRepositoryInjection(this IServiceCollection services)
+		{
+			services.AddScoped(typeof(IBaseNotificationRepository<>), typeof(BaseNotificationRepository<>));
 			return services;
 		}		
 		internal static IServiceCollection AddBackgroundJobsInjection(this IServiceCollection services)

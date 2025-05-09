@@ -100,7 +100,7 @@ namespace BasicSocialMedia.Web.Controllers
 				_friendRequestNotificationService,
 				id,
 				(service, notificationId) => service.GetNotifiedUserId(notificationId),
-				(service, notificationId) => service.MarkAsReadAsync(notificationId)
+				(service, notificationId) => service.DeleteAsync(notificationId)
 			);
 		}
 
@@ -124,7 +124,7 @@ namespace BasicSocialMedia.Web.Controllers
 				_postReactionNotificationService,
 				id,
 				(service, notificationId) => service.GetNotifiedUserId(notificationId),
-				(service, notificationId) => service.MarkAsReadAsync(notificationId)
+				(service, notificationId) => service.DeleteAsync(notificationId)
 			);
 		}
 
@@ -148,7 +148,7 @@ namespace BasicSocialMedia.Web.Controllers
 				_newFollowerNotificationService,
 				id,
 				(service, notificationId) => service.GetNotifiedUserId(notificationId),
-				(service, notificationId) => service.MarkAsReadAsync(notificationId)
+				(service, notificationId) => service.DeleteAsync(notificationId)
 			);
 		}
 

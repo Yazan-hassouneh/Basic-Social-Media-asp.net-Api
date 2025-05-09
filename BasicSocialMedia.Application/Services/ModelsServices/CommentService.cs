@@ -1,13 +1,17 @@
 ﻿using AutoMapper;
+using BasicSocialMedia.Application.BackgroundJobs;
 using BasicSocialMedia.Application.Utils;
 using BasicSocialMedia.Core.DTOs.Comment;
 using BasicSocialMedia.Core.DTOs.FileModelsDTOs;
+using BasicSocialMedia.Core.Enums;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.EntitiesServices;
 using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.FileModelsServices;
+using BasicSocialMedia.Core.Interfaces.ServicesInterfaces.NotificationsServices;
 using BasicSocialMedia.Core.Interfaces.UnitOfWork;
 using BasicSocialMedia.Core.Models.FileModels;
 using BasicSocialMedia.Core.Models.MainModels;
 using Ganss.Xss;
+using Hangfire;
 
 namespace BasicSocialMedia.Application.Services.ModelsServices
 {
@@ -42,7 +46,7 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 		}
 		public async Task<AddCommentDto> CreateCommentAsync(AddCommentDto commentDto)
 		{
-			Core.Models.MainModels.Comment comment = new()
+			Comment comment = new()
 			{
 				Content = commentDto.Content,
 				UserId = commentDto.UserId,
@@ -52,23 +56,29 @@ namespace BasicSocialMedia.Application.Services.ModelsServices
 			await _unitOfWork.Comments.AddAsync(comment);
 			int effectedRows = await _unitOfWork.Comments.Save();
 			
-			if (commentDto.Files.Count > 0 && effectedRows > 0)
+			if (effectedRows > 0)
 			{
-				AddCommentFileDto addCommentFileDto = new()
+				// Add Notification
+				BackgroundJob.Enqueue<NotificationBackgroundJobs>(x => x.SendNewCommentNotification(comment));
+				if (commentDto.Files.Count > 0)
 				{
-					UserId = commentDto.UserId,
-					CommentId = comment.Id,
-					PostId = commentDto.PostId,
-					Files = commentDto.Files,
-				};
+					AddCommentFileDto addCommentFileDto = new()
+					{
+						UserId = commentDto.UserId,
+						CommentId = comment.Id,
+						PostId = commentDto.PostId,
+						Files = commentDto.Files,
+					};
 
-				bool mediaSaved = await _commentFileModeService.AddCommentFileAsync(addCommentFileDto);
-				if (!mediaSaved)
-				{
-					_unitOfWork.Comments.Delete(comment);
-					await _unitOfWork.Comments.Save();
-					return new AddCommentDto();
+					bool mediaSaved = await _commentFileModeService.AddCommentFileAsync(addCommentFileDto);
+					if (!mediaSaved)
+					{
+						_unitOfWork.Comments.Delete(comment);
+						await _unitOfWork.Comments.Save();
+						return new AddCommentDto();
+					}
 				}
+
 			}
 			return commentDto;
 		}
